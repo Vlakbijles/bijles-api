@@ -3,7 +3,7 @@ Dit is een markplaats voor bijles. Je kunt hier zowel bijles aanbieden als
 aanvragen.
 
 # Chat
-[Chat](https://gitter.im/Vlakbijles)
+[Chat](https://https://vlakbijles.slack.com)
 
 ## Taken
 IOS:
