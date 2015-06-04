@@ -4,5 +4,9 @@
 *~
 *.cert
 *.key
-config
-users
+
+
+
+# Excluded config files
+api_users.cfg
+config.cfg

@@ -7,10 +7,11 @@ import ssl
 import ConfigParser
 import MySQLdb
 import hmac
-import time, datetime
+import time
+import datetime
 import json
 
-from flask import Flask, request, Response, jsonify
+from flask import Flask, request, jsonify
 from flask.views import MethodView
 from hashlib import sha256
 
@@ -36,7 +37,7 @@ def load_config(filename):
         config["db_passwd"] = config_file.get("mysql", "passwd")
         config["db_name"] = config_file.get("mysql", "db")
     except:
-        print "Error parsing config file"
+        print("Error parsing config file")
         return False
     return True
 
@@ -44,10 +45,10 @@ def load_config(filename):
 def load_keys(filename):
     global api_users
     try:
-        with open("users") as file:
+        with open(filename) as file:
             api_users = json.load(file)
     except:
-        print "Error parsing keys file"
+        print("Error parsing keys file")
         return False
     return True
 
@@ -90,7 +91,8 @@ def verify_request(uri, method, data):
 
 @app.errorhandler(404)
 def not_implemented(error=None):
-    return respond({"501":"Unable to fulfill request"}, 501)
+    return respond({"501": "Unable to fulfill request"}, 501)
+
 
 def respond(data, status_code):
     response = jsonify(data)
@@ -108,36 +110,34 @@ class UserAPI(MethodView):
             column_names = [d[0] for d in db.description]
             return respond(dict(zip(column_names, data)), 200)
         else:
-            return respond({"404":"User not found"}, 404)
+            return respond({"404": "User not found"}, 404)
 
     def post(self):
         """ Create new user """
         if verify_request(request.path, request.method, request.data):
-            return respond({"201":"New user succesfully created"}, 201)
-            return respond({"409":"Something went wrong, please check data"}, 409)
+            return respond({"201": "New user succesfully created"}, 201)
+            return respond({"409": "Something went wrong, please check data"},
+                           409)
         else:
-            return respond({"401":"Unauthorized request"}, 401)
+            return respond({"401": "Unauthorized request"}, 401)
 
     def delete(self, user_id):
         """ Delete existing user """
         if verify_request(request.path, request.method, request.data):
-            return respond({"200":"User succesfully deleted"}, 200)
+            return respond({"200": "User succesfully deleted"}, 200)
         else:
-            return respond({"401":"Unauthorized request"}, 401)
+            return respond({"401": "Unauthorized request"}, 401)
 
     def put(self, user_id):
         """ Update user fields """
         if verify_request(request.path, request.method, request.data):
-            return respond({"200":"User succesfully updated"}, 200)
+            return respond({"200": "User succesfully updated"}, 200)
         else:
-            return respond({"401":"Unauthorized request"}, 401)
-
-
+            return respond({"401": "Unauthorized request"}, 401)
 
 
 if __name__ == '__main__':
-
-    if load_config("config") and load_keys("users"):
+    if load_config("config/config.cfg") and load_keys("config/api_users.cfg"):
 
         try:
             conn = MySQLdb.connect(host=config["db_host"],
@@ -147,7 +147,7 @@ if __name__ == '__main__':
                                    db=config["db_name"])
             db = conn.cursor()
         except:
-            print "Unable to connect to mysql server"
+            print("Unable to connect to mysql server")
         else:
 
             # Start API server over https
@@ -158,6 +158,8 @@ if __name__ == '__main__':
 
             user_view = UserAPI.as_view("user_api")
             app.add_url_rule("/user/", view_func=user_view, methods=["POST"])
-            app.add_url_rule("/user/<int:user_id>", view_func=user_view, methods=["DELETE", "PUT", "GET"])
+            app.add_url_rule("/user/<int:user_id>", view_func=user_view,
+                             methods=["DELETE", "PUT", "GET"])
 
-            app.run(host=config["host"], port=config["port"], debug=True, use_reloader=False)
+            app.run(host=config["host"], port=config["port"], debug=True,
+                    use_reloader=False)
