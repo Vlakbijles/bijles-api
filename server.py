@@ -164,6 +164,7 @@ class Login(Resource):
 
     def post(self):
         if verify_request(request.path, request.method, request.data):
+            # TODO: extract and verify data from post data, perform login, return token
             return True
 
 
