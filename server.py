@@ -13,15 +13,19 @@ import json
 
 from hashlib import sha256
 
+from os import urandom
+
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 
 app = Flask(__name__)
 api = Api(app)
 
-db = None               # MySQLdb database cursor
+db_con = None           # MySQLdb connection
+db_cur = None           # MySQLdb cursor
 api_users = None        # API username/key dict
 config = {}             # Settings dict
+
 
 def load_config(filename):
     global config
@@ -72,7 +76,7 @@ def verify_request(uri, method, data):
 
         # Ignore 'old' requests
         utc_now = int(time.mktime(datetime.datetime.utcnow().timetuple()))
-        if utc_now - timestamp < 60:
+        if utc_now - timestamp < 10:
 
             if api_user in api_users:
                 key = api_users[api_user]
@@ -90,51 +94,122 @@ def verify_request(uri, method, data):
     return False
 
 
+
+def create_token(user_id):
+    """
+    Generate new token, add to db
+
+    """
+    utc_now = int(time.mktime(datetime.datetime.utcnow().timetuple()))
+    expiration_date = utc_now + 604800 # 7 days
+
+    print user_id
+    print expiration_date
+
+    token_hash = hmac.new(str(user_id), str(expiration_date), sha256)
+    token_hash.update(urandom(64))
+    token_digest = token_hash.hexdigest()
+
+    db_cur.execute("INSERT INTO token (user_id, hash, expiration_date) \
+                    VALUES ({}, '{}', {})".format(user_id, token_digest,
+                                                  expiration_date))
+    db_con.commit()
+
+    return token_digest
+
+
+def login(email, password):
+
+    db_cur.execute("SELECT id, password FROM user WHERE email = '{}'".format(email))
+    data = db_cur.fetchone()
+
+    if data:
+        if data[1] == password:
+            return True, create_token(data[0])
+
+    return False, None
+
+
+def login_check(user_id, token):
+    """
+    Returns boolean accompanied by old/renewed token/None object
+    """
+
+    db_cur.execute("SELECT hash, expiration_date FROM token \
+                    WHERE user_id = {}".format(user_id))
+    data = db_cur.fetchall()
+
+    if data:
+        for row in data:
+
+            token_db = row[0]
+
+            if token_db == token:
+
+                expiration_date = row[1]
+                utc_now = int(time.mktime(datetime.datetime.utcnow().timetuple()))
+
+                # If token is expired, create a new one, remove old one
+                if utc_now - expiration_date > 0:
+                    db_cur.execute("DELETE FROM token WHERE hash = {}".format(token))
+                    db_con.commit()
+                    token = create_token(user_id)
+
+                return True, token
+
+    return False, None
+
+
+
+class UserCreator(Resource):
+
+    def post(self):
+        if verify_request(request.path, request.method, request.data):
+            return {"message":"New user succesfully created", "status":"201"}, 201
+            return {"message":"Something went wrong", "status":"409"}, 409
+        else:
+            return {"message":"Unauthorized request", "status":"401"}, 401
+
+
 class User(Resource):
 
     def get(self, user_id):
-        """ Return user information """
-        db.execute("SELECT * FROM user WHERE id = {}".format(user_id))
-        data = [str(e) for e in list(db.fetchone())]
-        if data:
-            column_names = [d[0] for d in db.description]
-            return dict(zip(column_names, data)), 200
-        else:
-            return {"404": "User not found"}, 404
-
-    def post(self):
-        """ Create new user """
         if verify_request(request.path, request.method, request.data):
-            return {"201": "New user succesfully created"}, 201
-            return {"409": "Something went wrong, please check data"}, 409
+            db_cur.execute("SELECT * FROM user WHERE id = {}".format(user_id))
+            data = db_cur.fetchone()
+            if data:
+                data = [str(e) for e in list(data)]
+            if data:
+                column_names = [d[0] for d in db_cur.description]
+                return dict(zip(column_names, data)), 200
+            else:
+                return {"message":"User not found", "status":"404"}, 404
         else:
-            return {"401": "Unauthorized request"}, 401
+            return {"message":"Unauthorized request", "status":"401"}, 401
 
     def delete(self, user_id):
-        """ Delete existing user """
         if verify_request(request.path, request.method, request.data):
             return {"200": "User succesfully deleted"}, 200
         else:
-            return {"401": "Unauthorized request"}, 401
+            return {"message":"Unauthorized request", "status":"401"}, 401
 
     def put(self, user_id):
-        """ Update user fields """
         if verify_request(request.path, request.method, request.data):
             return {"200": "User succesfully updated"}, 200
         else:
-            return {"401": "Unauthorized request"}, 401
+            return {"message":"Unauthorized request", "status":"401"}, 401
 
 
 if __name__ == '__main__':
     if load_config("config/config.cfg") and load_keys("config/api_users.cfg"):
 
         try:
-            conn = MySQLdb.connect(host=config["db_host"],
+            db_con = MySQLdb.connect(host=config["db_host"],
                                    port=config["db_port"],
                                    user=config["db_user"],
                                    passwd=config["db_passwd"],
                                    db=config["db_name"])
-            db = conn.cursor()
+            db_cur = db_con.cursor()
         except:
             print("Unable to connect to mysql server")
         else:
@@ -145,6 +220,7 @@ if __name__ == '__main__':
             # app.run(host=host, port=port, debug=False, ssl_context=context,
             #         use_reloader=False)
 
+            api.add_resource(UserCreator, "/user")
             api.add_resource(User, "/user/<int:user_id>")
             app.run(host=config["host"], port=config["port"], debug=True,
                     use_reloader=False)
