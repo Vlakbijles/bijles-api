@@ -160,6 +160,12 @@ def login_check(user_id, token):
     return False, None
 
 
+class Login(Resource):
+
+    def post(self):
+        if verify_request(request.path, request.method, request.data):
+            return True
+
 
 class UserCreator(Resource):
 
@@ -220,6 +226,7 @@ if __name__ == '__main__':
             # app.run(host=host, port=port, debug=False, ssl_context=context,
             #         use_reloader=False)
 
+            api.add_resource(Login, "/login")
             api.add_resource(UserCreator, "/user")
             api.add_resource(User, "/user/<int:user_id>")
             app.run(host=config["host"], port=config["port"], debug=True,
