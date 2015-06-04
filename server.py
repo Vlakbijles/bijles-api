@@ -11,16 +11,17 @@ import time
 import datetime
 import json
 
-from flask import Flask, request, jsonify
-from flask.views import MethodView
 from hashlib import sha256
 
+from flask import Flask, request, jsonify
+from flask_restful import Resource, Api
 
 app = Flask(__name__)
+api = Api(app)
+
 db = None               # MySQLdb database cursor
 api_users = None        # API username/key dict
 config = {}             # Settings dict
-
 
 def load_config(filename):
     global config
@@ -89,51 +90,39 @@ def verify_request(uri, method, data):
     return False
 
 
-@app.errorhandler(404)
-def not_implemented(error=None):
-    return respond({"501": "Unable to fulfill request"}, 501)
-
-
-def respond(data, status_code):
-    response = jsonify(data)
-    response.status_code = status_code
-    return response
-
-
-class UserAPI(MethodView):
+class User(Resource):
 
     def get(self, user_id):
         """ Return user information """
         db.execute("SELECT * FROM user WHERE id = {}".format(user_id))
-        data = db.fetchone()
+        data = [str(e) for e in list(db.fetchone())]
         if data:
             column_names = [d[0] for d in db.description]
-            return respond(dict(zip(column_names, data)), 200)
+            return dict(zip(column_names, data)), 200
         else:
-            return respond({"404": "User not found"}, 404)
+            return {"404": "User not found"}, 404
 
     def post(self):
         """ Create new user """
         if verify_request(request.path, request.method, request.data):
-            return respond({"201": "New user succesfully created"}, 201)
-            return respond({"409": "Something went wrong, please check data"},
-                           409)
+            return {"201": "New user succesfully created"}, 201
+            return {"409": "Something went wrong, please check data"}, 409
         else:
-            return respond({"401": "Unauthorized request"}, 401)
+            return {"401": "Unauthorized request"}, 401
 
     def delete(self, user_id):
         """ Delete existing user """
         if verify_request(request.path, request.method, request.data):
-            return respond({"200": "User succesfully deleted"}, 200)
+            return {"200": "User succesfully deleted"}, 200
         else:
-            return respond({"401": "Unauthorized request"}, 401)
+            return {"401": "Unauthorized request"}, 401
 
     def put(self, user_id):
         """ Update user fields """
         if verify_request(request.path, request.method, request.data):
-            return respond({"200": "User succesfully updated"}, 200)
+            return {"200": "User succesfully updated"}, 200
         else:
-            return respond({"401": "Unauthorized request"}, 401)
+            return {"401": "Unauthorized request"}, 401
 
 
 if __name__ == '__main__':
@@ -156,10 +145,6 @@ if __name__ == '__main__':
             # app.run(host=host, port=port, debug=False, ssl_context=context,
             #         use_reloader=False)
 
-            user_view = UserAPI.as_view("user_api")
-            app.add_url_rule("/user/", view_func=user_view, methods=["POST"])
-            app.add_url_rule("/user/<int:user_id>", view_func=user_view,
-                             methods=["DELETE", "PUT", "GET"])
-
+            api.add_resource(User, "/user/<int:user_id>")
             app.run(host=config["host"], port=config["port"], debug=True,
                     use_reloader=False)
