@@ -7,6 +7,7 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
+from sqlalchemy import Text
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -25,11 +26,25 @@ class User(Base):
 
     # Relationships
     offers = relationship("Offer")
+    meta = relationship("UserMeta", uselist=False)
 
     def __init__(self, email, password):
         self.email = email
         self.password = password
         self.verified = False
+
+
+class UserMeta(Base):
+    __tablename__ = 'user_meta'
+
+    id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
+    name = Column("name", String(64))
+    surname = Column("surname", String(64))
+    postal_code = Column("postal_code", String(20))
+    phone = Column("phone", String(10))
+    photo_id = Column("photo_id", String(255))
+    facebook_token = Column("facebook_token", String(255))
+    description = Column(Text)
 
 
 class Offer(Base):
@@ -57,3 +72,16 @@ class Level(Base):
 
     id = Column('id', Integer, primary_key=True)
     name = Column('name', String(64), nullable=False)
+
+
+class Review(Base):
+    __tablename__ = 'review'
+
+    id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
+    author_id = Column(Integer, ForeignKey("user.id"))
+    rating = Column(Integer)
+    desc = Column(Text)
+    create_date = Column(DateTime)
+
+    offer = relationship("Offer", backref="review")
+    author = relationship("User", backref="review")

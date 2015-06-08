@@ -12,11 +12,11 @@ conn = httplib.HTTPConnection("127.0.0.1:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
-uri = "/user"
+uri = "/user/1/offer"
 method = "POST"
 utc_time = str(int(time.mktime(datetime.datetime.utcnow().timetuple())))
 
-data = {
+data_old = {
 
     "api_user": api_user,
 
@@ -29,13 +29,31 @@ data = {
                     "password": "sdads",
                 },
 
-                "user_meta": {
+                "usermeta": {
                     "name": "asdjq",
                     "surname": "asdpwq",
                     "postal_code": "peqja",
                     "phone": "asdqp23r",
                     "desc": "posadwu",
                 }
+
+    }
+
+
+}
+
+data = {
+
+    "api_user": api_user,
+
+    "timestamp": utc_time,
+
+    "data": {
+
+                "offer": {
+                    "subject_id": 1,
+                    "level_id": 2,
+                },
 
     }
 
