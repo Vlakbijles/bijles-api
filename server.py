@@ -15,8 +15,8 @@ from hashlib import sha256
 
 from os import urandom
 
-from flask import Flask, request, jsonify
-from flask_restful import Resource, Api
+from flask import Flask, jsonify
+from flask_restful import Resource, Api, request
 
 app = Flask(__name__)
 api = Api(app)
@@ -67,10 +67,12 @@ def verify_request(uri, method, data):
 
     try:
         data_dict = json.loads(data)
+        print data_dict
         api_user = data_dict["api_user"]
         timestamp = int(data_dict["timestamp"])
         provided_hash = data_dict["hash"]
     except:
+        print 'ajsad'
         return False
     else:
 
@@ -192,6 +194,7 @@ class User(Resource):
             else:
                 return {"message":"User not found", "status":"404"}, 404
         else:
+            return request.data
             return {"message":"Unauthorized request", "status":"401"}, 401
 
     def delete(self, user_id):
@@ -201,10 +204,11 @@ class User(Resource):
             return {"message":"Unauthorized request", "status":"401"}, 401
 
     def put(self, user_id):
-        if verify_request(request.path, request.method, request.data):
-            return {"200": "User succesfully updated"}, 200
-        else:
-            return {"message":"Unauthorized request", "status":"401"}, 401
+        return request.data
+        # if verify_request(request.path, request.method, request.data):
+        #     return {"200": "User succesfully updated"}, 200
+        # else:
+        #     return {"message":"Unauthorized request", "status":"401"}, 401
 
 
 if __name__ == '__main__':

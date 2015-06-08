@@ -5,6 +5,8 @@
 *.cert
 *.key
 
+# python specific
+*.pyc
 
 
 # Excluded config files
