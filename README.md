@@ -9,12 +9,22 @@ Requirements:
 # API Protocol
 
 Every API client has a alphanumerical username and a private 128-bit key. All
-API requests are verified using a HMAC hash, calculated using the private key,
-timestamp, request URI, HTTP method and data field in the JSON data as follows:
+API requests are verified using a HMAC hash, calculated as follows (example in
+Python):
 
 ```
-hash calculation
+import hmac
+from hashlib import
+hash = hmac.new(private_key, utc_timestamp, sha256)
+hash.update(http_uri)           # HTTP request URI as string
+hash.update(http_method)        # HTTP method as string
+
+# Data alphabetically sorted by key
+for entry in data:
+    hash.update(entry)
 ```
+
+**Note: utc_timesmap in hash calculation must be identical to the one in the JSON data**
 
 JSON data template:
 
@@ -25,7 +35,7 @@ JSON data template:
                .. # fields must be alphabetically sorted by key name
              },
     "hash": hash,
-    "timestamp": timestamp
+    "timestamp": utc_timestamp
 }
 ```
 
