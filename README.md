@@ -32,7 +32,7 @@ JSON data template:
 Creating users:
 
 |METHOD   |`/user`|SUCCESS|ERROR|
-|-|-|-|-|
+|---------|-------|-------|-----|
 |`POST`   |data:userdata|`201`|`400`|
 
 Retrieving/updating user data, removing users:
