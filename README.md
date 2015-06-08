@@ -16,8 +16,8 @@ Python):
 import hmac
 from hashlib import
 hash = hmac.new(private_key, utc_timestamp, sha256)
-hash.update(http_uri)           # HTTP request URI as string
-hash.update(http_method)        # HTTP method as string
+hash.update(http_uri)                               # HTTP request URI as string
+hash.update(http_method)                            # HTTP method as string
 
 # Data alphabetically sorted by key
 for entry in data:
@@ -32,7 +32,7 @@ JSON data template:
 {
     "api_user": api_user,
     "data" = {
-               .. # fields must be alphabetically sorted by key name
+               ..
              },
     "hash": hash,
     "timestamp": utc_timestamp
