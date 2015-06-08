@@ -6,11 +6,15 @@ from flask.ext.restful import Api
 app = Flask(__name__)
 api = Api(app)
 
-from resources import UserResource, UserCreationResource, UserOfferResource
+from resources import UserByIdResource, UserResource, OfferByUserIdResource
 
-api.add_resource(UserResource, '/user/<int:id>')
-api.add_resource(UserCreationResource, '/user')
-api.add_resource(UserOfferResource, '/user/<int:id>/offer')
+# Routes
+# User
+api.add_resource(UserByIdResource, '/user/<int:id>')
+api.add_resource(UserResource, '/user')
+
+# Offer
+api.add_resource(OfferByUserIdResource, '/user/<int:id>/offer')
 
 if __name__ == '__main__':
     app.run(debug=True)

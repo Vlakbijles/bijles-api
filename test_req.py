@@ -12,8 +12,8 @@ conn = httplib.HTTPConnection("127.0.0.1:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
-uri = "/user/1/offer"
-method = "POST"
+uri = "/user/1"
+method = "PUT"
 utc_time = str(int(time.mktime(datetime.datetime.utcnow().timetuple())))
 
 data_old = {
@@ -70,7 +70,7 @@ hash.update(method)
 
 # Append hash
 data["hash"] = hash.hexdigest()
-data_json = json.dumps(data, sort_keys=True)
+data_json = json.dumps(data_old, sort_keys=True)
 
 headers = {"Content-Type": "application/json"}
 conn.request(method, uri, data_json, headers)

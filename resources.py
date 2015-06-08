@@ -26,47 +26,82 @@ usermeta_fields = {
 }
 
 
-# Main parser used for parsing the default fields (api_user, timestamp, data, hash)
+# Main parser
+# Used for parsing the default json data fields (api_user, timestamp, data, hash)
 main_parser = reqparse.RequestParser()
-main_parser.add_argument('api_user', type=str, required=True, help="api_user required")
-main_parser.add_argument('timestamp', type=str, required=True, help="timestamp required")
-main_parser.add_argument('data', type=dict, required=True, help="data required")
-main_parser.add_argument('hash', type=str, required=True, help="hash required")
+main_parser.add_argument('api_user', type=str, required=True, help="api_user")
+main_parser.add_argument('timestamp', type=str, required=True, help="timestamp")
+main_parser.add_argument('data', type=dict, required=True, help="data")
+# main_parser.add_argument('hash', type=str, required=True, help="hash")
 
-data_parser = reqparse.RequestParser()
-data_parser.add_argument('user', type=dict, location=('data',))
+# User Data field parser
+# Used for parsing the user and usermeta fields inside the data field
+user_data_parser = reqparse.RequestParser()
+user_data_parser.add_argument('user', type=dict, required=True, location=('data'))
+user_data_parser.add_argument('usermeta', type=dict, required=True, location=('data'))
 
-data_parser = reqparse.RequestParser()
-data_parser.add_argument('usermeta', type=dict, location=('data',))
-
+# User parser
+# Used for parsing the fields inside the user field
 user_parser = reqparse.RequestParser()
-user_parser.add_argument('email', type=str, help="email", location('user'))
-user_parser.add_argument('password', type=str, help="email", location('user'))
+user_parser.add_argument('email', type=str, required=True, help="email", location=('user'))
+user_parser.add_argument('password', type=str, required=True, help="password", location=('user'))
 
+# Usermeta parser
+# Used for parsing the fields inside the usermeta field
 usermeta_parser = reqparse.RequestParser()
-usermeta_parser.add_argument('name', type=str, help="email", location('usermeta'))
-usermeta_parser.add_argument('surname', type=str, help="surname", location('usermeta'))
-usermeta_parser.add_argument('postal_code', type=str, help="postal_code", location('usermeta'))
-usermeta_parser.add_argument('phone', type=str, help="phone", location('usermeta'))
-usermeta_parser.add_argument('photo_id', type=str, help="photo_id", location('usermeta'))
-usermeta_parser.add_argument('facebook_token', type=str, help="facebook_token", location('usermeta'))
-usermeta_parser.add_argument('description', type=str, help="description", location('usermeta'))
+usermeta_parser.add_argument('name', type=str, help="email", location=('usermeta'))
+usermeta_parser.add_argument('surname', type=str, help="surname", location=('usermeta'))
+usermeta_parser.add_argument('postal_code', type=str, help="postal_code", location=('usermeta'))
+usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
+usermeta_parser.add_argument('photo_id', type=str, help="photo_id", location=('usermeta'))
+usermeta_parser.add_argument('facebook_token', type=str, help="facebook_token", location=('usermeta'))
+usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
 
 
-class UserResource(Resource):
+class UserByIdResource(Resource):
+    """
+    Class for handling the GET, PUT and DELETE requests for "/user/<int:id>"
+
+    GET is used for giving info about an User model, given an User id
+    PUT is used for changing info about an User model, given an User id,
+        you cannot create a user using this method.
+    DELETE is used deleting an User model, given an User id
+
+    """
 
     def __init__(self):
         pass
 
     @marshal_with(user_fields)
-    # delete is used for giving info about a user model
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
             abort(404, message="User {} doesn't exist".format(id))
-        return user, 201
+        return user, 200
 
-    # delete is used for deleting a user model
+    # TODO: Add verification
+    @marshal_with(user_fields)
+    def put(self, id):
+        args = main_parser.parse_args()
+        user_data_args = user_data_parser.parse_args(args)
+
+        user_data = user_parser.parse_args(user_data_args)
+        usermeta_data = usermeta_parser.parse_args(user_data_args)
+
+        # Check if user with id exists
+        user = session.query(User).filter(User.id == id).first()
+        if not user:
+            abort(404, message="User {} doesn't exist".format(id))
+
+        if user_data['email']:
+            user.email = user_data['email']
+        if user_data['password']:
+            user.password = user_data['password']
+        session.add(user)
+        session.commit()
+
+        return usermeta_data, 201
+
     # TODO: Add verification
     def delete(self, id):
         user = session.query(User).filter(User.id == id).first()
@@ -76,30 +111,19 @@ class UserResource(Resource):
         session.commit()
         return {}, 204
 
-    @marshal_with(user_fields)
-    # put is used for updating a user model
-    # TODO: Add verification
-    def put(self, id):
-        args = main_parser.parse_args()
-        user = session.query(User).filter(User.id == id).first()
-        if not user:
-            abort(404, message="User {} doesn't exist".format(id))
 
-        user_args = self.user_parser.parse_args(args['data']['user'])
-        # if user exists, see which data is sent and change user accordingly
-        if args['email']:
-            user.email = args['email']
-        if args['password']:
-            user.password = args['password']
-        session.add(user)
-        session.commit()
-        return user, 201
+class UserResource(Resource):
+    """
+    Class for handling the GET, POST and DELETE requests for "/user"
 
+    GET TODO: not yet implemented
+    POST is used for creating an new User model
+    DELETE TODO: not yet implemented
 
-class UserCreationResource(Resource):
+    """
 
     def __init__(self):
-        self.parser = reqparse.RequestParser()
+        pass
 
     @marshal_with(user_fields)
     def post(self):
@@ -119,6 +143,7 @@ class UserCreationResource(Resource):
         session.commit()
         return user, 201
 
+
 offer_fields = {
     'id': fields.Integer,
     'user_id': fields.Integer,
@@ -127,16 +152,28 @@ offer_fields = {
 }
 
 user_offers_fields = {
-    'offers': fields.List(fields.Nested(offer_fields)),
+    'offers': fields.List(fields.Nested(offer_fields))
 }
 
 
-class UserOfferResource(Resource):
+class OfferByUserIdResource(Resource):
+    """
+    Class for handling the GET, PUT and DELETE requests for "/user/<int:id>/offer"
+
+    GET is used for receiving all offers linked to the User model, given the User id
+    POST is used for creating a new offer linked to the User model, given the User id
+    DELETE TODO: not yet implemented
+
+    """
 
     def __init__(self):
-        self.data_parser = reqparse.RequestParser()
-        self.data_parser.add_argument('offer', type=dict, required=True, location=('data'))
+        # User Data field parser
+        # Used for parsing the user and usermeta fields inside the data field
+        self.user_data_parser = reqparse.RequestParser()
+        self.user_data_parser.add_argument('offer', type=dict, required=True, location=('data'))
 
+        # Usermeta parser
+        # Used for parsing the fields inside the usermeta field
         self.offer_parser = reqparse.RequestParser()
         self.offer_parser.add_argument('subject_id', type=str, required=True, location=('offer',))
         self.offer_parser.add_argument('level_id', type=str, required=True, location=('offer',))
@@ -144,19 +181,33 @@ class UserOfferResource(Resource):
     @marshal_with(offer_fields)
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
-        return user.offers
+        for offer in user.offers:
+            print offer.subject.name
+            print offer.level.name
+        return user.offers, 200
 
-    @marshal_with(offer_fields)
     # TODO: Add verification
+    @marshal_with(offer_fields)
     def post(self, id):
         args = main_parser.parse_args()
-        user = session.query(User).filter(User.id == id).first()
+        data_args = self.data_parser.parse_args(args)
+        offer_args = self.offer_parser.parse_args(data_args)
 
-        data_args = self.data_parser.parse_args(req=args)
-        offer_args = self.offer_parser.parse_args(req=data_args)
+        user = session.query(User).filter(User.id == id).first()
+        if not user:
+            abort(404, message="User {} doesn't exist".format(id))
 
         user.offers.append(Offer(subject_id=offer_args['subject_id'],
                                  level_id=offer_args['level_id']))
         session.add(user)
         session.commit()
         return user, 201
+
+    # TODO: Add verification
+    # def delete(self, id):
+    #     user = session.query(User).filter(User.id == id).first()
+    #     if not user:
+    #         abort(404, message="User {} doesn't exist".format(id))
+    #     session.delete(user)
+    #     session.commit()
+    #     return {}, 204
