@@ -69,7 +69,7 @@ Retrieving offers:
 
 |METHOD   |`/offer?loc=X&range=X&subject_id=X&level=X&p=&sortby=X`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
-|`GET`    |loc:, range:, subject_id:, level:, sortby:|Success: `200` Failure: `204`, `400`|
+|`GET`    |loc:, range:, subject_id:, level:, sortby:|`200`|`204`, `400`|
 
 Example:
 ```
