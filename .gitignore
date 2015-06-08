@@ -12,3 +12,4 @@
 # Excluded config files
 api_users.cfg
 config.cfg
+config.py
