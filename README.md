@@ -22,6 +22,7 @@ The following requests require content type json, following format, data only on
 ```
 
 Creating users:
+
 |METHOD   |`/user`|RESPONSES|
 |---------|-------|---------|
 |`GET`    |-|-|
@@ -30,6 +31,7 @@ Creating users:
 |`DELETE` |-|-|
 
 Retrieving/updating user data, removing users:
+
 |METHOD   |`/user/user_id`|RESPONSES|
 |---------|---------------|---------|
 |`GET`    |data:-|Success: `200` Failure: `404`|
@@ -38,6 +40,7 @@ Retrieving/updating user data, removing users:
 |`DELETE` |data:token,password|Success: `200` Failure: `400`, `401`, `404`|
 
 Retrieving/creating user offers:
+
 |METHOD   |`/user/user_id/offer`|RESPONSES|
 |---------|---------------------|---------|
 |`GET`    |data:-|Success: `200` Failure: `404`|
@@ -46,6 +49,7 @@ Retrieving/creating user offers:
 |`DELETE` |-|-|
 
 Retrieving list of reviews of user:
+
 |METHOD   |`/user/user_id/review`|RESPONSES|
 |---------|----------------------|---------|
 |`GET`    |data:-|Success: `200` Failure: `404`|
@@ -54,6 +58,7 @@ Retrieving list of reviews of user:
 |`DELETE` |-|-|
 
 Retrieving/creating/updating/removing user reviews:
+
 |METHOD   |`/review/offer_id`|RESPONSES|
 |---------|------------------|---------|
 |`GET`    |data:-|Success: `200` Failure: `404`|
@@ -62,6 +67,7 @@ Retrieving/creating/updating/removing user reviews:
 |`DELETE` |data:token|Success: `200` Failure: `401`, `404`|
 
 Retrieving offers:
+
 |METHOD   |`/offer?loc=X&range=X&subject_id=X&level=X&p=&sortby=X`|RESPONSES|
 |---------|-------------------------------------------------------|---------|
 |`GET`    |loc:, range:, subject_id:, level:, sortby:|Success: `200` Failure: `204`, `400`|
