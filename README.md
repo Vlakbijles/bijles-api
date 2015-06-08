@@ -31,44 +31,44 @@ JSON data template:
 
 Creating users:
 
-|METHOD   |`/user`|RESPONSES|
-|---------|-------|---------|
-|`POST`   |data:userdata|Success: `201` Failure: `400`|
+|METHOD   |`/user`|SUCCESS|ERROR|
+|-|-|-|-|
+|`POST`   |data:userdata|`201`|`400`|
 
 Retrieving/updating user data, removing users:
 
-|METHOD   |`/user/user_id`|RESPONSES|
-|---------|---------------|---------|
-|`GET`    |data:-|Success: `200` Failure: `404`|
-|`PUT`    |data:token,iets|Success: `200` Failure: `400`, `401`, `404`|
-|`DELETE` |data:token,password|Success: `200` Failure: `400`, `401`, `404`|
+|METHOD   |`/user/user_id`|SUCCESS|ERROR
+|-|-|-|-|
+|`GET`    |data:-|`200`|`404`|
+|`PUT`    |data:token,iets|`200`|`400`, `401`, `404`|
+|`DELETE` |data:token,password|`200`|`400`, `401`, `404`|
 
 Retrieving/creating user offers:
 
-|METHOD   |`/user/user_id/offer`|RESPONSES|
-|---------|---------------------|---------|
-|`GET`    |data:-|Success: `200` Failure: `404`|
-|`POST`   |data:token,iets|Success: `201` Failure: `400`, `401`|
+|METHOD   |`/user/user_id/offer`|SUCCESS|ERROR|
+|-|-|-|-|
+|`GET`    |data:-|`200`|`404`|
+|`POST`   |data:token,iets|`201`|`400`, `401`|
 
 Retrieving list of reviews of user:
 
-|METHOD   |`/user/user_id/review`|RESPONSES|
-|---------|----------------------|---------|
-|`GET`    |data:-|Success: `200` Failure: `404`|
+|METHOD   |`/user/user_id/review`|SUCCESS|ERROR|
+|-|-|-|-|
+|`GET`    |data:-|`200`|`404`|
 
 Retrieving/creating/updating/removing user reviews:
 
-|METHOD   |`/review/offer_id`|RESPONSES|
-|---------|------------------|---------|
-|`GET`    |data:-|Success: `200` Failure: `404`|
-|`POST`   |data:token,reviewdata|Success: `201` Failure: `400`, `401`|
-|`PUT`    |data:token,reviewdata|Success: `200` Failure: `400`, `401`, `404`|
-|`DELETE` |data:token|Success: `200` Failure: `401`, `404`|
+|METHOD   |`/review/offer_id`|SUCCESS|ERROR|
+|-|-|-|-|
+|`GET`    |data:-|`200`|`404`|
+|`POST`   |data:token,reviewdata|`201`|`400`, `401`|
+|`PUT`    |data:token,reviewdata|`200`|`400`, `401`, `404`|
+|`DELETE` |data:token|`200`|`401`, `404`|
 
 Retrieving offers:
 
-|METHOD   |`/offer?loc=X&range=X&subject_id=X&level=X&p=&sortby=X`|RESPONSES|
-|---------|-------------------------------------------------------|---------|
+|METHOD   |`/offer?loc=X&range=X&subject_id=X&level=X&p=&sortby=X`|SUCCESS|ERROR|
+|-|-|-|-|
 |`GET`    |loc:, range:, subject_id:, level:, sortby:|Success: `200` Failure: `204`, `400`|
 
 Example:
