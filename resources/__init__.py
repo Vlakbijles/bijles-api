@@ -7,7 +7,7 @@ from flask.ext.restful import marshal_with
 
 from db import session
 
-__all__ = ['reqparse', 'abort', 'Resource', 'fields', 'marshal_with', 'session']
+__all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal_with', 'session', 'main_parser']
 
 # Main parser
 # Used for parsing the default json data fields (api_user, timestamp, data, hash)
