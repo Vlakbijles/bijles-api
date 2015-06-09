@@ -1,14 +1,7 @@
 # User Resource, for actions on the Offer model which is related to the User model
 
-from resources import reqparse
-from resources import abort
-from resources import Resource
-from resources import fields
-from resources import marshal_with
-
+from resources import *
 from models import User, Offer
-from db import session
-from resources import main_parser
 
 
 offer_fields = {
@@ -44,9 +37,6 @@ class OfferByUserIdResource(Resource):
     @marshal_with(offer_fields)
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
-        # for offer in user.offers:
-        #     user.offersk offer.subject.name
-        #     print offer.level.name
         return user.offers, 200
 
     # TODO: Add verification
@@ -67,13 +57,46 @@ class OfferByUserIdResource(Resource):
         return user, 201
 
 
+class OfferResource(Resource):
+    """
+    Class for handling the GET requests for "/offer?query"
+
+    GET is used for receiving all offers given a searching specification,
+        the search specification are:
+            - Location
+            - Range around location
+            - Subject
+            - Level
+            - Sorting by
+
+    """
+
+    def __init__(self):
+        # Offer Search parser
+        # Used for parsing the search query arguments
+        self.offer_args_parser = reqparse.RequestParser()
+        self.offer_args_parser.add_argument('loc', type=str, required=True, location=('args'))
+        self.offer_args_parser.add_argument('range', type=int, required=True, location=('args',))
+        self.offer_args_parser.add_argument('subject', type=int, required=True, location=('args'))
+        self.offer_args_parser.add_argument('level', type=int, required=True, location=('args'))
+        self.offer_args_parser.add_argument('page', type=int, required=True, location=('args'))
+        self.offer_args_parser.add_argument('sortby', type=str, required=True, location=('args'))
+
+    @marshal_with(offer_fields)
+    def get(self):
+        args = self.offer_args_parser.parse_args()
+        offers = session.query(Offer).filter(Offer.subject_id == args['subject'],
+                                             Offer.level_id == args['level']).all()
+
+        return offers, 200
+
+
 class OfferByIdResource(Resource):
     """
     Class for handling the GET, PUT and DELETE requests for "/offer/<int:id>"
 
-    GET is used for receiving all offers linked to the User model, given the User id
-    POST is used for creating a new offer linked to the User model, given the User id
-    DELETE TODO: not yet implemented
+    DELETE is used for deleting a offer given the offer id. Verificaion is used
+           to permit only deleting offers when they are yours
 
     """
 

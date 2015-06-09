@@ -77,7 +77,7 @@ Retrieving/creating/updating/removing user reviews:
 
 Retrieving offers:
 
-|METHOD   |`/offer?loc=X&range=X&subject_id=X&level=X&p=&sortby=X`|SUCCESS|ERROR|
+|METHOD   |`/offer?loc=X&range=X&subject=X&level=X&page=&sortby=X`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
 |`GET`    |loc:, range:, subject_id:, level:, sortby:|`200`|`204`, `400`|
 
