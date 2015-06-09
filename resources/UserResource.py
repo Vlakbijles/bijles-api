@@ -1,15 +1,19 @@
 # User Resource, for actions on the User model (table)
 
+from functools import wraps
+
 from resources import reqparse
 from resources import abort
 from resources import Resource
 from resources import fields
 from resources import marshal_with
+from resources import request
 
 from db import session
 from models import User, UserMeta
 from resources import main_parser
 
+from authentication import api_validation
 
 user_fields = {
     'id': fields.Integer,
@@ -64,9 +68,12 @@ class UserByIdResource(Resource):
     """
 
     def __init__(self):
-        pass
+        self.method = request.method
+        self.path = request.path
+        self.args = main_parser.parse_args()
 
     @marshal_with(user_fields)
+    @api_validation
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
@@ -75,9 +82,9 @@ class UserByIdResource(Resource):
 
     # TODO: Add verification
     @marshal_with(user_fields)
+    @api_validation
     def put(self, id):
-        args = main_parser.parse_args()
-        user_data_args = user_data_parser.parse_args(args)
+        user_data_args = user_data_parser.parse_args(self.args)
 
         user_data = user_parser.parse_args(user_data_args)
         usermeta_data = usermeta_parser.parse_args(user_data_args)
@@ -97,6 +104,7 @@ class UserByIdResource(Resource):
         return usermeta_data, 201
 
     # TODO: Add verification
+    @api_validation
     def delete(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
@@ -117,17 +125,20 @@ class UserResource(Resource):
     """
 
     def __init__(self):
-        pass
+        self.method = request.method
+        self.path = request.path
+        self.args = main_parser.parse_args()
 
     @marshal_with(user_fields)
+    @api_validation
     def get(self):
         pass
 
     @marshal_with(user_fields)
+    @api_validation
     def post(self):
-        args = main_parser.parse_args()
-        user_data = args['data']['user']
-        user_meta_data = args['data']['user_meta']
+        user_data = self.args['data']['user']
+        user_meta_data = self.args['data']['user_meta']
 
         user = User(email=user_data['email'], password=user_data['password'])
         user.meta = UserMeta(name=user_meta_data['name'],
