@@ -6,7 +6,8 @@ from flask.ext.restful import Api
 app = Flask(__name__)
 api = Api(app)
 
-from resources import UserByIdResource, UserResource, OfferByUserIdResource
+from resources.UserResource import UserByIdResource, UserResource
+from resources.OfferResource import OfferByUserIdResource
 
 # Routes
 # User
