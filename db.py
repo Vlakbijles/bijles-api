@@ -1,13 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
-from config import CONFIG
+from config import config
 
 db_uri = 'mysql://{user}:{password}@{host}/{name}'.format(
-                user=CONFIG['db']['user'],
-                password=CONFIG['db']['password'],
-                host=CONFIG['db']['host'],
-                name=CONFIG['db']['name'])
+                user=config['db']['user'],
+                password=config['db']['password'],
+                host=config['db']['host'],
+                name=config['db']['name'])
 
 Session = sessionmaker(autocommit=False,
                        autoflush=False,

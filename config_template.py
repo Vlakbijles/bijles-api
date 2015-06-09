@@ -1,21 +1,22 @@
-CONFIG = {
+config = {
 
-    # Main Config
-    'main': {
-        'host': "localhost",
-        'port': 5000,
-        'ssl_cert': "ssl.cert",
-        'ssl_key': "ssl.key"
+    "server": {
+        "host": "localhost",
+        "port": 5000,
+        "ssl_cert": "ssl.cert",
+        "ssl_key": "ssl.key"
     },
 
-    # Database Config
-    'db': {
+    "db": {
+        "host": "host",
+        "port": 3306,
+        "user": "user",
+        "password": "password",
+        "name": "db_name"
+    },
 
-        'host': "vlakbijles.nl",
-        'port': 3306,
-        'user': "user",
-        'password': "pass",
-        'name': "name"
+    "api_users": {
+        "api_username": "key",
     }
 
 }
