@@ -15,13 +15,7 @@ Python):
 ```
 import hmac
 from hashlib import
-hash = hmac.new(private_key, utc_timestamp, sha256)
-hash.update(http_uri)                               # HTTP request URI as string
-hash.update(http_method)                            # HTTP method as string
-
-# Data alphabetically sorted by key
-for entry in data:
-    hash.update(entry)
+leg het zometween uit
 ```
 
 **Note: utc_timesmap in hash calculation must be identical to the one in the JSON data**
