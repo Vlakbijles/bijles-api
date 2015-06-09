@@ -5,9 +5,9 @@ from flask.ext.restful import Resource
 from flask.ext.restful import fields
 from flask.ext.restful import marshal_with
 
-import db
-import models
+from db import session
 
+__all__ = ['reqparse', 'abort', 'Resource', 'fields', 'marshal_with', 'session']
 
 # Main parser
 # Used for parsing the default json data fields (api_user, timestamp, data, hash)

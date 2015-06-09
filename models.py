@@ -26,7 +26,7 @@ class User(Base):
 
     # Relationships
     offers = relationship("Offer")
-    meta = relationship("UserMeta", uselist=False)
+    usermeta = relationship("UserMeta", uselist=False)
 
     def __init__(self, email, password):
         self.email = email

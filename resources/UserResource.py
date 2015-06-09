@@ -1,27 +1,19 @@
 # User Resource, for actions on the User model (table)
 
 from functools import wraps
-
-from resources import reqparse
-from resources import abort
-from resources import Resource
-from resources import fields
-from resources import marshal_with
-from resources import request
-
+from resources import *
 from db import session
 from models import User, UserMeta
-from resources import main_parser
 
 from authentication import api_validation
 
 user_fields = {
     'id': fields.Integer,
-    'email': fields.String,
-    'password': fields.String,
-    'verified': fields.Boolean,
-    'join_date': fields.DateTime(),
-    'last_login': fields.DateTime(dt_format='iso8601'),
+    'usermeta.name': fields.String,
+    'usermeta.surname': fields.String,
+    'usermeta.photo_id': fields.String,
+    'usermeta.facebook_token': fields.String,
+    'usermeta.description': fields.String,
 }
 
 usermeta_fields = {
@@ -78,6 +70,7 @@ class UserByIdResource(Resource):
         user = session.query(User).filter(User.id == id).first()
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
+
         return user, 200
 
     # TODO: Add verification
