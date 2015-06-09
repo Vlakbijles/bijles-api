@@ -1,13 +1,16 @@
-from models import User, UserMeta
-from db import session
-
-from flask.ext.restful import reqparse
-from flask.ext.restful import abort
-from flask.ext.restful import Resource
-from flask.ext.restful import fields
-from flask.ext.restful import marshal_with
-
 # User Resource, for actions on the User model (table)
+
+from resources import reqparse
+from resources import abort
+from resources import Resource
+from resources import fields
+from resources import marshal_with
+
+from resources.models import User, UserMeta
+from resources.db import session
+from resources import main_parser
+
+
 user_fields = {
     'id': fields.Integer,
     'email': fields.String,
@@ -24,14 +27,6 @@ usermeta_fields = {
     'level_id': fields.Integer,
 }
 
-
-# Main parser
-# Used for parsing the default json data fields (api_user, timestamp, data, hash)
-main_parser = reqparse.RequestParser()
-main_parser.add_argument('api_user', type=str, required=True, help="api_user")
-main_parser.add_argument('timestamp', type=str, required=True, help="timestamp")
-main_parser.add_argument('data', type=dict, required=True, help="data")
-# main_parser.add_argument('hash', type=str, required=True, help="hash")
 
 # User Data field parser
 # Used for parsing the user and usermeta fields inside the data field
@@ -75,7 +70,7 @@ class UserByIdResource(Resource):
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(404, message="User {} doesn't exist".format(id))
+            abort(404, message="User with id={} doesn't exist".format(id))
         return user, 200
 
     # TODO: Add verification
@@ -90,7 +85,7 @@ class UserByIdResource(Resource):
         # Check if user with id exists
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(404, message="User {} doesn't exist".format(id))
+            abort(404, message="User with id={} doesn't exist".format(id))
 
         if user_data['email']:
             user.email = user_data['email']
@@ -105,7 +100,7 @@ class UserByIdResource(Resource):
     def delete(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(404, message="User {} doesn't exist".format(id))
+            abort(404, message="User with id={} doesn't exist".format(id))
         session.delete(user)
         session.commit()
         return {}, 204
@@ -113,9 +108,9 @@ class UserByIdResource(Resource):
 
 class UserResource(Resource):
     """
-    Class for handling the GET, POST and DELETE requests for "/user"
+    Class for handling the GET, POST requests for "/user"
 
-    GET TODO: not yet implemented
+    GET TODO: not yet implemented, is used for managing your own User model
     POST is used for creating an new User model
     DELETE TODO: not yet implemented
 
