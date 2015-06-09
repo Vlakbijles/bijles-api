@@ -88,6 +88,7 @@ class OfferResource(Resource):
         offers = session.query(Offer).filter(Offer.subject_id == args['subject'],
                                              Offer.level_id == args['level']).all()
 
+
         return offers, 200
 
 

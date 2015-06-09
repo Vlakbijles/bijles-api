@@ -5,7 +5,7 @@ from flask.ext.restful import Resource
 from flask.ext.restful import fields
 from flask.ext.restful import marshal_with
 
-from db import session
+from common.db import session
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal_with', 'session', 'main_parser']
 

@@ -2,10 +2,9 @@
 
 from functools import wraps
 from resources import *
-from db import session
 from models import User, UserMeta
 
-from authentication import api_validation
+from common.authentication import api_validation
 
 user_fields = {
     'id': fields.Integer,
