@@ -7,6 +7,7 @@ from flask.ext.restful import marshal_with
 import db
 import models
 
+
 # Main parser
 # Used for parsing the default json data fields (api_user, timestamp, data, hash)
 main_parser = reqparse.RequestParser()

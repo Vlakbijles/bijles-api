@@ -6,8 +6,8 @@ from resources import Resource
 from resources import fields
 from resources import marshal_with
 
-from resources.models import User, Offer
-from resources.db import session
+from models import User, Offer
+from db import session
 from resources import main_parser
 
 

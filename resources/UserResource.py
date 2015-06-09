@@ -6,8 +6,8 @@ from resources import Resource
 from resources import fields
 from resources import marshal_with
 
-from resources.models import User, UserMeta
-from resources.db import session
+from db import session
+from models import User, UserMeta
 from resources import main_parser
 
 
