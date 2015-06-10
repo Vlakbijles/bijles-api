@@ -109,3 +109,10 @@ class Review(Base):
 
     offer = relationship("Offer", backref="review")
     author = relationship("User", backref="review")
+
+
+class Review(Base):
+    __tablename__ = 'review'
+
+    id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
+
