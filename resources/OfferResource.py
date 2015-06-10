@@ -1,6 +1,7 @@
 # User Resource, for actions on the Offer model which is related to the User model
 
-from resources import *
+from resources import *  # NOQA
+from common.helper import latlon_distance
 from models import User, Offer
 
 
@@ -24,12 +25,12 @@ class OfferByUserIdResource(Resource):
 
     def __init__(self):
         # User Data field parser
-        # Used for parsing the user and usermeta fields inside the data field
+        # Used for parsing the user and user meta fields inside the data field
         self.user_data_parser = reqparse.RequestParser()
         self.user_data_parser.add_argument('offer', type=dict, required=True, location=('data'))
 
         # Usermeta parser
-        # Used for parsing the fields inside the usermeta field
+        # Used for parsing the fields inside the user meta field
         self.offer_parser = reqparse.RequestParser()
         self.offer_parser.add_argument('subject_id', type=str, required=True, location=('offer',))
         self.offer_parser.add_argument('level_id', type=str, required=True, location=('offer',))
@@ -87,7 +88,14 @@ class OfferResource(Resource):
         args = self.offer_args_parser.parse_args()
         offers = session.query(Offer).filter(Offer.subject_id == args['subject'],
                                              Offer.level_id == args['level']).all()
+        loc_lat, loc_lon = map(int, args['loc'].split(','))
+        if not offers:
+            abort(404, message="No offers found".format(id))
 
+        for offer in offers:
+            offer_lat = offer.user.meta.latitude
+            offer_lon = offer.user.meta.longitude
+            print(latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon))
 
         return offers, 200
 

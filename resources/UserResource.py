@@ -1,6 +1,5 @@
 # User Resource, for actions on the User model (table)
 
-from functools import wraps
 from resources import *
 from models import User, UserMeta
 
@@ -8,14 +7,14 @@ from common.authentication import api_validation
 
 user_fields = {
     'id': fields.Integer,
-    'usermeta.name': fields.String,
-    'usermeta.surname': fields.String,
-    'usermeta.photo_id': fields.String,
-    'usermeta.facebook_token': fields.String,
-    'usermeta.description': fields.String,
+    'meta.name': fields.String,
+    'meta.surname': fields.String,
+    'meta.photo_id': fields.String,
+    'meta.facebook_token': fields.String,
+    'meta.description': fields.String,
 }
 
-usermeta_fields = {
+meta_fields = {
     'id': fields.Integer,
     'user_id': fields.Integer,
     'subject_id': fields.Integer,
@@ -24,10 +23,10 @@ usermeta_fields = {
 
 
 # User Data field parser
-# Used for parsing the user and usermeta fields inside the data field
+# Used for parsing the user and user meta fields inside the data field
 user_data_parser = reqparse.RequestParser()
 user_data_parser.add_argument('user', type=dict, required=True, location=('data'))
-user_data_parser.add_argument('usermeta', type=dict, required=True, location=('data'))
+user_data_parser.add_argument('meta', type=dict, required=True, location=('data'))
 
 # User parser
 # Used for parsing the fields inside the user field
@@ -36,7 +35,7 @@ user_parser.add_argument('email', type=str, required=True, help="email", locatio
 user_parser.add_argument('password', type=str, required=True, help="password", location=('user'))
 
 # Usermeta parser
-# Used for parsing the fields inside the usermeta field
+# Used for parsing the fields inside the user meta field
 usermeta_parser = reqparse.RequestParser()
 usermeta_parser.add_argument('name', type=str, help="email", location=('usermeta'))
 usermeta_parser.add_argument('surname', type=str, help="surname", location=('usermeta'))
@@ -72,7 +71,6 @@ class UserByIdResource(Resource):
 
         return user, 200
 
-    # TODO: Add verification
     @marshal_with(user_fields)
     @api_validation
     def put(self, id):
@@ -95,7 +93,6 @@ class UserByIdResource(Resource):
 
         return usermeta_data, 201
 
-    # TODO: Add verification
     @api_validation
     def delete(self, id):
         user = session.query(User).filter(User.id == id).first()
@@ -130,16 +127,16 @@ class UserResource(Resource):
     @api_validation
     def post(self):
         user_data = self.args['data']['user']
-        user_meta_data = self.args['data']['user_meta']
+        usermeta_data = self.args['data']['usermeta']
 
         user = User(email=user_data['email'], password=user_data['password'])
-        user.meta = UserMeta(name=user_meta_data['name'],
-                             surname=user_meta_data['surname'],
-                             postal_code=user_meta_data['postal_code'],
-                             phone=user_meta_data['phone'],
+        user.meta = UserMeta(name=usermeta_data['name'],
+                             surname=usermeta_data['surname'],
+                             postal_code=usermeta_data['postal_code'],
+                             phone=usermeta_data['phone'],
                              photo_id='photo',
                              facebook_token='fb_token',
-                             description=user_meta_data['desc'])
+                             description=usermeta_data['desc'])
         session.add(user)
         session.commit()
         return user, 201

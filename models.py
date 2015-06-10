@@ -2,6 +2,7 @@
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column
+from sqlalchemy import Index
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
@@ -26,7 +27,7 @@ class User(Base):
 
     # Relationships
     offers = relationship("Offer")
-    usermeta = relationship("UserMeta", uselist=False)
+    meta = relationship("UserMeta", uselist=False)
 
     def __init__(self, email, password):
         self.email = email
@@ -41,6 +42,8 @@ class UserMeta(Base):
     name = Column("name", String(64))
     surname = Column("surname", String(64))
     postal_code = Column("postal_code", String(20))
+    latitude = Column("latitude", Integer)
+    longitude = Column("longitude", Integer)
     phone = Column("phone", String(10))
     photo_id = Column("photo_id", String(255))
     facebook_token = Column("facebook_token", String(255))
@@ -55,6 +58,10 @@ class Offer(Base):
     subject_id = Column('subject_id', Integer, ForeignKey("subject.id"))
     level_id = Column('level_id', Integer, ForeignKey("level.id"))
 
+    # Define uniqueness of combination of columsn
+    Index('user_id', 'subject_id', 'level_id', unique=True)
+
+    # Relationships
     subject = relationship("Subject")
     user = relationship("User")
     level = relationship("Level")
