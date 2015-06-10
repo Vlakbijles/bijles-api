@@ -1,20 +1,13 @@
-#!/usr/bin/env python2
-"""
-    models.py, contains classes for declaring the SQLAlchemy models,
-    these need to be synchronised with the SQL database used
+# models.py
+# Contains classes for declaring SQLAlchemy models
 
-    Models used (with their corresponding database table):
-        Class           Database Table
-
-        User        -   user
-        UserMeta    -   user_meta
-        Offer       -   offer
-        Subject     -   subject
-        Level       -   level
-        Review      -   review
-
-"""
-
+# Implemented classes/models with corresponding table in db:
+# User      (user)
+# UserMeta  (user_meta)
+# Offer     (offer)
+# Subject   (subject)
+# Level     (level)
+# Review    (review)
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column
@@ -28,13 +21,13 @@ from sqlalchemy import DateTime
 from sqlalchemy import Text
 from sqlalchemy.ext.declarative import declarative_base
 
+
 Base = declarative_base()
 
 
 class User(Base):
     __tablename__ = "user"
 
-    # Columns
     id = Column('id', Integer, primary_key=True)
     email = Column('email', String(255), unique=True)
     password = Column('password', String(64))
@@ -42,7 +35,6 @@ class User(Base):
     join_date = Column('join_date', DateTime)
     last_login = Column('last_login', DateTime)
 
-    # Relationships
     offers = relationship("Offer")
     meta = relationship("UserMeta", uselist=False)
 
@@ -75,10 +67,9 @@ class Offer(Base):
     subject_id = Column('subject_id', Integer, ForeignKey("subject.id"))
     level_id = Column('level_id', Integer, ForeignKey("level.id"))
 
-    # Define uniqueness of combination of columsn
+    # Define uniqueness of combination of columns
     Index('user_id', 'subject_id', 'level_id', unique=True)
 
-    # Relationships
     subject = relationship("Subject")
     user = relationship("User")
     level = relationship("Level")
