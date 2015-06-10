@@ -19,11 +19,15 @@ class OfferByUserIdResource(Resource):
 
     GET is used for receiving all offers linked to the User model, given the User id
     POST is used for creating a new offer linked to the User model, given the User id
-    DELETE TODO: not yet implemented
 
     """
 
     def __init__(self):
+        # Parse all class-wide used data
+        self.method = request.method
+        self.path = request.full_path
+        self.args = main_parser.parse_args()
+
         # User Data field parser
         # Used for parsing the user and user meta fields inside the data field
         self.user_data_parser = reqparse.RequestParser()
@@ -35,16 +39,16 @@ class OfferByUserIdResource(Resource):
         self.offer_parser.add_argument('subject_id', type=str, required=True, location=('offer',))
         self.offer_parser.add_argument('level_id', type=str, required=True, location=('offer',))
 
+    @api_validation
     @marshal_with(offer_fields)
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         return user.offers, 200
 
-    # TODO: Add verification
+    @api_validation
     @marshal_with(offer_fields)
     def post(self, id):
-        args = main_parser.parse_args()
-        data_args = self.data_parser.parse_args(args)
+        data_args = self.data_parser.parse_args(self.args)
         offer_args = self.offer_parser.parse_args(data_args)
 
         user = session.query(User).filter(User.id == id).first()
@@ -64,15 +68,20 @@ class OfferResource(Resource):
 
     GET is used for receiving all offers given a searching specification,
         the search specification are:
-            - Location
-            - Range around location
-            - Subject
-            - Level
-            - Sorting by
+            - Location, latitude and longitude given in degrees
+            - Range around location, allowed distance to location in meters
+            - Subject, id of the subject
+            - Level, id of the level
+            - Sorting by, spicifies the criteria to sort on
 
     """
 
     def __init__(self):
+        # Parse all class-wide used data
+        self.method = request.method
+        self.full_path = request.full_path
+        self.args = main_parser.parse_args()
+
         # Offer Search parser
         # Used for parsing the search query arguments
         self.offer_args_parser = reqparse.RequestParser()
@@ -83,21 +92,28 @@ class OfferResource(Resource):
         self.offer_args_parser.add_argument('page', type=int, required=True, location=('args'))
         self.offer_args_parser.add_argument('sortby', type=str, required=True, location=('args'))
 
+    @api_validation
     @marshal_with(offer_fields)
     def get(self):
         args = self.offer_args_parser.parse_args()
         offers = session.query(Offer).filter(Offer.subject_id == args['subject'],
                                              Offer.level_id == args['level']).all()
-        loc_lat, loc_lon = map(int, args['loc'].split(','))
-        if not offers:
-            abort(404, message="No offers found".format(id))
+        print(offers)
+
+        loc_lat, loc_lon = map(float, args['loc'].split(','))
+
+        result_offers = []
 
         for offer in offers:
-            offer_lat = offer.user.meta.latitude
-            offer_lon = offer.user.meta.longitude
-            print(latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon))
+            offer_lat = float(offer.user.meta.latitude)
+            offer_lon = float(offer.user.meta.longitude)
+            if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < args['range']:
+                result_offers.append(offer)
 
-        return offers, 200
+        if not result_offers:
+            abort(404, message="No offers found")
+
+        return result_offers, 200
 
 
 class OfferByIdResource(Resource):
@@ -110,9 +126,12 @@ class OfferByIdResource(Resource):
     """
 
     def __init__(self):
-        pass
+        # Parse all class-wide used data
+        self.method = request.method
+        self.full_path = request.full_path
+        self.args = main_parser.parse_args()
 
-    # TODO: Add verification
+    @api_validation
     @marshal_with(offer_fields)
     def delete(self, id):
         offer = session.query(Offer).filter(Offer.id == id).first()

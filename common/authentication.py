@@ -7,6 +7,8 @@ from functools import wraps
 from hashlib import sha256
 from config import api_users
 from resources import abort
+from resources import abort
+
 
 def api_validation(f):
     @wraps(f)
@@ -28,7 +30,7 @@ def api_validation(f):
                 data_json = json.dumps(data_dict, sort_keys=True)
 
                 reconstructed_hash = hmac.new(str(key), data_json, sha256)
-                reconstructed_hash.update(args[0].path)
+                reconstructed_hash.update(args[0].full_path)
                 reconstructed_hash.update(args[0].method)
 
                 if reconstructed_hash.hexdigest() == provided_hash:

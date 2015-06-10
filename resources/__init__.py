@@ -6,8 +6,11 @@ from flask.ext.restful import fields
 from flask.ext.restful import marshal_with
 
 from common.db import session
+from common.authentication import api_validation
 
-__all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal_with', 'session', 'main_parser']
+
+__all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal_with', 'session',
+           'main_parser', 'api_validation']
 
 # Main parser
 # Used for parsing the default json data fields (api_user, timestamp, data, hash)

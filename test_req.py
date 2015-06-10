@@ -12,9 +12,13 @@ conn = httplib.HTTPConnection("127.0.0.1:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
-uri = "/user/1"
-method = "PUT"
+lat = 52.6759082590322
+lon = 4.7038764017095
+uri = "/offer?loc={lat},{lon}&range=10000&subject=200&level=2&page=2&sortby=apj".format(lat=lat, lon=lon)
+# uri = "/user/1"
+method = "GET"
 utc_time = str(int(time.mktime(datetime.datetime.utcnow().timetuple())))
+
 
 data_old = {
 
@@ -40,6 +44,8 @@ data_old = {
     }
 
 
+
+
 }
 
 data = {
@@ -50,10 +56,10 @@ data = {
 
     "data": {
 
-                "offer": {
-                    "subject_id": 1,
-                    "level_id": 2,
-                },
+                # "offer": {
+                #     "subject_id": 1,
+                #     "level_id": 2,
+                # },
 
     }
 
@@ -70,7 +76,7 @@ hash.update(method)
 
 # Append hash
 data["hash"] = hash.hexdigest()
-data_json = json.dumps(data_old, sort_keys=True)
+data_json = json.dumps(data, sort_keys=True)
 
 headers = {"Content-Type": "application/json"}
 conn.request(method, uri, data_json, headers)

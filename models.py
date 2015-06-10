@@ -5,6 +5,7 @@ from sqlalchemy import Column
 from sqlalchemy import Index
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy.dialects.mysql import DOUBLE
 from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
@@ -42,8 +43,8 @@ class UserMeta(Base):
     name = Column("name", String(64))
     surname = Column("surname", String(64))
     postal_code = Column("postal_code", String(20))
-    latitude = Column("latitude", Integer)
-    longitude = Column("longitude", Integer)
+    latitude = Column("latitude", DOUBLE)
+    longitude = Column("longitude", DOUBLE)
     phone = Column("phone", String(10))
     photo_id = Column("photo_id", String(255))
     facebook_token = Column("facebook_token", String(255))

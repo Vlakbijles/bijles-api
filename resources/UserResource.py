@@ -1,9 +1,8 @@
 # User Resource, for actions on the User model (table)
 
-from resources import *
+from resources import *  # NOQA
 from models import User, UserMeta
 
-from common.authentication import api_validation
 
 user_fields = {
     'id': fields.Integer,
@@ -59,11 +58,11 @@ class UserByIdResource(Resource):
 
     def __init__(self):
         self.method = request.method
-        self.path = request.path
+        self.full_path = request.full_path
         self.args = main_parser.parse_args()
 
-    @marshal_with(user_fields)
     @api_validation
+    @marshal_with(user_fields)
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
@@ -71,11 +70,11 @@ class UserByIdResource(Resource):
 
         return user, 200
 
-    @marshal_with(user_fields)
     @api_validation
+    @marshal_with(user_fields)
     def put(self, id):
+        # Parse from the "user" field and "usermeta" field
         user_data_args = user_data_parser.parse_args(self.args)
-
         user_data = user_parser.parse_args(user_data_args)
         usermeta_data = usermeta_parser.parse_args(user_data_args)
 
@@ -98,6 +97,7 @@ class UserByIdResource(Resource):
         user = session.query(User).filter(User.id == id).first()
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
+
         session.delete(user)
         session.commit()
         return {}, 204
@@ -115,16 +115,16 @@ class UserResource(Resource):
 
     def __init__(self):
         self.method = request.method
-        self.path = request.path
+        self.full_path = request.full_path
         self.args = main_parser.parse_args()
 
-    @marshal_with(user_fields)
     @api_validation
+    @marshal_with(user_fields)
     def get(self):
         pass
 
-    @marshal_with(user_fields)
     @api_validation
+    @marshal_with(user_fields)
     def post(self):
         user_data = self.args['data']['user']
         usermeta_data = self.args['data']['usermeta']
