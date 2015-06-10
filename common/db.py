@@ -1,3 +1,6 @@
+# db.py
+# Sets up database connection, includes SQLAlchemy boilerplate
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
