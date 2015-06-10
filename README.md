@@ -33,7 +33,7 @@ import json
 from hashlib import sha256
 
 api_key = "abcdefghijklmnopqrstuvwxyz123456"
-uri = "/example/1"
+uri = "/example/1" # Requested path in full, including possible query string
 method = "POST"
 request = {
               "api_user": "example_api_user",
