@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+"""
+__init__.py, contain all imports and objects used by all resources
+
+note: when adding an import, add it to the __all__ variable so other modules can use them.
+
+"""
+
 from flask.ext.restful import reqparse
 from flask.ext.restful import abort
 from flask.ext.restful import request

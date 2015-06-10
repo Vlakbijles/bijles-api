@@ -1,4 +1,15 @@
-# User Resource, for actions on the Offer model which is related to the User model
+#!/usr/bin/env python
+"""
+OfferResource.py, for actions on the Offer model which is related to the User model.
+this file is a module and has no use as stand-alone file
+
+Offer Resouces contains the following classes:
+- OfferByUserIdResource, acts on Offers based on the User id
+- OfferResource, acts on all Offers (e.g. searching)
+- OfferByIdResource, acts on a Offer based on the Offer id
+
+"""
+
 
 from resources import *  # NOQA
 from common.helper import latlon_distance
@@ -15,10 +26,11 @@ offer_fields = {
 
 class OfferByUserIdResource(Resource):
     """
-    Class for handling the GET, PUT and DELETE requests for "/user/<int:id>/offer"
+    Class for handling the GET and PUT requests for "/user/<int:id>/offer",
+    which acts on offer based on their corresponding User id
 
-    GET is used for receiving all offers linked to the User model, given the User id
-    POST is used for creating a new offer linked to the User model, given the User id
+    GET is used for receiving all offers linked to the User model given the User id
+    POST is used for creating a new offer linked to the User model given the User id
 
     """
 
@@ -98,7 +110,6 @@ class OfferResource(Resource):
         args = self.offer_args_parser.parse_args()
         offers = session.query(Offer).filter(Offer.subject_id == args['subject'],
                                              Offer.level_id == args['level']).all()
-        print(offers)
 
         loc_lat, loc_lon = map(float, args['loc'].split(','))
 
@@ -118,7 +129,8 @@ class OfferResource(Resource):
 
 class OfferByIdResource(Resource):
     """
-    Class for handling the GET, PUT and DELETE requests for "/offer/<int:id>"
+    Class for handling the GET, PUT and DELETE requests for "/offer/<int:id>",
+    acts on offers based on the Offer id
 
     DELETE is used for deleting a offer given the offer id. Verificaion is used
            to permit only deleting offers when they are yours

@@ -1,4 +1,20 @@
 #!/usr/bin/env python2
+"""
+    models.py, contains classes for declaring the SQLAlchemy models,
+    these need to be synchronised with the SQL database used
+
+    Models used (with their corresponding database table):
+        Class           Database Table
+
+        User        -   user
+        UserMeta    -   user_meta
+        Offer       -   offer
+        Subject     -   subject
+        Level       -   level
+        Review      -   review
+
+"""
+
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column

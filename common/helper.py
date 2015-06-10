@@ -1,3 +1,10 @@
+#!/usr/bin/env python2
+"""
+    helper.py, contains helper functions
+
+"""
+
+
 import numpy as np
 
 
@@ -21,10 +28,3 @@ def latlon_distance(lat1, lon1, lat2, lon2):
     intermediateResult = 2 * np.arctan2(np.sqrt(a), np.sqrt(1-a))
     distance = radius * intermediateResult
     return distance
-
-
-if __name__ == '__main__':
-    # print latlon_distance(51.8406674630333, 5.8606943459950, 51.8383746106916, 5.8603704063373)
-    for _ in range(100000):
-        print latlon_distance(51.8405505, 5.8605194, 51.7929038, 5.8495331)
-    # print latlon_distance(51, 5, 41, -75)

@@ -1,4 +1,10 @@
 #!/usr/bin/env python2
+"""
+    test_req.py, used for testing request to the API server
+    The private key needs to be added to your *local* config file
+
+"""
+
 
 import httplib
 import json
@@ -15,59 +21,38 @@ private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
 lat = 52.6759082590322
 lon = 4.7038764017095
 uri = "/offer?loc={lat},{lon}&range=10000&subject=200&level=2&page=2&sortby=apj".format(lat=lat, lon=lon)
-# uri = "/user/1"
 method = "GET"
 utc_time = str(int(time.mktime(datetime.datetime.utcnow().timetuple())))
 
 
-data_old = {
-
-    "api_user": api_user,
-
-    "timestamp": utc_time,
-
-    "data": {
-
-                "user": {
-                    "email": "tenk",
-                    "password": "sdads",
-                },
-
-                "usermeta": {
-                    "name": "asdjq",
-                    "surname": "asdpwq",
-                    "postal_code": "peqja",
-                    "phone": "asdqp23r",
-                    "desc": "posadwu",
-                }
-
-    }
-
-
-
-
-}
-
 data = {
-
     "api_user": api_user,
-
     "timestamp": utc_time,
-
     "data": {
-
+                # "user": {
+                #     "email": "tenk",
+                #     "password": "sdads",
+                # },
+                #
+                # "usermeta": {
+                #     "name": "asdjq",
+                #     "surname": "asdpwq",
+                #     "postal_code": "peqja",
+                #     "phone": "asdqp23r",
+                #     "desc": "posadwu",
+                # }
+                #
                 # "offer": {
                 #     "subject_id": 1,
                 #     "level_id": 2,
                 # },
 
-    }
-
-
+    },
 }
 
+
 # Convert data to alphabetically sorted json string
-data_json = json.dumps(data, sort_keys=True)
+data_json = json.dumps(data, sort_keys=True, separators=(",", ":"))
 
 # Generate hash
 hash = hmac.new(private_key, data_json, sha256)
@@ -82,9 +67,9 @@ headers = {"Content-Type": "application/json"}
 conn.request(method, uri, data_json, headers)
 res = conn.getresponse()
 
-print hash.hexdigest()
+print(hash.hexdigest())
 
 
-print res.status, res.reason
+print(res.status, res.reason)
 data = res.read()
-print data
+print(data)

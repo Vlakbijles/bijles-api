@@ -1,4 +1,14 @@
-# User Resource, for actions on the User model (table)
+#!/usr/bin/env python
+"""
+UserResource.py, for actions on the User model,
+this file is a module and has no use as stand-alone file
+
+UserResource contains the following classes:
+- UserByIdResource, acts on the User model based on the User id
+- UserResource, for creating a new User model and modifying the logged in User model
+
+"""
+
 
 from resources import *  # NOQA
 from models import User, UserMeta
@@ -107,9 +117,8 @@ class UserResource(Resource):
     """
     Class for handling the GET, POST requests for "/user"
 
-    GET TODO: not yet implemented, is used for managing your own User model
+    GET not yet implemented, is used for managing the logged in User model
     POST is used for creating an new User model
-    DELETE TODO: not yet implemented
 
     """
 
@@ -120,6 +129,7 @@ class UserResource(Resource):
 
     @api_validation
     @marshal_with(user_fields)
+    # TODO: not yet implemented
     def get(self):
         pass
 
