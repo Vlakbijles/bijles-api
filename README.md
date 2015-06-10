@@ -5,14 +5,13 @@ Requirements:
     - flask-restful
     - sqlalchemy
 
-API Protocol
----------------------------------
+Formatting requests
+-------------------
 Every API client has a unique alphanumerical username and a private 128-bit key
 (represented as a string in hexadecimal) known to the API client and server.
 API requests are (mostly) RESTful HTTP requests validated using HMAC (with
 SHA256 encryption).
 
-###Formatting requests
 First set up the following JSON object (all values **_must_** be strings):
 ```javascript
 {
@@ -105,7 +104,8 @@ Content-type: application/json
 }
 ```
 
-### Available requests
+Available requests
+-------------------
 Creating users:
 
 |METHOD   |`/user`|SUCCESS|ERROR|
