@@ -1,10 +1,5 @@
-#!/usr/bin/env python
-"""
-authentication.py, used for API-authentication based hmac (using sha256),
-used by resources
-
-"""
-
+# authentication.py
+# Function for validating API requests, to be used as a decorator function
 
 import hmac
 import json
@@ -19,16 +14,13 @@ from resources import abort
 
 def api_validation(f):
     """
-    Creates a hash and compares it with the hash that was sent,
-    if these are the same the API created a correct hash and thus the API is valid.
-    For the creation of the hash the following data is used:
-        - Request data
-        - URI path (including the query)
-        - HTTP method
-        - API secret key
-
-    Use this function as a python decorator
-
+    Regenerates hash from request using the private key associated with
+    value in the api_user field, the request JSON data, the full HTTP path
+    (including a possible query string) and the HTTP request method.
+    Hashes are calculated with the HMAC module (using SHA256 encryption),
+    comparison of the hash in the original request to the generated one
+    can validate the API request.
+    
     """
 
     @wraps(f)
@@ -37,8 +29,8 @@ def api_validation(f):
         data_dict = args[0].args
         utc_now = int(time.mktime(datetime.datetime.utcnow().timetuple()))
 
-        # Ignore requests older than 40 seconds
-        if utc_now - int(data_dict['timestamp']) < 40:
+        # Ignore requests older than 30 seconds
+        if utc_now - int(data_dict['timestamp']) < 30:
 
             if data_dict["api_user"] in api_users:
                 api_key = api_users[data_dict["api_user"]]
