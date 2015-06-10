@@ -25,7 +25,8 @@ def api_validation(f):
                 # original hash
                 provided_hash = data_dict["hash"]
                 del data_dict["hash"]
-                data_json = json.dumps(data_dict, sort_keys=True)
+                data_json = json.dumps(data_dict, sort_keys=True, separators=(",", ":"))
+                print data_json
 
                 reconstructed_hash = hmac.new(str(key), data_json, sha256)
                 reconstructed_hash.update(args[0].path)
