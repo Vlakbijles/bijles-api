@@ -14,7 +14,7 @@ SHA256 encryption).
 
 ###Formatting requests
 First set up the following JSON object (all values **_must_** be strings):
-```
+```javascript
 {
     "api_user": "your_api_username",
     "data": {
@@ -28,7 +28,7 @@ not need to send over data it can be left empty (that is `"data": {}`). What
 follows is an example (in Python) demonstrating which values and in what order
 they should be used to calculate the hash:
 
-```
+```python
 import hmac
 import json
 from hashlib import sha256
