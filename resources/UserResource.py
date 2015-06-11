@@ -11,7 +11,7 @@ UserResource contains the following classes:
 
 
 from resources import *  # NOQA
-from models import User, UserMeta
+from models import User, UserMeta, Postcode
 
 
 user_fields = {
@@ -46,13 +46,13 @@ user_parser.add_argument('password', type=str, required=True, help="password", l
 # Usermeta parser
 # Used for parsing the fields inside the user meta field
 usermeta_parser = reqparse.RequestParser()
-usermeta_parser.add_argument('name', type=str, help="email", location=('usermeta'))
-usermeta_parser.add_argument('surname', type=str, help="surname", location=('usermeta'))
-usermeta_parser.add_argument('postal_code', type=str, help="postal_code", location=('usermeta'))
-usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
-usermeta_parser.add_argument('photo_id', type=str, help="photo_id", location=('usermeta'))
-usermeta_parser.add_argument('facebook_token', type=str, help="facebook_token", location=('usermeta'))
-usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
+usermeta_parser.add_argument('name', type=str, required=True, help="email", location=('usermeta'))
+usermeta_parser.add_argument('surname', type=str, required=True, help="surname", location=('usermeta'))
+usermeta_parser.add_argument('postcode', type=str, required=True, help="postcode", location=('usermeta'))
+usermeta_parser.add_argument('phone', type=str, required=True, help="phone", location=('usermeta'))
+usermeta_parser.add_argument('photo_id', type=str, required=True, help="photo_id", location=('usermeta'))
+usermeta_parser.add_argument('facebook_token', required=True, type=str, help="facebook_token", location=('usermeta'))
+usermeta_parser.add_argument('description', required=True, type=str, help="description", location=('usermeta'))
 
 
 class UserByIdResource(Resource):
@@ -140,9 +140,16 @@ class UserResource(Resource):
         usermeta_data = self.args['data']['usermeta']
 
         user = User(email=user_data['email'], password=user_data['password'])
+        postcode = session.query(Postcode).filter(Postcode.postcode == usermeta_data['postcode']).first()
+        if not user:
+            abort(400, message="Postcode ({}) not found".format(usermeta_data['postcode']))
+
+
         user.meta = UserMeta(name=usermeta_data['name'],
                              surname=usermeta_data['surname'],
-                             postal_code=usermeta_data['postal_code'],
+                             postcode=usermeta_data['postcode'],
+                             latitude=postcode.lat,
+                             longitude=postcode.lon,
                              phone=usermeta_data['phone'],
                              photo_id='photo',
                              facebook_token='fb_token',

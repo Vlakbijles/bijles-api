@@ -1,13 +1,17 @@
-# models.py
-# Contains classes for declaring SQLAlchemy models
+#!/usr/bin/env python2
+"""
+    models.py
+    Contains classes for declaring SQLAlchemy models
 
-# Implemented classes/models with corresponding table in db:
-# User      (user)
-# UserMeta  (user_meta)
-# Offer     (offer)
-# Subject   (subject)
-# Level     (level)
-# Review    (review)
+    Implemented classes/models with corresponding table in db:
+    User      (user)
+    UserMeta  (user_meta)
+    Offer     (offer)
+    Subject   (subject)
+    Level     (level)
+    Review    (review)
+"""
+
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column
@@ -50,7 +54,7 @@ class UserMeta(Base):
     id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
     name = Column("name", String(64))
     surname = Column("surname", String(64))
-    postal_code = Column("postal_code", String(20))
+    postcode = Column("postal_code", String(20))
     latitude = Column("latitude", DOUBLE)
     longitude = Column("longitude", DOUBLE)
     phone = Column("phone", String(10))
@@ -92,18 +96,20 @@ class Level(Base):
 class Review(Base):
     __tablename__ = 'review'
 
-    id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
-    author_id = Column(Integer, ForeignKey("user.id"))
-    rating = Column(Integer)
-    desc = Column(Text)
-    create_date = Column(DateTime)
+    id = Column('id', Integer, ForeignKey("offer.id"), primary_key=True)
+    author_id = Column('author_id', Integer, ForeignKey("user.id"))
+    rating = Column('rating', Integer)
+    desc = Column('desc', Text)
+    create_date = Column('create_data', DateTime)
 
-    offer = relationship("Offer", backref="review")
-    author = relationship("User", backref="review")
+    offer = relationship('Offer', backref='review')
+    author = relationship('User', backref='review')
 
 
-class Review(Base):
-    __tablename__ = 'review'
+class Postcode(Base):
+    __tablename__ = 'postcode'
 
-    id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
-
+    id = Column('id', Integer, primary_key=True)
+    postcode = Column('postcode', String(7))
+    lat = Column('lat', DOUBLE)
+    lon = Column('lon', DOUBLE)

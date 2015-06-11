@@ -20,7 +20,7 @@ def api_validation(f):
     Hashes are calculated with the HMAC module (using SHA256 encryption),
     comparison of the hash in the original request to the generated one
     can validate the API request.
-    
+
     """
 
     @wraps(f)
