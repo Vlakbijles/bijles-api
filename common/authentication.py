@@ -28,8 +28,8 @@ def api_validation(f):
         data_dict = args[0].args
         utc_now = int(time.time())
 
-        # Ignore requests older than 30 seconds
-        if utc_now - int(data_dict['timestamp']) < 30:
+        # Ignore requests older than 600 seconds
+        if utc_now - int(data_dict['timestamp']) < 600:
 
             if data_dict["api_user"] in api_users:
                 api_key = api_users[data_dict["api_user"]]
