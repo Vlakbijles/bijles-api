@@ -11,7 +11,7 @@
 
 
 from resources import *  # NOQA
-from models import User, UserMeta, Postcode
+from models import User, UserMeta, Zipcode
 
 
 user_fields = {
@@ -48,7 +48,7 @@ user_parser.add_argument('password', type=str, required=True, help="password", l
 usermeta_parser = reqparse.RequestParser()
 usermeta_parser.add_argument('name', type=str, required=True, help="email", location=('usermeta'))
 usermeta_parser.add_argument('surname', type=str, required=True, help="surname", location=('usermeta'))
-usermeta_parser.add_argument('postcode', type=str, required=True, help="postcode", location=('usermeta'))
+usermeta_parser.add_argument('zipcode', type=str, required=True, help="zipcode", location=('usermeta'))
 usermeta_parser.add_argument('phone', type=str, required=True, help="phone", location=('usermeta'))
 usermeta_parser.add_argument('photo_id', type=str, required=True, help="photo_id", location=('usermeta'))
 usermeta_parser.add_argument('facebook_token', required=True, type=str, help="facebook_token", location=('usermeta'))
@@ -140,16 +140,16 @@ class UserResource(Resource):
         usermeta_data = self.args['data']['usermeta']
 
         user = User(email=user_data['email'], password=user_data['password'])
-        postcode = session.query(Postcode).filter(Postcode.postcode == usermeta_data['postcode']).first()
+        zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
         if not user:
-            abort(400, message="Postcode ({}) not found".format(usermeta_data['postcode']))
+            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
 
 
         user.meta = UserMeta(name=usermeta_data['name'],
                              surname=usermeta_data['surname'],
-                             postcode=usermeta_data['postcode'],
-                             latitude=postcode.lat,
-                             longitude=postcode.lon,
+                             zipcode=usermeta_data['zipcode'],
+                             latitude=zipcode.lat,
+                             longitude=zipcode.lon,
                              phone=usermeta_data['phone'],
                              photo_id='photo',
                              facebook_token='fb_token',

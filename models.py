@@ -54,7 +54,7 @@ class UserMeta(Base):
     id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
     name = Column("name", String(64))
     surname = Column("surname", String(64))
-    postcode = Column("postal_code", String(20))
+    zipcode = Column("zipcode", String(20))
     latitude = Column("latitude", DOUBLE)
     longitude = Column("longitude", DOUBLE)
     phone = Column("phone", String(10))
@@ -106,10 +106,10 @@ class Review(Base):
     author = relationship('User', backref='review')
 
 
-class Postcode(Base):
-    __tablename__ = 'postcode'
+class Zipcode(Base):
+    __tablename__ = 'zipcode'
 
     id = Column('id', Integer, primary_key=True)
-    postcode = Column('postcode', String(7))
+    zipcode = Column('zipcode', String(7))
     lat = Column('lat', DOUBLE)
     lon = Column('lon', DOUBLE)
