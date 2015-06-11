@@ -37,7 +37,7 @@ class OfferByUserIdResource(Resource):
     def __init__(self):
         # Parse all class-wide used data
         self.method = request.method
-        self.path = request.full_path
+        self.full_path = request.full_path
         self.args = main_parser.parse_args()
 
         # User Data field parser
