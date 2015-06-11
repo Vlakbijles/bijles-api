@@ -14,15 +14,15 @@ import time
 
 from hashlib import sha256
 
-conn = httplib.HTTPConnection("127.0.0.1:5000")
+conn = httplib.HTTPConnection("vlakbijles.nl:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
 lat = 52.6759082590322
 lon = 4.7038764017095
 # uri = "/offer?loc={lat},{lon}&range=10000&subject=200&level=2&page=2&sortby=apj".format(lat=lat, lon=lon)
-uri = "/user?"
-method = "POST"
+uri = "/user/1"
+method = "GET"
 utc_time = str(int(time.mktime(datetime.datetime.utcnow().timetuple())))
 
 
@@ -30,18 +30,18 @@ data = {
     "api_user": api_user,
     "timestamp": utc_time,
     "data": {
-        "user": {
-            "email": "tenk",
-            "password": "sdads",
-        },
-
-        "usermeta": {
-            "name": "asdjq",
-            "surname": "asdpwq",
-            "postcode": "1078MJ",
-            "phone": "asdqp23r",
-            "desc": "posadwu",
-        }
+        # "user": {
+        #     "email": "tenk",
+        #     "password": "sdads",
+        # },
+        #
+        # "usermeta": {
+        #     "name": "asdjq",
+        #     "surname": "asdpwq",
+        #     "postcode": "1078MJ",
+        #     "phone": "asdqp23r",
+        #     "desc": "posadwu",
+        # }
     },
 }
 
@@ -57,12 +57,9 @@ hash.update(method)
 # Append hash
 data["hash"] = hash.hexdigest()
 data_json = json.dumps(data, sort_keys=True)
-
 headers = {"Content-Type": "application/json"}
 conn.request(method, uri, data_json, headers)
 res = conn.getresponse()
-
-
 
 print(res.status, res.reason)
 data = res.read()

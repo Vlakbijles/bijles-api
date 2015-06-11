@@ -4,7 +4,6 @@
 import hmac
 import json
 import time
-import datetime
 
 from functools import wraps
 from hashlib import sha256
@@ -27,7 +26,7 @@ def api_validation(f):
     def wrapper(*args, **kwargs):
 
         data_dict = args[0].args
-        utc_now = int(time.mktime(datetime.datetime.utcnow().timetuple()))
+        utc_now = int(time.time())
 
         # Ignore requests older than 30 seconds
         if utc_now - int(data_dict['timestamp']) < 30:

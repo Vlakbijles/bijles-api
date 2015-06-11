@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """
-UserResource.py, for actions on the User model,
-this file is a module and has no use as stand-alone file
+    UserResource.py, for actions on the User model,
+    this file is a module and has no use as stand-alone file
 
-UserResource contains the following classes:
-- UserByIdResource, acts on the User model based on the User id
-- UserResource, for creating a new User model and modifying the logged in User model
+    UserResource contains the following classes:
+    - UserByIdResource, acts on the User model based on the User id
+    - UserResource, for creating a new User model and modifying the logged in User model
 
 """
 
