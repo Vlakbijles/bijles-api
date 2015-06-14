@@ -129,8 +129,17 @@ class UserResource(Resource):
 
     @api_validation
     @authentication(1)
+    @marshal_with(user_fields)
     def get(self):
-        return "henk", 200
+        loggedin_data_args = loggedin_data_parser.parse_args(self.args)
+        loggedin_data = loggedin_parser.parse_args(loggedin_data_args)
+
+        user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
+        if not user:
+            abort(404, message="User with id={} doesn't exist".format(id))
+
+        return user, 200
+
 
     @api_validation
     @marshal_with(user_fields)

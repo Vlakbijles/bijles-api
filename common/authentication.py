@@ -10,12 +10,11 @@ import time
 from hashlib import sha256
 from os import urandom
 from functools import wraps
+from flask.ext.restful import reqparse
+from flask.ext.restful import abort
 
-from resources import reqparse
-from resources import abort
-from resources import session
 from models import Token
-
+from common.db import session
 
 loggedin_data_parser = reqparse.RequestParser()
 loggedin_data_parser.add_argument('loggedin', type=dict, required=True, help="loggedin", location=('data'))
