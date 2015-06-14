@@ -1,9 +1,16 @@
-# authentication.py
-# Function for authentication logged in users
+#!/usr/bin/env python2
+"""
+    authentication.py
+    Function for authentication logged in users
 
+"""
+
+import hmac
 import time
-
+from hashlib import sha256
+from os import urandom
 from functools import wraps
+
 from resources import reqparse
 from resources import abort
 from resources import session
@@ -46,3 +53,18 @@ def authentication(au_type):
 
         return wrapper
     return authentication_inner
+
+
+def create_token(user_id):
+    """
+    Generate new token based on user id, time, and random number
+
+    """
+    utc_now = int(time.time())
+    exp_date = utc_now + 604800  # 7 days
+
+    token_hash = hmac.new(str(user_id), str(exp_date), sha256)
+    token_hash.update(urandom(64))
+    token_digest = token_hash.hexdigest()
+
+    return token_digest, exp_date

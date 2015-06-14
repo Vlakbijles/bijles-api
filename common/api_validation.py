@@ -1,5 +1,9 @@
-# api_validation.py
-# Function for validating API requests, to be used as a decorator function
+#!/usr/bin/env python2
+"""
+    api_validation.py
+    Function for validating API requests, to be used as a decorator function
+
+"""
 
 import hmac
 import json

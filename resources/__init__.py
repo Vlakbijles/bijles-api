@@ -15,11 +15,11 @@ from flask.ext.restful import marshal_with
 
 from common.db import session
 from common.api_validation import api_validation
-from common.authentication import authentication
+from common.authentication import authentication, create_token
 
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal_with', 'session',
-           'main_parser', 'api_validation', 'authentication']
+           'main_parser', 'api_validation', 'authentication', 'create_token']
 
 # Main parser
 # Used for parsing the default json data fields (api_user, timestamp, data, hash)

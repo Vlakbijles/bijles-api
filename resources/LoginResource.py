@@ -1,27 +1,21 @@
 #!/usr/bin/env python
 """
-    UserResource.py, for actions on the User model,
+    LoginResource.py, for actions regarding logging in
     this file is a module and has no use as stand-alone file
 
-    UserResource contains the following classes:
-    - UserByIdResource, acts on the User model based on the User id
-    - UserResource, for creating a new User model and modifying the logged in User model
+    LoginResource contains the following classes:
+    - LoginResource, contains POST method for logging in
 
 """
 
 
 from resources import *  # NOQA
 from models import User, Token
-import hmac
-import time
-
-from os import urandom
-from hashlib import sha256
 
 
 login_fields = {
-    'id': fields.Integer,
-    'token': fields.String,
+    'user_id': fields.Integer,
+    'token_hash': fields.String,
 }
 
 
@@ -62,35 +56,10 @@ class LoginResource(Resource):
         elif user.password != user_data['password']:
             abort(401, message="Wrong password for email{}".format(user_data['email']))
 
-        token = create_token(user.id)
+        token_hash, exp_date = create_token(user.id)
 
-        return {'id': user.id, 'token': token}, 200
+        token = Token(user_id=user.id, hash=token_hash, exp_date=exp_date)
+        session.add(token)
+        session.commit()
 
-
-def create_token(user_id):
-    """
-    Generate new token, add to db
-
-    """
-    utc_now = int(time.time())
-    expiration_date = utc_now + 604800  # 7 days
-
-    token_hash = hmac.new(str(user_id), str(expiration_date), sha256)
-    token_hash.update(urandom(64))
-    token_digest = token_hash.hexdigest()
-
-    token = Token(id=user_id, hash=token_digest, exp_date=expiration_date)
-    session.add(token)
-    session.commit()
-
-    return token_digest
-
-
-#
-#
-# class Login(Resource):
-#
-#     def post(self):
-#         if verify_request(request.path, request.method, request.data):
-#             # TODO: extract and verify data from post data, perform login, return token
-#             return True
+        return {'user_id': user.id, 'token_hash': token_hash}, 200

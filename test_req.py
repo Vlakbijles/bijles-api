@@ -35,8 +35,8 @@ data = {
             "password": "edmin",
         },
         "loggedin": {
-            "user_id": 2,
-            "token_hash": "b6936744aa1b2be96c4457c5228bb75e2bda7a72355e9030c70c7cd0ef827604",
+            "user_id": 1,
+            "token_hash": "621aabbdb6f36802c79eae7d0436abbfaa2dfb4de2285f114cf44816cd9e44b2",
         },
         #
         # "usermeta": {
