@@ -25,7 +25,6 @@ from sqlalchemy import DateTime
 from sqlalchemy import Text
 from sqlalchemy.ext.declarative import declarative_base
 
-
 Base = declarative_base()
 
 
@@ -41,6 +40,7 @@ class User(Base):
 
     offers = relationship("Offer")
     meta = relationship("UserMeta", uselist=False)
+    token = relationship("Token")
 
     def __init__(self, email, password):
         self.email = email
@@ -113,3 +113,11 @@ class Zipcode(Base):
     zipcode = Column('zipcode', String(7))
     lat = Column('lat', DOUBLE)
     lon = Column('lon', DOUBLE)
+
+
+class Token(Base):
+    __tablename__ = 'token'
+
+    user_id = Column('user_id', Integer, ForeignKey("user.id"), primary_key=True)
+    hash = Column('hash', String(255), unique=True, primary_key=True)
+    exp_date = Column('exp_date', Integer, primary_key=True)

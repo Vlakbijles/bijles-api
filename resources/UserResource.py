@@ -128,10 +128,9 @@ class UserResource(Resource):
         self.args = main_parser.parse_args()
 
     @api_validation
-    @marshal_with(user_fields)
-    # TODO: not yet implemented
+    @authentication(1)
     def get(self):
-        pass
+        return "henk", 200
 
     @api_validation
     @marshal_with(user_fields)
@@ -143,7 +142,6 @@ class UserResource(Resource):
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
         if not user:
             abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
-
 
         user.meta = UserMeta(name=usermeta_data['name'],
                              surname=usermeta_data['surname'],

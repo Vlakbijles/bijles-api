@@ -9,31 +9,35 @@
 import httplib
 import json
 import hmac
-import datetime
 import time
 
 from hashlib import sha256
 
-conn = httplib.HTTPConnection("vlakbijles.nl:5000")
+conn = httplib.HTTPConnection("localhost:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
 lat = 52.6759082590322
 lon = 4.7038764017095
 # uri = "/offer?loc={lat},{lon}&range=10000&subject=200&level=2&page=2&sortby=apj".format(lat=lat, lon=lon)
-uri = "/user/1"
+# uri = "/user/1?"
+uri = "/user?"
 method = "GET"
-utc_time = str(int(time.mktime(datetime.datetime.utcnow().timetuple())))
+utc_time = str(int(time.time()))
 
 
 data = {
     "api_user": api_user,
     "timestamp": utc_time,
     "data": {
-        # "user": {
-        #     "email": "tenk",
-        #     "password": "sdads",
-        # },
+        "user": {
+            "email": "ed@plus.nl",
+            "password": "edmin",
+        },
+        "loggedin": {
+            "user_id": 2,
+            "token_hash": "b6936744aa1b2be96c4457c5228bb75e2bda7a72355e9030c70c7cd0ef827604",
+        },
         #
         # "usermeta": {
         #     "name": "asdjq",

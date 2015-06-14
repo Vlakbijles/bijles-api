@@ -1,52 +1,48 @@
 # authentication.py
-# Function for validating API requests, to be used as a decorator function
+# Function for authentication logged in users
 
-import hmac
-import json
 import time
 
 from functools import wraps
-from hashlib import sha256
-from config import api_users
+from resources import reqparse
 from resources import abort
+from resources import session
+from models import Token
 
 
-def api_validation(f):
-    """
-    Regenerates hash from request using the private key associated with
-    value in the api_user field, the request JSON data, the full HTTP path
-    (including a possible query string) and the HTTP request method.
-    Hashes are calculated with the HMAC module (using SHA256 encryption),
-    comparison of the hash in the original request to the generated one
-    can validate the API request.
+loggedin_data_parser = reqparse.RequestParser()
+loggedin_data_parser.add_argument('loggedin', type=dict, required=True, help="loggedin", location=('data'))
 
-    """
+loggedin_parser = reqparse.RequestParser()
+loggedin_parser.add_argument('user_id', type=int, required=True, help="user_id", location=('loggedin'))
+loggedin_parser.add_argument('token_hash', type=str, required=True, help="token_hash", location=('loggedin'))
 
-    @wraps(f)
-    def wrapper(*args, **kwargs):
 
-        data_dict = args[0].args
-        utc_now = int(time.time())
+# TODO: different types of authentication
+def authentication(au_type):
+    def authentication_inner(f):
+        """
+        TODO
 
-        # Ignore requests older than 600 seconds
-        if utc_now - int(data_dict['timestamp']) < 600:
+        """
 
-            if data_dict["api_user"] in api_users:
-                api_key = api_users[data_dict["api_user"]]
+        @wraps(f)
+        def wrapper(*args, **kwargs):
 
-                # Remove hash field from json data in order to regenerate
-                # original hash
-                provided_hash = data_dict["hash"]
-                del data_dict["hash"]
-                data_json = json.dumps(data_dict, sort_keys=True, separators=(",", ":"))
+            utc_now = int(time.time())
 
-                reconstructed_hash = hmac.new(str(api_key), data_json, sha256)
-                reconstructed_hash.update(args[0].full_path)
-                reconstructed_hash.update(args[0].method)
+            loggedin_data_args = loggedin_data_parser.parse_args(args[0].args)
+            loggedin_data = loggedin_parser.parse_args(loggedin_data_args)
 
-                if reconstructed_hash.hexdigest() == provided_hash:
-                    return f(*args, **kwargs)
+            token = session.query(Token).filter(Token.user_id == loggedin_data['user_id'],
+                                                Token.hash == loggedin_data['token_hash']).first()
 
-        return abort(401, message="Unauthorized API request")
+            if not token:
+                abort(401, message="No match found for given user id and token hash")
+            if token.exp_date < utc_now:
+                abort(401, message="Token hash expired")
 
-    return wrapper
+            return f(*args, **kwargs)
+
+        return wrapper
+    return authentication_inner
