@@ -1,5 +1,8 @@
-# db.py
-# Sets up database connection, includes SQLAlchemy boilerplate
+"""
+    db.py
+    Sets up database connection, includes SQLAlchemy boilerplate
+
+"""
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session
@@ -18,13 +21,12 @@ Session = sessionmaker(autocommit=False,
 session = scoped_session(Session)
 
 
-def get_or_create(session, model, defaults=None, **kwargs):
+def get_or_create(session, model, **kwargs):
     instance = session.query(model).filter_by(**kwargs).first()
     if instance:
-        return instance, False
+        return instance
     else:
-        params = dict((k, v) for k, v in kwargs.iteritems() if not isinstance(v, ClauseElement))
-        params.update(defaults or {})
-        instance = model(**params)
+        instance = model(**kwargs)
         session.add(instance)
-        return instance, True
+        session.commit()
+        return instance

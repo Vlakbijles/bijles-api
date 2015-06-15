@@ -19,23 +19,11 @@ login_fields = {
 }
 
 
-# User Data field parser
-# Used for parsing the user and user meta fields inside the data field
-user_data_parser = reqparse.RequestParser()
-user_data_parser.add_argument('user', type=dict, required=True, location=('data'))
-
-# User parser
-# Used for parsing the fields inside the user field
-user_parser = reqparse.RequestParser()
-user_parser.add_argument('email', type=str, required=True, help="email", location=('user'))
-user_parser.add_argument('password', type=str, required=True, help="password", location=('user'))
-
-
 class LoginResource(Resource):
     """
     Class for handling the POST requests for "/login"
 
-    POST is used for logging in
+    POST is used for logging in as user
 
     """
 
@@ -47,8 +35,7 @@ class LoginResource(Resource):
     @marshal_with(login_fields)
     @api_validation
     def post(self):
-        user_data_args = user_data_parser.parse_args(self.args)
-        user_data = user_parser.parse_args(user_data_args)
+        user_data = user_parser.parse_args(data_parser("user", self.args))
 
         user = session.query(User).filter(User.email == user_data['email']).first()
         if not user:
