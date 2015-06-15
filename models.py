@@ -106,6 +106,7 @@ class Review(Base):
     create_date = Column('create_date', DateTime)
 
     author = relationship("User")
+    offer = relationship("Offer")
 
 
 class Zipcode(Base):

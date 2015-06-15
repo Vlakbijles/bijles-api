@@ -12,6 +12,7 @@ from flask.ext.restful import request
 from flask.ext.restful import Resource
 from flask.ext.restful import fields
 from flask.ext.restful import marshal_with
+from sqlalchemy.sql import func
 
 from common.db import get_or_create
 from common.db import session
@@ -20,7 +21,7 @@ from common.authentication import authentication, create_token
 
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields',
-           'marshal_with', 'session', 'api_validation', 'authentication',
+           'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
            'usermeta_parser', 'offer_parser', 'offersearch_parser',
            'loggedin_parser', 'get_or_create']

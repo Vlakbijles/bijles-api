@@ -13,7 +13,7 @@ Offer Resouces contains the following classes:
 
 from resources import *  # NOQA
 from common.helper import latlon_distance, zipcode_to_id
-from models import User, Offer, Zipcode
+from models import User, Offer, Zipcode, Review
 
 
 offer_fields = {
@@ -22,7 +22,9 @@ offer_fields = {
     'user.meta.surname': fields.String,
     'level.name': fields.String,
     'subject.name': fields.String,
-    'distance': fields.Integer
+    'distance': fields.Integer,
+    'user.meta.rating': fields.Float,
+    'user.meta.no_reviews': fields.Integer,
 }
 
 
@@ -90,6 +92,8 @@ class OfferResource(Resource):
             offer_lon = float(offer.user.meta.longitude)
             if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < offer_query['range']:
                 offer.distance = latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon)
+                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == 1).first()[0]
+                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == 1).first()[0]
                 result_offers.append(offer)
 
         if not result_offers:
