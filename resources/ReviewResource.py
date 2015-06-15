@@ -4,7 +4,7 @@
     this file is a module and has no use as stand-alone file
 
     ReviewResource contains the following classes:
-    TODO
+        -ReviewByUserIdResource, used for getting the review for a User
 """
 
 
