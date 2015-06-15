@@ -54,7 +54,9 @@ class UserMeta(Base):
     id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
     name = Column("name", String(64))
     surname = Column("surname", String(64))
+    age = Column("age", Integer)
     zipcode = Column("zipcode", String(20))
+    city = Column("city", String(100))
     latitude = Column("latitude", DOUBLE)
     longitude = Column("longitude", DOUBLE)
     phone = Column("phone", String(10))
@@ -120,4 +122,4 @@ class Token(Base):
 
     user_id = Column('user_id', Integer, ForeignKey("user.id"), primary_key=True)
     hash = Column('hash', String(255), unique=True, primary_key=True)
-    exp_date = Column('exp_date', Integer, primary_key=True)
+    create_date = Column('create_date', Integer, primary_key=True)

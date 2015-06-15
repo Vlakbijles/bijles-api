@@ -13,7 +13,7 @@ import time
 
 from hashlib import sha256
 
-conn = httplib.HTTPConnection("localhost:5000")
+conn = httplib.HTTPConnection("vlakbijles.nl:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
@@ -21,14 +21,14 @@ lat = 52.6759082590322
 lon = 4.7038764017095
 # uri = "/offer?loc={lat},{lon}&range=10000&subject=200&level=2&page=2&sortby=apj".format(lat=lat, lon=lon)
 # uri = "/user/1?"
-uri = "/user?"
+uri = "/user/1?"
 method = "GET"
 utc_time = str(int(time.time()))
 
 
 data = {
     "api_user": api_user,
-    "timestamp": utc_time,
+    # "timestamp": utc_time,
     "data": {
         "user": {
             "email": "ed@plus.nl",

@@ -80,9 +80,71 @@ class UserByIdResource(Resource):
 
         return user, 200
 
-    @api_validation
+    # TODO: ONLY FOR ADMIN
+    # @api_validation
+    # @marshal_with(user_fields)
+    # def put(self, id):
+    #     # Parse from the "user" field and "usermeta" field
+    #     user_data_args = user_data_parser.parse_args(self.args)
+    #     user_data = user_parser.parse_args(user_data_args)
+    #     usermeta_data = usermeta_parser.parse_args(user_data_args)
+    #
+    #     # Check if user with id exists
+    #     user = session.query(User).filter(User.id == id).first()
+    #     if not user:
+    #         abort(404, message="User with id={} doesn't exist".format(id))
+    #
+    #     if user_data['email']:
+    #         user.email = user_data['email']
+    #     if user_data['password']:
+    #         user.password = user_data['password']
+    #     session.add(user)
+    #     session.commit()
+    #
+    #     return usermeta_data, 201
+    #
+    # @api_validation
+    # def delete(self, id):
+    #     user = session.query(User).filter(User.id == id).first()
+    #     if not user:
+    #         abort(404, message="User with id={} doesn't exist".format(id))
+    #
+    #     session.delete(user)
+    #     session.commit()
+    #     return {}, 204
+
+
+class UserResource(Resource):
+    """
+    Class for handling the GET, POST requests for "/user"
+
+    GET not yet implemented, is used for managing the logged in User model
+    POST is used for creating an new User model
+
+    """
+
+    def __init__(self):
+        self.method = request.method
+        self.full_path = request.full_path
+        self.args = main_parser.parse_args()
+
     @marshal_with(user_fields)
-    def put(self, id):
+    @authentication
+    @api_validation
+    def get(self):
+        loggedin_data_args = loggedin_data_parser.parse_args(self.args)
+        loggedin_data = loggedin_parser.parse_args(loggedin_data_args)
+
+        user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
+        if not user:
+            abort(404, message="User with id={} doesn't exist".format(id))
+
+        return user, 200
+
+    @api_validation
+    @authentication
+    @marshal_with(user_fields)
+    def put(self):
         # Parse from the "user" field and "usermeta" field
         user_data_args = user_data_parser.parse_args(self.args)
         user_data = user_parser.parse_args(user_data_args)
@@ -101,45 +163,6 @@ class UserByIdResource(Resource):
         session.commit()
 
         return usermeta_data, 201
-
-    @api_validation
-    def delete(self, id):
-        user = session.query(User).filter(User.id == id).first()
-        if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
-
-        session.delete(user)
-        session.commit()
-        return {}, 204
-
-
-class UserResource(Resource):
-    """
-    Class for handling the GET, POST requests for "/user"
-
-    GET not yet implemented, is used for managing the logged in User model
-    POST is used for creating an new User model
-
-    """
-
-    def __init__(self):
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
-
-    @api_validation
-    @authentication(1)
-    @marshal_with(user_fields)
-    def get(self):
-        loggedin_data_args = loggedin_data_parser.parse_args(self.args)
-        loggedin_data = loggedin_parser.parse_args(loggedin_data_args)
-
-        user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
-        if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
-
-        return user, 200
-
 
     @api_validation
     @marshal_with(user_fields)
