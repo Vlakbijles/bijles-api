@@ -21,7 +21,7 @@ lat = 52.6759082590322
 lon = 4.7038764017095
 # uri = "/offer?loc={lat},{lon}&range=10000&subject=200&level=2&page=2&sortby=apj".format(lat=lat, lon=lon)
 uri = "/user?"
-uri = "/user/1?"
+uri = "/user/1/review?"
 method = "GET"
 utc_time = str(int(time.time()))
 

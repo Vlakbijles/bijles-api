@@ -15,14 +15,19 @@ from models import User, UserMeta, Zipcode
 
 
 offer_fields = {
+    'id': fields.Integer,
     'subject.name': fields.String,
     'level.name': fields.String,
+    'review.rating': fields.Integer,
+    'review.description': fields.String
 }
 
 user_fields = {
     'id': fields.Integer,
     'meta.name': fields.String,
     'meta.surname': fields.String,
+    'meta.age': fields.Integer,
+    'meta.zipcode': fields.String,
     'meta.city': fields.String,
     'meta.photo_id': fields.String,
     'meta.description': fields.String,

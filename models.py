@@ -79,6 +79,7 @@ class Offer(Base):
     subject = relationship("Subject")
     user = relationship("User")
     level = relationship("Level")
+    review = relationship("Review")
 
 
 class Subject(Base):
@@ -98,14 +99,11 @@ class Level(Base):
 class Review(Base):
     __tablename__ = 'review'
 
-    id = Column('id', Integer, ForeignKey("offer.id"), primary_key=True)
+    offer_id = Column('offer_id', Integer, ForeignKey("offer.id"), primary_key=True)
     author_id = Column('author_id', Integer, ForeignKey("user.id"))
     rating = Column('rating', Integer)
-    desc = Column('desc', Text)
-    create_date = Column('create_data', DateTime)
-
-    offer = relationship('Offer', backref='review')
-    author = relationship('User', backref='review')
+    description = Column('description', Text)
+    create_date = Column('create_date', DateTime)
 
 
 class Zipcode(Base):
