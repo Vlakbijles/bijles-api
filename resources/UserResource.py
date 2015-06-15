@@ -158,7 +158,7 @@ class UserResource(Resource):
 
         user = User(email=user_data['email'], password=user_data['password'])
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
-        if not user:
+        if not zipcode:
             abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
 
         user.meta = UserMeta(name=usermeta_data['name'],

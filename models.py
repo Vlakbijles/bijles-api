@@ -113,6 +113,7 @@ class Zipcode(Base):
 
     id = Column('id', Integer, primary_key=True)
     zipcode = Column('zipcode', String(7))
+    zipcode_id = Column('zipcode_id', Integer)
     lat = Column('lat', DOUBLE)
     lon = Column('lon', DOUBLE)
 

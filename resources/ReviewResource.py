@@ -9,7 +9,7 @@
 
 
 from resources import *  # NOQA
-from models import User, UserMeta, Zipcode, Offer
+from models import User
 
 
 review_fields = {

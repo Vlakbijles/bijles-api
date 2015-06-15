@@ -12,8 +12,8 @@ Offer Resouces contains the following classes:
 
 
 from resources import *  # NOQA
-from common.helper import latlon_distance
-from models import User, Offer
+from common.helper import latlon_distance, zipcode_to_id
+from models import User, Offer, Zipcode
 
 
 offer_fields = {
@@ -74,10 +74,15 @@ class OfferResource(Resource):
         offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
                                              Offer.level_id == offer_query['level']).all()
 
-        loc_lat, loc_lon = map(float, offer_query['loc'].split(','))
+        zipcode = session.query(Zipcode).filter(Zipcode.zipcode_id == zipcode_to_id(offer_query['loc'])).first()
+        if not zipcode:
+            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+        loc_lat = float(zipcode.lat)
+        loc_lon = float(zipcode.lon)
 
         result_offers = []
 
+        # Check which offers are in range of given range
         for offer in offers:
             offer_lat = float(offer.user.meta.latitude)
             offer_lon = float(offer.user.meta.longitude)
