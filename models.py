@@ -105,6 +105,8 @@ class Review(Base):
     description = Column('description', Text)
     create_date = Column('create_date', DateTime)
 
+    author = relationship("User")
+
 
 class Zipcode(Base):
     __tablename__ = 'zipcode'

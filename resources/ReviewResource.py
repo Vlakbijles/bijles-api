@@ -14,7 +14,10 @@ from models import User, UserMeta, Zipcode, Offer
 
 review_fields = {
     'rating': fields.Integer,
-    'description': fields.String
+    'description': fields.String,
+    'author.meta.photo_id': fields.String,
+    'author.meta.name': fields.String,
+    'author.meta.surname': fields.String,
 }
 
 
