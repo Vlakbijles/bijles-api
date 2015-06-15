@@ -56,9 +56,9 @@ class LoginResource(Resource):
         elif user.password != user_data['password']:
             abort(401, message="Wrong password for email={}".format(user_data['email']))
 
-        token_hash, exp_date = create_token(user.id)
+        token_hash, create_date = create_token(user.id)
 
-        token = Token(user_id=user.id, hash=token_hash, exp_date=exp_date)
+        token = Token(user_id=user.id, hash=token_hash, create_date=create_date)
         session.add(token)
         session.commit()
 
