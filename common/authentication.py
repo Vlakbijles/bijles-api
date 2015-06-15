@@ -25,7 +25,7 @@ loggedin_parser.add_argument('token_hash', type=str, required=True, help="token_
 
 
 # TODO: different types of authentication
-def authentication():
+def authentication(auth_type):
     def authentication_inner(f):
         """
         TODO

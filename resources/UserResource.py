@@ -129,8 +129,8 @@ class UserResource(Resource):
         self.args = main_parser.parse_args()
 
     @marshal_with(user_fields)
-    @authentication
     @api_validation
+    @authentication(None)
     def get(self):
         loggedin_data_args = loggedin_data_parser.parse_args(self.args)
         loggedin_data = loggedin_parser.parse_args(loggedin_data_args)
@@ -141,9 +141,9 @@ class UserResource(Resource):
 
         return user, 200
 
-    @api_validation
-    @authentication
     @marshal_with(user_fields)
+    @api_validation
+    @authentication(None)
     def put(self):
         # Parse from the "user" field and "usermeta" field
         user_data_args = user_data_parser.parse_args(self.args)
