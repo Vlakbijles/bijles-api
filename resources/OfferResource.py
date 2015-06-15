@@ -17,10 +17,12 @@ from models import User, Offer, Zipcode
 
 
 offer_fields = {
-    'id': fields.Integer,
     'user_id': fields.Integer,
+    'user.meta.name': fields.String,
+    'user.meta.surname': fields.String,
     'level.name': fields.String,
     'subject.name': fields.String,
+    'distance': fields.Integer
 }
 
 
@@ -87,6 +89,7 @@ class OfferResource(Resource):
             offer_lat = float(offer.user.meta.latitude)
             offer_lon = float(offer.user.meta.longitude)
             if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < offer_query['range']:
+                offer.distance = latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon)
                 result_offers.append(offer)
 
         if not result_offers:

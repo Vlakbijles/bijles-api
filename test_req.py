@@ -17,10 +17,10 @@ conn = httplib.HTTPConnection("localhost:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
-loc = "1017WD"
+loc = "1012BH"
 # uri = "/user?"
 # uri = "/user/1/review?"
-uri = "/offer?loc={loc}&range=100&subject=44&level=1&page=2&sortby=apj".format(loc=loc)
+uri = "/offer?loc={loc}&range=10000&subject=44&level=1&page=2&sortby=apj".format(loc=loc)
 method = "GET"
 utc_time = str(int(time.time()))
 
