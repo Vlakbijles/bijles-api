@@ -12,7 +12,7 @@ from models import Subject
 
 subject_fields = {
     'id': fields.Integer,
-    'name': fields.Raw, # Not fields.String, can contain crazy characters
+    'name': fields.String,
 }
 
 
