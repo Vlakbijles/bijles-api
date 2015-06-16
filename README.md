@@ -147,3 +147,6 @@ Retrieving offers:
 |METHOD   |`/offer?loc=X&range=X&subject=X&level=X&page=&sortby=X`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
 |`GET`    |loc:, range:, subject_id:, level:, sortby:|`200`|`204`, `400`|
+
+Other:
+Commit #100!!
