@@ -41,7 +41,7 @@ class LoginResource(Resource):
         if not user:
             abort(404, message="User with email={} doesn't exist".format(user_data['email']))
         elif user.password != user_data['password']:
-            abort(401, message="Wrong password for email={}".format(user_data['email']))
+            abort(401, message="Incorrect login")
 
         token_hash, create_date = create_token(user.id)
 
