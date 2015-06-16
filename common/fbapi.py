@@ -24,4 +24,6 @@ def get_user_data(access_token):
                           "/picture?redirect=true&width=200&height=200"
     birthday = graph.get_object('me?fields=birthday')
     userdata['age'] = calculate_age(birthday['birthday'])
+    print profile
+
     return userdata

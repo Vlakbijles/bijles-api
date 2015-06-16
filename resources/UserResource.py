@@ -157,21 +157,24 @@ class UserResource(Resource):
         usermeta_data = usermeta_parser.parse_args(data_parser("usermeta", self.args))
 
         user = User(email=user_data['email'], password=user_data['password'])
+        print usermeta_data['zipcode']
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
         if not zipcode:
             abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
 
-        user.meta = UserMeta(name=usermeta_data['name'],
-                             surname=usermeta_data['surname'],
-                             age=usermeta_data['data'],
-                             zipcode=usermeta_data['zipcode'],
-                             latitude=zipcode.lat,
-                             longitude=zipcode.lon,
-                             city=zipcode.city,
-                             phone=usermeta_data['phone'],
-                             photo_id='photo',
-                             facebook_token='fb_token',
-                             description=usermeta_data['desc'])
-        session.add(user)
-        session.commit()
+        print usermeta_data
+        print get_user_data(usermeta_data['fb_token'])['picture']
+        # user.meta = UserMeta(name=usermeta_data['name'],
+        #                      surname=usermeta_data['surname'],
+        #                      age=usermeta_data['data'],
+        #                      zipcode=usermeta_data['zipcode'],
+        #                      latitude=zipcode.lat,
+        #                      longitude=zipcode.lon,
+        #                      city=zipcode.city,
+        #                      phone=usermeta_data['phone'],
+        #                      photo_id='photo',
+        #                      facebook_token='fb_token',
+        #                      description=usermeta_data['desc'])
+        # session.add(user)
+        # session.commit()
         return user, 201
