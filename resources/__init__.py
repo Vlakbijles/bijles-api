@@ -18,14 +18,14 @@ from common.db import get_or_create
 from common.db import session
 from common.api_validation import api_validation
 from common.authentication import authentication, create_token
-from common.fbapi import getUserData
+from common.fbapi import get_user_data
 
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
            'usermeta_parser', 'offer_parser', 'offersearch_parser',
-           'loggedin_parser', 'get_or_create', 'getUserData']
+           'loggedin_parser', 'get_or_create', 'get_user_data']
 
 
 # Main parser
