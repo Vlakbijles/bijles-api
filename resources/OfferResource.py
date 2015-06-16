@@ -92,8 +92,8 @@ class OfferResource(Resource):
             offer_lon = float(offer.user.meta.longitude)
             if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < offer_query['range']:
                 offer.distance = latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon)
-                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == 1).first()[0]
-                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == 1).first()[0]
+                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
+                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
                 result_offers.append(offer)
 
         if not result_offers:
