@@ -20,4 +20,5 @@ def get_user_data(access_token):
     userdata['surname'] = profile['last_name']
     userdata['picture'] = "https://graph.facebook.com/" + profile['id'] + \
                           "/picture?redirect=true&width=200&height=200"
+    print profile
     return userdata

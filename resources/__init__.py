@@ -54,6 +54,7 @@ usermeta_parser = reqparse.RequestParser()
 usermeta_parser.add_argument('zipcode', type=str, help="zipcode", location=('usermeta'))
 usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
 usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
+usermeta_parser.add_argument('fb_token', type=str, help="fb_token", location=('usermeta'))
 
 
 # Used for parsing the fields inside the loggedin field
