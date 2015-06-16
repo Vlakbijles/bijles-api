@@ -61,7 +61,7 @@ class OfferResource(Resource):
             - Range around location, allowed distance to location in meters
             - Subject, id of the subject
             - Level, id of the level
-            - Sorting by, spicifies the criteria to sort on
+            - Sorting by, specifies the criteria to sort on
 
     """
 

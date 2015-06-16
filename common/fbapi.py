@@ -14,7 +14,10 @@ def calculate_age(birthday):
 
 def get_user_data(access_token):
     graph = GraphAPI(access_token)
-    profile = graph.get_object('me')
+    try:
+		profile = graph.get_object('me')
+	except GraphAPI.OAuthError:
+		#Redirect the user to renew his or her token
     userdata = dict()
     userdata['name'] = profile['first_name']
     if (profile['email']):
