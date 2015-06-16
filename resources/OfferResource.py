@@ -17,6 +17,7 @@ from models import User, Offer, Zipcode, Review
 
 
 offer_fields = {
+    'id': fields.Integer,
     'user_id': fields.Integer,
     'user.meta.name': fields.String,
     'user.meta.surname': fields.String,
