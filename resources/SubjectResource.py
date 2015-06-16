@@ -1,5 +1,7 @@
 """
-TODO
+SubjectResource.py
+
+For returning list of subjects, requires no API authorization
 
 """
 
@@ -10,22 +12,19 @@ from models import Subject
 
 subject_fields = {
     'id': fields.Integer,
-    'name': fields.String(),
+    'name': fields.Raw, # Not fields.String, can contain crazy characters
 }
 
 
 class SubjectResource(Resource):
     """
-    Class for handling the GET requests for "/subject/all"
-
-    GET is used for retrieving all subjects
+    Class for handling the GET requests to "/subject/all"
 
     """
 
     def __init__(self):
         pass
 
-    # @api_validation
     @marshal_with(subject_fields)
     def get(self):
         subjects = session.query(Subject).all()
