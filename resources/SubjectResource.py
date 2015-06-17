@@ -32,4 +32,5 @@ class SubjectResource(Resource):
         if not subjects:
             abort(404, message="No subjects found")
 
-        return subjects, 200
+        # TODO remove extra header in final, temporarily allows cross-site ajax
+        return subjects, 200, {"Access-Control-Allow-Origin": "*"}
