@@ -9,7 +9,7 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from config import db
 
-db_uri = 'mysql://{user}:{password}@{host}/{name}'.format(
+db_uri = 'mysql://{user}:{password}@{host}/{name}?charset=utf8'.format(
                 user=db['user'],
                 password=db['password'],
                 host=db['host'],

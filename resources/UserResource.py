@@ -31,7 +31,7 @@ user_fields = {
     'meta.city': fields.String,
     'meta.photo_id': fields.String,
     'meta.description': fields.String,
-    'offers': fields.List(fields.Nested(offer_fields)),
+    # 'offers': fields.List(fields.Nested(offer_fields)),
 }
 
 
@@ -144,7 +144,7 @@ class UserResource(Resource):
         if usermeta_data['phone']:
             user.meta.phone = usermeta_data['phone']
         if usermeta_data['description']:
-            user.meta.discription = usermeta_data['discription']
+            user.meta.description = usermeta_data['description']
         session.add(user)
         session.commit()
 
@@ -155,6 +155,11 @@ class UserResource(Resource):
     def post(self):
         user_data = user_parser.parse_args(data_parser("user", self.args))
         usermeta_data = usermeta_parser.parse_args(data_parser("usermeta", self.args))
+
+        # Check if email is already used for another user
+        emailcheck = session.query(User).filter(User.email == user_data['email']).first()
+        if emailcheck:
+            abort(400, message="Email ({}) is already used for another user".format(user_date['email']))
 
         user = User(email=user_data['email'], password=user_data['password'])
         print usermeta_data['zipcode']

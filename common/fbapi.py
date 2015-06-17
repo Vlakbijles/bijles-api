@@ -14,13 +14,17 @@ def calculate_age(birthday):
 
 def get_user_data(access_token):
     graph = GraphAPI(access_token)
-    profile = graph.get_object('me')
+    try:
+        profile = graph.get_object('me')
+    except GraphAPI.OAuthError:
+        pass
+    #Redirect the user to renew his or her token
     userdata = dict()
     userdata['name'] = profile['first_name']
 
     userdata['surname'] = profile['last_name']
     userdata['picture'] = "https://graph.facebook.com/" + profile['id'] + \
-                          "/picture?redirect=true&width=200&height=200"
+            "/picture?redirect=true&width=200&height=200"
     birthday = graph.get_object('me?fields=birthday')
     userdata['age'] = calculate_age(birthday['birthday'])
 

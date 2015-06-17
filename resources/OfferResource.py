@@ -13,10 +13,11 @@ Offer Resouces contains the following classes:
 
 from resources import *  # NOQA
 from common.helper import latlon_distance, zipcode_to_id
-from models import User, Offer, Zipcode, Review
+from models import User, Offer, Zipcode, Review, Subject
 
 
 offer_fields = {
+    'id': fields.Integer,
     'user_id': fields.Integer,
     'user.meta.name': fields.String,
     'user.meta.surname': fields.String,
@@ -48,6 +49,8 @@ class OfferByUserIdResource(Resource):
     @marshal_with(offer_fields)
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
+        if not user:
+            abort(404, message="User with id={} doesn't exist".format(id))
         return user.offers, 200
 
 
@@ -61,7 +64,7 @@ class OfferResource(Resource):
             - Range around location, allowed distance to location in meters
             - Subject, id of the subject
             - Level, id of the level
-            - Sorting by, spicifies the criteria to sort on
+            - Sorting by, specifies the criteria to sort on
 
     """
 
@@ -78,9 +81,13 @@ class OfferResource(Resource):
         offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
                                              Offer.level_id == offer_query['level']).all()
 
+        subject = session.query(Subject).filter(Subject.id == (offer_query['subject'])).first()
+        if not subject:
+            abort(400, message="Subject with id {} not found".format(offer_query['subject']))
+
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode_id == zipcode_to_id(offer_query['loc'])).first()
         if not zipcode:
-            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+            abort(400, message="Zipcode ({}) not found".format(offer_query['loc']))
         loc_lat = float(zipcode.lat)
         loc_lon = float(zipcode.lon)
 
@@ -139,16 +146,15 @@ class OfferByIdResource(Resource):
 
     @api_validation
     @authentication(None)
-    @marshal_with(offer_fields)
     def delete(self, id):
-        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin". self.args))
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
 
         offer = session.query(Offer).filter(Offer.id == id).first()
-        if (offer.user.id != loggedin_data['user_id']):
-            abort(401, message="Not authorized to delete offer with id={}".format(id))
-
         if not offer:
             abort(404, message="Offer with id={} doesn't exist".format(id))
+
+        if (offer.user.id != loggedin_data['user_id']):
+            abort(401, message="Not authorized to delete offer with id={}".format(id))
 
         session.delete(offer)
         session.commit()
