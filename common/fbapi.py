@@ -17,13 +17,11 @@ def get_user_data(access_token):
     profile = graph.get_object('me')
     userdata = dict()
     userdata['name'] = profile['first_name']
-    if (profile['email']):
-        userdata['email'] = profile['email']
+
     userdata['surname'] = profile['last_name']
     userdata['picture'] = "https://graph.facebook.com/" + profile['id'] + \
                           "/picture?redirect=true&width=200&height=200"
     birthday = graph.get_object('me?fields=birthday')
     userdata['age'] = calculate_age(birthday['birthday'])
-    print profile
 
     return userdata
