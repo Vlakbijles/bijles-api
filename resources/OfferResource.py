@@ -83,7 +83,7 @@ class OfferResource(Resource):
 
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode_id == zipcode_to_id(offer_query['loc'])).first()
         if not zipcode:
-            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+            abort(400, message="Zipcode ({}) not found".format(offer_query['loc']))
         loc_lat = float(zipcode.lat)
         loc_lon = float(zipcode.lon)
 
