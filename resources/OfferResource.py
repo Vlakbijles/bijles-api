@@ -148,7 +148,7 @@ class OfferByIdResource(Resource):
     @authentication(None)
     @marshal_with(offer_fields)
     def delete(self, id):
-        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin". self.args))
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
 
         offer = session.query(Offer).filter(Offer.id == id).first()
         if not offer:
