@@ -110,7 +110,6 @@ class OfferResource(Resource):
 
     @api_validation
     @authentication(None)
-    @marshal_with(offer_fields)
     def post(self):
         offer_args = offer_parser.parse_args(data_parser("offer", self.args))
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
