@@ -163,6 +163,12 @@ class OfferByIdResource(Resource):
         if (offer.user.id != loggedin_data['user_id']):
             abort(401, message="Not authorized to delete offer with id={}".format(id))
 
-        session.delete(offer)
-        session.commit()
-        return {}, 200
+        # Only delete offers with no reviews linked to them
+        review = session.query(Review).filter(Review.offer_id == id).first()
+        if not review:
+            session.delete(offer)
+            session.commit()
+            return {}, 200
+        else:
+            # TODO Deactive offer
+            return {}, 200
