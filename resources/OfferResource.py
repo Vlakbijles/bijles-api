@@ -51,6 +51,7 @@ class OfferByUserIdResource(Resource):
         user = session.query(User).filter(User.id == id).first()
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
+        #TODO only return active offers
         return user.offers, 200
 
 
