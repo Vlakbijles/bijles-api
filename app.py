@@ -32,10 +32,5 @@ api.add_resource(ReviewByUserIdResource, '/user/<int:id>/review')
 # Subject
 api.add_resource(SubjectResource, '/subject/all')
 
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-  return response
-
 if __name__ == '__main__':
     app.run(host=server["host"], port=server["port"], debug=True)
