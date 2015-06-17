@@ -128,7 +128,8 @@ class OfferResource(Resource):
 
         offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
                               level_id=offer_args['level_id'],
-                              subject_id=offer_args['subject_id'])
+                              subject_id=offer_args['subject_id'],
+                              active=True)
 
         session.add(offer)
         session.commit()
