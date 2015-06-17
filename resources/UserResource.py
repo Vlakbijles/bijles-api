@@ -156,6 +156,11 @@ class UserResource(Resource):
         user_data = user_parser.parse_args(data_parser("user", self.args))
         usermeta_data = usermeta_parser.parse_args(data_parser("usermeta", self.args))
 
+        # Check if email is already used for another user
+        emailcheck = session.query(User).filter(User.email == user_data['email']).first()
+        if emailcheck:
+            abort(400, message="Email ({}) is already used for another user".format(user_date['email']))
+
         user = User(email=user_data['email'], password=user_data['password'])
         print usermeta_data['zipcode']
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
