@@ -13,7 +13,7 @@ Offer Resouces contains the following classes:
 
 from resources import *  # NOQA
 from common.helper import latlon_distance, zipcode_to_id
-from models import User, Offer, Zipcode, Review, Subject
+from models import User, Offer, Zipcode, Review, Subject, Level
 
 
 offer_fields = {
@@ -118,7 +118,13 @@ class OfferResource(Resource):
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
 
-        # TODO check if level and subject exist
+        subject = session.query(Subject).filter(Subject.id == offer_args['subject_id']).first()
+        if not subject:
+            abort(404, message="Subject with id={} doesn't exist".format(offer_args['subject_id']))
+
+        level = session.query(Level).filter(Level.id == offer_args['level_id']).first()
+        if not level:
+            abort(404, message="Level with id={} doesn't exist".format(offer_args['level_id']))
 
         offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
                               level_id=offer_args['level_id'],
