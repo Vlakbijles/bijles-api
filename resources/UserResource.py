@@ -31,7 +31,7 @@ user_fields = {
     'meta.city': fields.String,
     'meta.photo_id': fields.String,
     'meta.description': fields.String,
-    'offers': fields.List(fields.Nested(offer_fields)),
+    # 'offers': fields.List(fields.Nested(offer_fields)),
 }
 
 
