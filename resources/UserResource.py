@@ -144,7 +144,7 @@ class UserResource(Resource):
         if usermeta_data['phone']:
             user.meta.phone = usermeta_data['phone']
         if usermeta_data['description']:
-            user.meta.discription = usermeta_data['discription']
+            user.meta.description = usermeta_data['description']
         session.add(user)
         session.commit()
 
