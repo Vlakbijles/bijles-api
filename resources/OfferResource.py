@@ -13,7 +13,7 @@ Offer Resouces contains the following classes:
 
 from resources import *  # NOQA
 from common.helper import latlon_distance, zipcode_to_id
-from models import User, Offer, Zipcode, Review, Subject
+from models import User, Offer, Zipcode, Review, Subject, Level
 
 
 offer_fields = {
@@ -51,6 +51,7 @@ class OfferByUserIdResource(Resource):
         user = session.query(User).filter(User.id == id).first()
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
+        #TODO only return active offers
         return user.offers, 200
 
 
@@ -110,7 +111,6 @@ class OfferResource(Resource):
 
     @api_validation
     @authentication(None)
-    @marshal_with(offer_fields)
     def post(self):
         offer_args = offer_parser.parse_args(data_parser("offer", self.args))
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
@@ -119,13 +119,22 @@ class OfferResource(Resource):
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
 
+        subject = session.query(Subject).filter(Subject.id == offer_args['subject_id']).first()
+        if not subject:
+            abort(404, message="Subject with id={} doesn't exist".format(offer_args['subject_id']))
+
+        level = session.query(Level).filter(Level.id == offer_args['level_id']).first()
+        if not level:
+            abort(404, message="Level with id={} doesn't exist".format(offer_args['level_id']))
+
         offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
                               level_id=offer_args['level_id'],
-                              subject_id=offer_args['subject_id'])
+                              subject_id=offer_args['subject_id'],
+                              active=True)
 
         session.add(offer)
         session.commit()
-        return offer, 201
+        return {}, 201
 
 
 class OfferByIdResource(Resource):
@@ -156,6 +165,13 @@ class OfferByIdResource(Resource):
         if (offer.user.id != loggedin_data['user_id']):
             abort(401, message="Not authorized to delete offer with id={}".format(id))
 
-        session.delete(offer)
-        session.commit()
+        # Only delete offers with no reviews linked to them, otherwise deactivate
+        review = session.query(Review).filter(Review.offer_id == id).first()
+        if not review:
+            session.delete(offer)
+            session.commit()
+        else:
+            session.query(Offer).filter(Offer.id == id).update({"active": False})
+            session.commit()
+
         return {}, 200
