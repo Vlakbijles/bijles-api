@@ -13,6 +13,7 @@ from resources.OfferResource import OfferByUserIdResource, OfferResource, OfferB
 from resources.LoginResource import LoginResource
 from resources.ReviewResource import ReviewByUserIdResource
 from resources.SubjectResource import SubjectResource
+from resources.LevelResource import LevelResource
 
 # Routes
 # User
@@ -34,7 +35,7 @@ api.add_resource(ReviewByUserIdResource, '/user/<int:id>/review')
 api.add_resource(SubjectResource, '/subject/all')
 
 # Level
-api.add_resource(SubjectResource, '/level/all')
+api.add_resource(LevelResource, '/level/all')
 
 if __name__ == '__main__':
     app.run(host=server["host"], port=server["port"], debug=True)
