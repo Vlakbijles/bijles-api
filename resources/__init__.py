@@ -25,7 +25,7 @@ __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
            'usermeta_parser', 'offer_parser', 'offersearch_parser',
-           'loggedin_parser', 'get_or_create', 'get_user_data']
+           'loggedin_parser', 'fb_access_token_parser', 'get_or_create', 'get_user_data']
 
 
 # Main parser
@@ -61,6 +61,10 @@ usermeta_parser.add_argument('fb_token', type=str, help="fb_token", location=('u
 loggedin_parser = reqparse.RequestParser()
 loggedin_parser.add_argument('user_id', type=int, required=True, help="user_id", location=('loggedin'))
 loggedin_parser.add_argument('token_hash', type=str, required=True, help="token_hash", location=('loggedin'))
+
+# Used for parsing the facebook access token the facebook field
+fb_access_token_parser = reqparse.RequestParser()
+fb_access_token_parser.add_argument('access_token', type=str, required=True, help="access_token", location=('facebook'))
 
 
 # Offer parser used for parsing the fields inside offer field
