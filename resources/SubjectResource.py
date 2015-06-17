@@ -22,6 +22,11 @@ class SubjectResource(Resource):
 
     """
 
+    def __init__(self):
+        self.method = request.method
+        self.full_path = request.full_path
+        self.args = main_parser.parse_args()
+
     @api_validation
     @marshal_with(subject_fields)
     def get(self):
