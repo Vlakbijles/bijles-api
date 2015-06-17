@@ -14,6 +14,7 @@ from resources.LoginResource import LoginResource
 from resources.FbLoginResource import FbLoginResource
 from resources.ReviewResource import ReviewByUserIdResource
 from resources.SubjectResource import SubjectResource
+from resources.LevelResource import LevelResource
 
 # Routes
 # User
@@ -34,6 +35,9 @@ api.add_resource(ReviewByUserIdResource, '/user/<int:id>/review')
 
 # Subject
 api.add_resource(SubjectResource, '/subject/all')
+
+# Level
+api.add_resource(LevelResource, '/level/all')
 
 if __name__ == '__main__':
     app.run(host=server["host"], port=server["port"], debug=True)
