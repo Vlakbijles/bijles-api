@@ -45,7 +45,5 @@ class ReviewByUserIdResource(Resource):
 
         for offer in user.offers:
             reviews += offer.review
-        if not reviews:
-            abort(200, message="No reviews found for User with id={}".format(id))
 
         return reviews, 200
