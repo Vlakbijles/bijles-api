@@ -119,13 +119,15 @@ class OfferResource(Resource):
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
 
+        # TODO check if level and subject exist
+
         offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
                               level_id=offer_args['level_id'],
                               subject_id=offer_args['subject_id'])
 
         session.add(offer)
         session.commit()
-        return offer, 201
+        return {}, 201
 
 
 class OfferByIdResource(Resource):
