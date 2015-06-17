@@ -49,6 +49,8 @@ class OfferByUserIdResource(Resource):
     @marshal_with(offer_fields)
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
+        if not user:
+            abort(404, message="User with id={} doesn't exist".format(id))
         return user.offers, 200
 
 
