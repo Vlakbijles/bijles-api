@@ -16,7 +16,7 @@ level_fields = {
 }
 
 
-class SubjectResource(Resource):
+class LevelResource(Resource):
     """
     Class for handling the GET requests to "/level/all"
 
