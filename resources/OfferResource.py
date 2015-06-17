@@ -81,6 +81,10 @@ class OfferResource(Resource):
         offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
                                              Offer.level_id == offer_query['level']).all()
 
+        subject = session.query(Subject).filter(Subject.id == (offer_query['subject'])).first()
+        if not subject:
+            abort(400, message="Subject with id {} not found".format(offer_query['subject']))
+
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode_id == zipcode_to_id(offer_query['loc'])).first()
         if not zipcode:
             abort(400, message="Zipcode ({}) not found".format(offer_query['loc']))
