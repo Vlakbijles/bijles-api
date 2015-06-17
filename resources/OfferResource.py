@@ -13,7 +13,7 @@ Offer Resouces contains the following classes:
 
 from resources import *  # NOQA
 from common.helper import latlon_distance, zipcode_to_id
-from models import User, Offer, Zipcode, Review
+from models import User, Offer, Zipcode, Review, Subject
 
 
 offer_fields = {
