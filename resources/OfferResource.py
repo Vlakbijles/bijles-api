@@ -151,11 +151,11 @@ class OfferByIdResource(Resource):
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin". self.args))
 
         offer = session.query(Offer).filter(Offer.id == id).first()
-        if (offer.user.id != loggedin_data['user_id']):
-            abort(401, message="Not authorized to delete offer with id={}".format(id))
-
         if not offer:
             abort(404, message="Offer with id={} doesn't exist".format(id))
+
+        if (offer.user.id != loggedin_data['user_id']):
+            abort(401, message="Not authorized to delete offer with id={}".format(id))
 
         session.delete(offer)
         session.commit()

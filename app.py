@@ -24,7 +24,7 @@ api.add_resource(LoginResource, '/login')
 
 # Offer
 api.add_resource(OfferResource, '/offer')
-api.add_resource(OfferByUserIdResource, '/user/<int:id>/offer')
+api.add_resource(OfferByUserIdResource, '/offer/<int:id>')
 
 # Review
 api.add_resource(ReviewByUserIdResource, '/user/<int:id>/review')
