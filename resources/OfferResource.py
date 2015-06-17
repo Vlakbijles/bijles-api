@@ -146,7 +146,6 @@ class OfferByIdResource(Resource):
 
     @api_validation
     @authentication(None)
-    @marshal_with(offer_fields)
     def delete(self, id):
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
 
