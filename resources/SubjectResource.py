@@ -22,9 +22,7 @@ class SubjectResource(Resource):
 
     """
 
-    def __init__(self):
-        pass
-
+    @api_validation
     @marshal_with(subject_fields)
     def get(self):
         subjects = session.query(Subject).all()

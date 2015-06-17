@@ -33,5 +33,8 @@ api.add_resource(ReviewByUserIdResource, '/user/<int:id>/review')
 # Subject
 api.add_resource(SubjectResource, '/subject/all')
 
+# Level
+api.add_resource(SubjectResource, '/level/all')
+
 if __name__ == '__main__':
     app.run(host=server["host"], port=server["port"], debug=True)
