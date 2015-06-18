@@ -42,11 +42,6 @@ class User(Base):
     meta = relationship("UserMeta", uselist=False)
     token = relationship("Token")
 
-    def __init__(self, email, password):
-        self.email = email
-        self.password = password
-        self.verified = False
-
 
 class UserMeta(Base):
     __tablename__ = 'user_meta'
@@ -116,6 +111,7 @@ class Zipcode(Base):
     id = Column('id', Integer, primary_key=True)
     zipcode = Column('zipcode', String(7))
     zipcode_id = Column('zipcode_id', Integer)
+    city = Column('city', String(100))
     lat = Column('lat', DOUBLE)
     lon = Column('lon', DOUBLE)
 

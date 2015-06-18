@@ -20,14 +20,14 @@ from common.db import get_or_create
 from common.db import session
 from common.api_validation import api_validation
 from common.authentication import authentication, create_token
-from common.fbapi import get_user_data
+from common.fbapi import get_fb_user_data
 
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
            'usermeta_parser', 'offer_parser', 'offersearch_parser',
-           'loggedin_parser', 'fb_access_token_parser', 'get_or_create', 'get_user_data']
+           'loggedin_parser', 'fb_access_token_parser', 'get_or_create', 'get_fb_user_data']
 
 
 # Main parser
@@ -48,15 +48,14 @@ def data_parser(field, args):
 # Used for parsing the fields inside the user field
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('email', type=str, required=True, help="email", location=('user'))
-user_parser.add_argument('password', type=str, required=True, help="password", location=('user'))
 
 
 # Used for parsing the fields inside the usermeta field
 usermeta_parser = reqparse.RequestParser()
-usermeta_parser.add_argument('zipcode', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
+usermeta_parser.add_argument('zipcode', required=True, type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
+usermeta_parser.add_argument('fb_token', required=True, type=str, help="fb_token", location=('usermeta'))
 usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
 usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
-usermeta_parser.add_argument('fb_token', type=str, help="fb_token", location=('usermeta'))
 
 
 # Used for parsing the fields inside the loggedin field

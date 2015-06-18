@@ -23,6 +23,7 @@ fbregi_fields = {
     'name': fields.String,
     'surname': fields.String,
     'picture': fields.String,
+    'email': fields.String,
 }
 
 
@@ -43,14 +44,12 @@ class FbLoginResource(Resource):
     def post(self):
         fb = fb_access_token_parser.parse_args(data_parser("facebook", self.args))
 
-        fb_user_data = get_user_data(fb['access_token'])
+        fb_user_data = get_fb_user_data(fb['access_token'])
 
         user = session.query(User).join(User.meta).filter(UserMeta.facebook_id == fb_user_data['id']).first()
 
         if not user:
             return marshal(fb_user_data, fbregi_fields), 202
-
-        # abort(404, message="User with email={} doesn't exist".format(user_data['email']))
 
         token_hash, create_date = create_token(user.id)
 

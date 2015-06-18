@@ -126,30 +126,7 @@ class UserResource(Resource):
     @authentication(None)
     @marshal_with(user_fields)
     def put(self):
-        # Parse from the "user" field and "usermeta" field
-        user_data = user_parser.parse_args(data_parser("user", self.args))
-        usermeta_data = usermeta_parser.parse_args(data_parser("usermeta", self.args))
-        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
-
-        # Check if user with id exists
-        user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
-        if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
-
-        if user_data['email']:
-            user.email = user_data['email']
-        if user_data['password']:
-            user.password = user_data['password']
-        if usermeta_data['zipcode']:
-            user.meta.zipcode = usermeta_data['zipcode']
-        if usermeta_data['phone']:
-            user.meta.phone = usermeta_data['phone']
-        if usermeta_data['description']:
-            user.meta.description = usermeta_data['description']
-        session.add(user)
-        session.commit()
-
-        return user, 200
+        pass
 
     @api_validation
     @marshal_with(user_fields)
@@ -158,29 +135,33 @@ class UserResource(Resource):
         usermeta_data = usermeta_parser.parse_args(data_parser("usermeta", self.args))
 
         # Check if email is already used for another user
-        emailcheck = session.query(User).filter(User.email == user_data['email']).first()
-        if emailcheck:
-            abort(400, message="Email ({}) is already used for another user".format(user_date['email']))
+        user = session.query(User).filter(User.email == user_data['email']).first()
+        if user:
+            abort(400, message="Email ({}) is already in use".format(user_date['email']))
 
-        user = User(email=user_data['email'], password=user_data['password'])
-        print usermeta_data['zipcode']
+        # Check if zipcode is valid
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
         if not zipcode:
             abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
 
-        print usermeta_data
-        print get_user_data(usermeta_data['fb_token'])['picture']
-        # user.meta = UserMeta(name=usermeta_data['name'],
-        #                      surname=usermeta_data['surname'],
-        #                      age=usermeta_data['data'],
-        #                      zipcode=usermeta_data['zipcode'],
-        #                      latitude=zipcode.lat,
-        #                      longitude=zipcode.lon,
-        #                      city=zipcode.city,
-        #                      phone=usermeta_data['phone'],
-        #                      photo_id='photo',
-        #                      facebook_token='fb_token',
-        #                      description=usermeta_data['desc'])
-        # session.add(user)
-        # session.commit()
+        user = User(email=user_data['email'])
+
+        fb_data = get_fb_user_data(usermeta_data['fb_token'])
+
+        # Check if the facebook token matches with real account
+        if not fb_data:
+            abort(400, message="Link to Facebook account failed")
+
+        user.meta = UserMeta(name=fb_data['name'],
+                             surname=fb_data['surname'],
+                             zipcode=zipcode.zipcode,
+                             latitude=zipcode.lat,
+                             longitude=zipcode.lon,
+                             city=zipcode.city,
+                             photo_id=fb_data['picture'],
+                             facebook_id=fb_data['id'])
+
+        session.add(user)
+        session.commit()
+
         return user, 201
