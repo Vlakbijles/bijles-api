@@ -42,11 +42,6 @@ class User(Base):
     meta = relationship("UserMeta", uselist=False)
     token = relationship("Token")
 
-    def __init__(self, email, password):
-        self.email = email
-        self.password = password
-        self.verified = False
-
 
 class UserMeta(Base):
     __tablename__ = 'user_meta'
