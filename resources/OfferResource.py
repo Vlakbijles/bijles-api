@@ -64,7 +64,7 @@ class OfferResource(Resource):
 
     GET is used for receiving all offers given a searching specification,
         the search specification are:
-            - Location, latitude and longitude given in degrees
+            - Location's latitude and longitude given in degrees
             - Range around location, allowed distance to location in meters
             - Subject, id of the subject
             - Level, id of the level
@@ -97,7 +97,7 @@ class OfferResource(Resource):
 
         result_offers = []
 
-        # Check which offers are in range of given range
+        # Check which offers are within given range and calculate their average rating
         for offer in offers:
             offer_lat = float(offer.user.meta.latitude)
             offer_lon = float(offer.user.meta.longitude)
@@ -145,7 +145,7 @@ class OfferByIdResource(Resource):
     Class for handling the GET, PUT and DELETE requests for "/offer/<int:id>",
     acts on offers based on the Offer id
 
-    DELETE is used for deleting a offer given the offer id. Verificaion is used
+    DELETE is used for deleting an offer given the offer id. Verification is used
            to permit only deleting offers when they are yours
 
     """
