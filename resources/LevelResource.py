@@ -1,7 +1,8 @@
 """
-SubjectResource.py
+    LevelResource.py
 
-For returning list of levels, requires no API authorization
+    LevelResource contains the following classes:
+        -LevelResource, used for returning list of levels, requires no API authorization
 
 """
 
@@ -19,6 +20,8 @@ level_fields = {
 class LevelResource(Resource):
     """
     Class for handling the GET requests to "/level/all"
+
+    GET is used to get all levels
 
     """
 
