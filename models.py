@@ -61,7 +61,7 @@ class UserMeta(Base):
     longitude = Column("longitude", DOUBLE)
     phone = Column("phone", String(10))
     photo_id = Column("photo_id", String(255))
-    facebook_token = Column("facebook_token", String(255))
+    facebook_id = Column("facebook_id", String(255))
     description = Column(Text)
 
 
