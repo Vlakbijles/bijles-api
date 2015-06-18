@@ -12,6 +12,7 @@ from flask.ext.restful import abort
 from flask.ext.restful import request
 from flask.ext.restful import Resource
 from flask.ext.restful import fields
+from flask.ext.restful import marshal
 from flask.ext.restful import marshal_with
 from sqlalchemy.sql import func
 
@@ -22,7 +23,7 @@ from common.authentication import authentication, create_token
 from common.fbapi import get_user_data
 
 
-__all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields',
+__all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
            'usermeta_parser', 'offer_parser', 'offersearch_parser',

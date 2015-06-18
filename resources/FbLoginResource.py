@@ -13,9 +13,16 @@ from resources import *  # NOQA
 from models import User, Token, UserMeta
 
 
-login_fields = {
+fblogin_fields = {
     'user_id': fields.Integer,
     'token_hash': fields.String,
+}
+
+fbregi_fields = {
+    'access_token': fields.String,
+    'name': fields.String,
+    'surname': fields.String,
+    'picture': fields.String,
 }
 
 
@@ -32,15 +39,18 @@ class FbLoginResource(Resource):
         self.full_path = request.full_path
         self.args = main_parser.parse_args()
 
-    @marshal_with(login_fields)
     @api_validation
     def post(self):
         fb = fb_access_token_parser.parse_args(data_parser("facebook", self.args))
 
         fb_user_data = get_user_data(fb['access_token'])
-        print fb_user_data
 
         user = session.query(User).join(User.meta).filter(UserMeta.facebook_id == fb_user_data['id']).first()
+
+        if not user:
+            return marshal(fb_user_data, fbregi_fields), 202
+
+        # abort(404, message="User with email={} doesn't exist".format(user_data['email']))
 
         token_hash, create_date = create_token(user.id)
 
@@ -48,4 +58,4 @@ class FbLoginResource(Resource):
         session.add(token)
         session.commit()
 
-        return {'user_id': user.id, 'token_hash': token_hash}, 200
+        return marshal({'user_id': user.id, 'token_hash': token_hash}, fblogin_fields), 200
