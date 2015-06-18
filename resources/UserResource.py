@@ -146,7 +146,7 @@ class UserResource(Resource):
 
         user = User(email=user_data['email'])
 
-        fb_data = get_fb_user_data(usermeta_data['access_token'])
+        fb_data = get_fb_user_data(usermeta_data['fb_token'])
 
         # Check if the facebook token matches with real account
         if not fb_data:
