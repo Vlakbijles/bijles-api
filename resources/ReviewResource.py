@@ -25,7 +25,7 @@ class ReviewByUserIdResource(Resource):
     """
     Class for handling the GET "/user/<int:id>/review"
 
-    GET is used to get the reviews for a User model, given an User id
+    GET is used to get the reviews for a User model, given a User id
 
     """
 
