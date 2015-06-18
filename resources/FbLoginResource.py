@@ -19,7 +19,7 @@ fblogin_fields = {
 }
 
 fbregi_fields = {
-    'access_token': fields.Integer,
+    'access_token': fields.String,
     'name': fields.String,
     'surname': fields.String,
     'picture': fields.String,
