@@ -20,14 +20,14 @@ from common.db import get_or_create
 from common.db import session
 from common.api_validation import api_validation
 from common.authentication import authentication, create_token
-from common.fbapi import get_user_data
+from common.fbapi import get_fb_user_data
 
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
            'usermeta_parser', 'offer_parser', 'offersearch_parser',
-           'loggedin_parser', 'fb_access_token_parser', 'get_or_create', 'get_user_data']
+           'loggedin_parser', 'fb_access_token_parser', 'get_or_create', 'get_fb_user_data']
 
 
 # Main parser
