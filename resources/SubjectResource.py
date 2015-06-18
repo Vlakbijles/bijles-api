@@ -1,7 +1,8 @@
 """
-SubjectResource.py
+    SubjectResource.py
 
-For returning list of subjects, requires no API authorization
+    SubjectResource contains the following classes:
+        -SubjectResource, used for returning list of subjects, requires no API authorization
 
 """
 
@@ -20,6 +21,7 @@ class SubjectResource(Resource):
     """
     Class for handling the GET requests to "/subject/all"
 
+    GET is used to get all subjects
     """
 
     def __init__(self):

@@ -7,6 +7,7 @@ note: when adding an import, add it to the __all__ variable so other modules can
 """
 
 from flask.ext.restful import reqparse
+from flask.ext.restful import inputs
 from flask.ext.restful import abort
 from flask.ext.restful import request
 from flask.ext.restful import Resource
@@ -52,7 +53,7 @@ user_parser.add_argument('password', type=str, required=True, help="password", l
 
 # Used for parsing the fields inside the usermeta field
 usermeta_parser = reqparse.RequestParser()
-usermeta_parser.add_argument('zipcode', type=str, help="zipcode", location=('usermeta'))
+usermeta_parser.add_argument('zipcode', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
 usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
 usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
 usermeta_parser.add_argument('fb_token', type=str, help="fb_token", location=('usermeta'))

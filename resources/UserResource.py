@@ -39,10 +39,10 @@ class UserByIdResource(Resource):
     """
     Class for handling the GET, PUT and DELETE requests for "/user/<int:id>"
 
-    GET is used for giving info about an User model, given an User id
-    PUT is used for changing info about an User model, given an User id,
+    GET is used for giving info about a User model, given a User id
+    PUT is used for changing info about a User model, given a User id,
         you cannot create a user using this method.
-    DELETE is used deleting an User model, given an User id
+    DELETE is used deleting a User model, given a User id
 
     """
 
@@ -99,8 +99,9 @@ class UserResource(Resource):
     Class for handling the GET, POST requests for "/user"
 
     GET is used for showing the logged in User model
+    PUT is used for modifying the logged in User model
     GET is used for modifying the logged in User model
-    POST is used for creating an new User model
+    POST is used for creating a new User model
 
     """
 
