@@ -21,7 +21,7 @@ login_fields = {
 
 class FbLoginResource(Resource):
     """
-    Class for handling the POST requests for "/fblogin"
+    Class for handling the POST requests for "/fblogin?"
 
     POST is used for logging in as user using facebook
 
@@ -40,13 +40,8 @@ class FbLoginResource(Resource):
         fb_user_data = get_user_data(fb['access_token'])
         print fb_user_data
 
-        user = session.query(User).join(User.meta).filter(UserMeta.facebook_token == fb_user_data['id']).first()
-        if not user:
-            abort(404, message="User with doesn't")
-        # elif user.password != user_data['password']:
-        #     abort(401, message="Incorrect login")
+        user = session.query(User).join(User.meta).filter(UserMeta.facebook_id == fb_user_data['id']).first()
 
-        print user.email
         token_hash, create_date = create_token(user.id)
 
         token = Token(user_id=user.id, hash=token_hash, create_date=create_date)
