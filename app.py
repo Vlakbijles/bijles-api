@@ -15,6 +15,7 @@ from resources.FbLoginResource import FbLoginResource
 from resources.ReviewResource import ReviewByUserIdResource
 from resources.SubjectResource import SubjectResource
 from resources.LevelResource import LevelResource
+from resources.PostalCodeResource import PostalCodeResource
 
 # Routes
 # User
@@ -33,11 +34,14 @@ api.add_resource(OfferByIdResource, '/offer/<int:id>')
 # Review
 api.add_resource(ReviewByUserIdResource, '/user/<int:id>/review')
 
-# Subject
+# Subjects
 api.add_resource(SubjectResource, '/subject/all')
 
-# Level
+# Levels
 api.add_resource(LevelResource, '/level/all')
+
+# Postal codes
+api.add_resource(PostalCodeResource, '/postal_code/all')
 
 if __name__ == '__main__':
     app.run(host=server["host"], port=server["port"], debug=True)
