@@ -145,7 +145,7 @@ class OfferByIdResource(Resource):
     Class for handling the GET, PUT and DELETE requests for "/offer/<int:id>",
     acts on offers based on the Offer id
 
-    DELETE is used for deleting a offer given the offer id. Verification is used
+    DELETE is used for deleting an offer given the offer id. Verification is used
            to permit only deleting offers when they are yours
 
     """
