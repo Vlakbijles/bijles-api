@@ -48,15 +48,14 @@ def data_parser(field, args):
 # Used for parsing the fields inside the user field
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('email', type=str, required=True, help="email", location=('user'))
-user_parser.add_argument('password', type=str, required=True, help="password", location=('user'))
 
 
 # Used for parsing the fields inside the usermeta field
 usermeta_parser = reqparse.RequestParser()
-usermeta_parser.add_argument('zipcode', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
+usermeta_parser.add_argument('zipcode', required=True, type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
+usermeta_parser.add_argument('fb_token', required=True, type=str, help="fb_token", location=('usermeta'))
 usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
 usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
-usermeta_parser.add_argument('fb_token', type=str, help="fb_token", location=('usermeta'))
 
 
 # Used for parsing the fields inside the loggedin field
