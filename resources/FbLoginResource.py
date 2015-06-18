@@ -48,7 +48,7 @@ class FbLoginResource(Resource):
         user = session.query(User).join(User.meta).filter(UserMeta.facebook_id == fb_user_data['id']).first()
 
         if not user:
-            return marshal(fb_user_data, fb_user_data)
+            return marshal(fb_user_data, fbregi_fields)
 
         # abort(404, message="User with email={} doesn't exist".format(user_data['email']))
 
