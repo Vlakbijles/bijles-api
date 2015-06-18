@@ -100,6 +100,7 @@ class UserResource(Resource):
 
     GET is used for showing the logged in User model
     PUT is used for modifying the logged in User model
+    GET is used for modifying the logged in User model
     POST is used for creating a new User model
 
     """
