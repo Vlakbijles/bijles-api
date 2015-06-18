@@ -144,7 +144,7 @@ class UserResource(Resource):
         if not zipcode:
             abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
 
-        user = User(email=user_data['email'], password=user_data['password'])
+        user = User(email=user_data['email'])
 
         fb_data = get_fb_user_data(usermeta_data['access_token'])
 
