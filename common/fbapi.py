@@ -20,9 +20,9 @@ def get_user_data(access_token):
     userdata = dict()
     userdata['id'] = profile['id']
     userdata['name'] = profile['first_name']
-
     userdata['surname'] = profile['last_name']
     userdata['picture'] = "https://graph.facebook.com/" + profile['id'] + "/picture?redirect=true&width=200&height=200"
+    userdata['acces_token'] = access_token
     # birthday = graph.get_object('me?fields=birthday')
     # userdata['age'] = calculate_age(birthday['birthday'])
 
