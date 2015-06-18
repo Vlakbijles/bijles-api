@@ -50,9 +50,12 @@ class OfferByUserIdResource(Resource):
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
-        #TODO only return active offers
-        return user.offers, 200
+            abort(401, message="User with id={} doesn't exist".format(id))
+        offers = session.query(Offer).filter(Offer.user_id == id, Offer.active).all()
+        if not offers:
+            return [], 204
+
+        return offers, 200
 
 
 class OfferResource(Resource):
