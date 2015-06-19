@@ -136,7 +136,13 @@ class OfferResource(Resource):
                                             Offer.subject_id == offer_args['subject_id'],
                                             Offer.level_id == offer_args['level_id']).first()
         if offer:
-            return {}, 200
+            # If inactive, reactivate it
+            if offer.active == False:
+                session.query(Offer).filter(Offer.id == offer.id).update({"active": True})
+                session.commit()
+                return {}, 201
+            else:
+                return {}, 200
 
         offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
                               level_id=offer_args['level_id'],
