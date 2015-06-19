@@ -24,6 +24,7 @@ offer_fields = {
 
 user_fields = {
     'id': fields.Integer,
+    'email': fields.String,
     'meta.name': fields.String,
     'meta.surname': fields.String,
     'meta.age': fields.Integer,
