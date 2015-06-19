@@ -141,7 +141,6 @@ class OfferResource(Resource):
             # If inactive, reactivate it
             if not offer.active:
                 session.query(Offer).filter(Offer.id == offer.id).update({"active": True})
-                session.commit()
                 return offer, 201
             else:
                 return {}, 200
@@ -150,6 +149,7 @@ class OfferResource(Resource):
         offer = Offer(user_id=loggedin_data['user_id'],
                       level_id=offer_args['level_id'],
                       subject_id=offer_args['subject_id'], active=True)
+        session.add(offer)
 
         return offer, 201
 
