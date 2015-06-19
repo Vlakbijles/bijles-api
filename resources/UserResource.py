@@ -161,6 +161,9 @@ class UserResource(Resource):
                              photo_id=fb_data['picture'],
                              facebook_id=fb_data['id'])
 
+        if (usermeta_data['description']):
+            user.meta.description = usermeta_data['description']
+
         session.add(user)
         session.commit()
 
