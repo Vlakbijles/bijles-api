@@ -105,7 +105,7 @@ class UserResource(Resource):
     @authentication(None)
     @marshal_with(user_fields)
     def get(self):
-        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
 
         user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
         if not user:
@@ -122,8 +122,8 @@ class UserResource(Resource):
     @api_validation
     @marshal_with(user_fields)
     def post(self):
-        user_data = user_parser.parse_args(data_parser("user", self.args))
-        usermeta_data = usermeta_parser.parse_args(data_parser("usermeta", self.args))
+        user_data = user_parser.parse_args(data_parser("user"))
+        usermeta_data = usermeta_parser.parse_args(data_parser("usermeta"))
 
         # Check if email is already used for another user
         user = session.query(User).filter(User.email == user_data['email']).first()

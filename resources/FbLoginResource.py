@@ -37,7 +37,7 @@ class FbLoginResource(Resource):
 
     @api_validation
     def post(self):
-        fb = fb_access_token_parser.parse_args(data_parser("facebook", self.args))
+        fb = fb_access_token_parser.parse_args(data_parser("facebook"))
 
         fb_user_data = get_fb_user_data(fb['access_token'])
 

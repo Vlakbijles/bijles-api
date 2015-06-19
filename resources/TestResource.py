@@ -39,6 +39,8 @@ class TestResource(Resource):
 
     @marshal_with(offer_fields)
     def get(self):
-        offers = session.query(Offer).filter(Offer.user_id == 5, Offer.active).all()
+        offer_data = offer_parser.parse_args(data_parser("offer"))
 
-        return offers, 200
+        print offer_data
+
+        return {}, 200

@@ -118,8 +118,8 @@ class OfferResource(Resource):
     @authentication(None)
     @marshal_with(offer_created_fields)
     def post(self):
-        offer_args = offer_parser.parse_args(data_parser("offer", self.args))
-        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
+        offer_args = offer_parser.parse_args(data_parser("offer"))
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
 
         user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
         if not user:
@@ -167,7 +167,7 @@ class OfferByIdResource(Resource):
     @api_validation
     @authentication(None)
     def delete(self, id):
-        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
 
         offer = session.query(Offer).filter(Offer.id == id).first()
         if not offer:

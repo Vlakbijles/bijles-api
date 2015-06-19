@@ -16,7 +16,8 @@ main_parser.add_argument('data', type=dict, required=True, help="data")
 main_parser.add_argument('hash', type=str, required=True, help="hash")
 
 
-def data_parser(field, args):
+def data_parser(field):
+    args = main_parser.parse_args()
     data_parser = reqparse.RequestParser()
     data_parser.add_argument(field, type=dict, required=True, help=field, location=('data'))
     return data_parser.parse_args(args)
@@ -49,6 +50,7 @@ fb_access_token_parser.add_argument('access_token', type=str, required=True, hel
 offer_parser = reqparse.RequestParser()
 offer_parser.add_argument('subject_id', type=str, required=True, location=('offer'))
 offer_parser.add_argument('level_id', type=str, required=True, location=('offer'))
+offer_parser.add_argument('active', type=str, required=True, location=('offer'))
 
 
 # Offer Search parser used for parsing the search query arguments
