@@ -10,7 +10,6 @@ api = Api(app)
 
 from resources.UserResource import UserByIdResource, UserResource
 from resources.OfferResource import OfferByUserIdResource, OfferResource, OfferByIdResource
-# from resources.LoginResource import LoginResource
 from resources.FbLoginResource import FbLoginResource
 from resources.ReviewResource import ReviewByUserIdResource
 from resources.SubjectResource import SubjectResource
@@ -22,7 +21,6 @@ api.add_resource(UserByIdResource, '/user/<int:id>')
 api.add_resource(UserResource, '/user')
 
 # Login
-# api.add_resource(LoginResource, '/login')
 api.add_resource(FbLoginResource, '/fblogin')
 
 # Offer

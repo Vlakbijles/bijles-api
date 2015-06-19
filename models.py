@@ -3,13 +3,6 @@
     models.py
     Contains classes for declaring SQLAlchemy models
 
-    Implemented classes/models with corresponding table in db:
-    User      (user)
-    UserMeta  (user_meta)
-    Offer     (offer)
-    Subject   (subject)
-    Level     (level)
-    Review    (review)
 """
 
 
@@ -31,94 +24,120 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "user"
 
-    id = Column('id', Integer, primary_key=True)
-    email = Column('email', String(255), unique=True)
-    password = Column('password', String(64))
-    verified = Column('verified', Boolean)
-    join_date = Column('join_date', DateTime)
-    last_login = Column('last_login', DateTime)
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255), nullable=False, unique=True)
+    password = Column(String(64))
+    verified = Column(Boolean)
+    join_date = Column(DateTime)
+    last_login = Column(DateTime)
 
-    offers = relationship("Offer")
-    meta = relationship("UserMeta", uselist=False)
-    token = relationship("Token")
+    meta = relationship("UserMeta", uselist=False, backref="user")
+    offers = relationship("Offer", backref="user")
+    token = relationship("Token", backref="user")
+
+    def __repr__(self):
+        return "<User(email='%s')>" % (self.email)
 
 
 class UserMeta(Base):
     __tablename__ = 'user_meta'
 
     id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
-    name = Column("name", String(64))
-    surname = Column("surname", String(64))
-    age = Column("age", Integer)
-    zipcode = Column("zipcode", String(20))
-    city = Column("city", String(100))
-    latitude = Column("latitude", DOUBLE)
-    longitude = Column("longitude", DOUBLE)
-    phone = Column("phone", String(10))
-    photo_id = Column("photo_id", String(255))
-    facebook_id = Column("facebook_id", String(255))
+    name = Column(String(64), nullable=False)
+    surname = Column(String(64), nullable=False)
+    age = Column(Integer)
+    zipcode = Column(String(20))
+    city = Column(String(100))
+    latitude = Column(DOUBLE)
+    longitude = Column(DOUBLE)
+    phone = Column(String(10))
+    photo_id = Column(String(255), nullable=False)
+    facebook_id = Column(String(255), nullable=False)
     description = Column(Text)
+
+    def __repr__(self):
+        return "<UserMeta(name='%s', surname='%s')>" % (self.name, self.surname)
 
 
 class Offer(Base):
     __tablename__ = "offer"
 
-    id = Column('id', Integer, primary_key=True)
-    user_id = Column('user_id', Integer, ForeignKey("user.id"))
-    subject_id = Column('subject_id', Integer, ForeignKey("subject.id"))
-    level_id = Column('level_id', Integer, ForeignKey("level.id"))
-    active = Column('active', Boolean)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    subject_id = Column(Integer, ForeignKey('subject.id'))
+    level_id = Column(Integer, ForeignKey('level.id'))
+    active = Column(Boolean)
 
     # Define uniqueness of combination of columns
     Index('user_id', 'subject_id', 'level_id', unique=True)
 
     subject = relationship("Subject")
-    user = relationship("User")
     level = relationship("Level")
-    review = relationship("Review")
+    review = relationship("Review", backref="offer")
+
+    def __repr__(self):
+        return "<Offer(user_id='%d', subject_id='%d', level id='%d')>" % (
+            self.user_id, self.subject_id, self.level_id)
 
 
 class Subject(Base):
     __tablename__ = 'subject'
 
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(64), nullable=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), nullable=False)
+
+    def __repr__(self):
+        return "<Subject(id='%d', name='%s')>" % (self.id, self.name)
 
 
 class Level(Base):
     __tablename__ = 'level'
 
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(64), nullable=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), nullable=False)
+
+    def __repr__(self):
+        return "<Level(id='%d', name='%s')>" % (self.id, self.name)
 
 
 class Review(Base):
     __tablename__ = 'review'
 
-    offer_id = Column('offer_id', Integer, ForeignKey("offer.id"), primary_key=True)
-    author_id = Column('author_id', Integer, ForeignKey("user.id"))
-    rating = Column('rating', Integer)
-    description = Column('description', Text)
-    create_date = Column('create_date', DateTime)
+    offer_id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
+    author_id = Column(Integer, ForeignKey("user.id"))
+    rating = Column(Integer)
+    description = Column(Text)
+    create_date = Column(DateTime)
 
-    author = relationship("User")
-    offer = relationship("Offer")
+    author = relationship("User", backref="given_reviews")
+
+    def __repr__(self):
+        return "<Author(offer_id='%d', author_id='%d', rating='%d')>" % (
+            self.offer_id, self.author_id, self.rating)
 
 
 class Zipcode(Base):
     __tablename__ = 'zipcode'
 
-    id = Column('id', Integer, primary_key=True)
-    zipcode = Column('zipcode', String(7))
-    zipcode_id = Column('zipcode_id', Integer)
-    city = Column('city', String(100))
-    lat = Column('lat', DOUBLE)
-    lon = Column('lon', DOUBLE)
+    id = Column(Integer, primary_key=True)
+    zipcode = Column(String(7))
+    zipcode_id = Column(Integer)
+    city = Column(String(100))
+    lat = Column(DOUBLE)
+    lon = Column(DOUBLE)
+
+    def __repr__(self):
+        return "<Zipcode(zipcode='%s', city='%s')>" % (
+            self.zipcode, self.city)
 
 
 class Token(Base):
     __tablename__ = 'token'
 
-    user_id = Column('user_id', Integer, ForeignKey("user.id"), primary_key=True)
-    hash = Column('hash', String(255), unique=True, primary_key=True)
-    create_date = Column('create_date', Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
+    hash = Column(String(255), unique=True, primary_key=True)
+    create_date = Column(Integer, primary_key=True)
+
+    def __repr__(self):
+        return "<Token(user_id='%d', hash='%s')>" % (
+            self.user_id, self.hash)
