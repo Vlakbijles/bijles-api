@@ -50,7 +50,6 @@ fb_access_token_parser.add_argument('access_token', type=str, required=True, hel
 offer_parser = reqparse.RequestParser()
 offer_parser.add_argument('subject_id', type=str, required=True, location=('offer'))
 offer_parser.add_argument('level_id', type=str, required=True, location=('offer'))
-offer_parser.add_argument('active', type=str, required=True, location=('offer'))
 
 
 # Offer Search parser used for parsing the search query arguments

@@ -10,7 +10,7 @@ import httplib
 import json
 import hmac
 import time
-
+from random import randint
 from hashlib import sha256
 
 conn = httplib.HTTPConnection("localhost:5000")
@@ -21,8 +21,8 @@ loc = "1012BH"
 # uri = "/user?"
 # uri = "/user/1/review?"
 # uri = "/offer?loc={loc}&range=1000000&subject=1&level=2&page=2&sortby=apj".format(loc=loc)
-uri = "/test?"
-method = "GET"
+uri = "/offer?"
+method = "POST"
 utc_time = str(int(time.time()))
 
 
@@ -39,9 +39,8 @@ data = {
             "token_hash": "4222029021da7403537c00ff01ce8f4068a008333eb28b423e7f5ce68b260db7",
         },
         "offer": {
-            "subject_id": 42,
+            "subject_id": randint(1, 200),
             "level_id": 2,
-            "active": True,
         },
         "usermeta": {
             "zipcode": "1078MK",

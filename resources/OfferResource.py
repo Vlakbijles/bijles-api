@@ -148,7 +148,7 @@ class OfferResource(Resource):
         # Create offer when it doesn't already exist
         offer = Offer(user_id=loggedin_data['user_id'],
                       level_id=offer_args['level_id'],
-                      subject_id=offer_args['subject_id'], active=True)
+                      subject_id=offer_args['subject_id'])
         session.add(offer)
 
         return offer, 201
