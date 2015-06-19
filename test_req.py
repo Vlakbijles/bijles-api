@@ -19,8 +19,8 @@ api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
 loc = "1012BH"
 # uri = "/user?"
-# uri = "/user/1/review?"
-uri = "/offer?loc={loc}&range=1000000&subject=1&level=2&page=2&sortby=apj".format(loc=loc)
+uri = "/user/1/review?"
+# uri = "/offer?loc={loc}&range=1000000&subject=1&level=2&page=2&sortby=apj".format(loc=loc)
 method = "GET"
 utc_time = str(int(time.time()))
 

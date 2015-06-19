@@ -35,11 +35,6 @@ class FbLoginResource(Resource):
 
     """
 
-    def __init__(self):
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
-
     @api_validation
     def post(self):
         fb = fb_access_token_parser.parse_args(data_parser("facebook", self.args))
@@ -55,6 +50,5 @@ class FbLoginResource(Resource):
 
         token = Token(user_id=user.id, hash=token_hash, create_date=create_date)
         session.add(token)
-        session.commit()
 
         return marshal({'user_id': user.id, 'token_hash': token_hash}, fblogin_fields), 200

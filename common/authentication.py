@@ -10,18 +10,11 @@ import time
 from hashlib import sha256
 from os import urandom
 from functools import wraps
-from flask.ext.restful import reqparse
 from flask.ext.restful import abort
 
 from models import Token
 from common.db import session
-
-loggedin_data_parser = reqparse.RequestParser()
-loggedin_data_parser.add_argument('loggedin', type=dict, required=True, help="loggedin", location=('data'))
-
-loggedin_parser = reqparse.RequestParser()
-loggedin_parser.add_argument('user_id', type=int, required=True, help="user_id", location=('loggedin'))
-loggedin_parser.add_argument('token_hash', type=str, required=True, help="token_hash", location=('loggedin'))
+from common.args_parsers import main_parser, data_parser, loggedin_parser
 
 
 # TODO: different types of authentication
@@ -37,8 +30,7 @@ def authentication(auth_type):
 
             utc_now = int(time.time())
 
-            loggedin_data_args = loggedin_data_parser.parse_args(args[0].args)
-            loggedin_data = loggedin_parser.parse_args(loggedin_data_args)
+            loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", main_parser.parse_args()))
 
             # Query for Token with given user id and hash
             token = session.query(Token).filter(Token.user_id == loggedin_data['user_id'],

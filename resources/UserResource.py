@@ -47,11 +47,6 @@ class UserByIdResource(Resource):
 
     """
 
-    def __init__(self):
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
-
     @api_validation
     @marshal_with(user_fields)
     def get(self, id):
@@ -105,11 +100,6 @@ class UserResource(Resource):
     POST is used for creating a new User model
 
     """
-
-    def __init__(self):
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
 
     @api_validation
     @authentication(None)
@@ -166,6 +156,5 @@ class UserResource(Resource):
             user.meta.description = usermeta_data['description']
 
         session.add(user)
-        session.commit()
 
         return user, 201

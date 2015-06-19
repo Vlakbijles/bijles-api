@@ -8,11 +8,14 @@
 import hmac
 import json
 import time
-
 from functools import wraps
 from hashlib import sha256
 from config import api_users
-from resources import abort
+
+from flask.ext.restful import abort
+from flask.ext.restful import request
+
+from common.args_parsers import main_parser
 
 
 def api_validation(f):
@@ -29,7 +32,7 @@ def api_validation(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
 
-        data_dict = args[0].args
+        data_dict = main_parser.parse_args()
         utc_now = int(time.time())
 
         # Ignore requests older than 600 seconds
@@ -45,8 +48,8 @@ def api_validation(f):
                 data_json = json.dumps(data_dict, sort_keys=True, separators=(",", ":"))
 
                 reconstructed_hash = hmac.new(str(api_key), data_json, sha256)
-                reconstructed_hash.update(args[0].full_path)
-                reconstructed_hash.update(args[0].method)
+                reconstructed_hash.update(request.full_path)
+                reconstructed_hash.update(request.method)
 
                 if reconstructed_hash.hexdigest() == provided_hash:
                     return f(*args, **kwargs)

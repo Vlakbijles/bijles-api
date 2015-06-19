@@ -39,12 +39,6 @@ class OfferByUserIdResource(Resource):
 
     """
 
-    def __init__(self):
-        # Parse all class-wide used data
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
-
     @api_validation
     @marshal_with(offer_fields)
     def get(self, id):
@@ -72,12 +66,6 @@ class OfferResource(Resource):
 
     """
 
-    def __init__(self):
-        # Parse all class-wide used data
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
-
     @api_validation
     @marshal_with(offer_fields)
     def get(self):
@@ -104,8 +92,13 @@ class OfferResource(Resource):
             offer_lon = float(offer.user.meta.longitude)
             if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < offer_query['range']:
                 offer.distance = latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon)
-                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
-                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('rating_avg')).join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
+                # Get average review rating for all user offers, given the user id
+                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')). \
+                    join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
+                # Get number of reviews for all user offers, given the user id
+                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('no_reviews')). \
+                    join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
+
                 result_offers.append(offer)
 
         if not result_offers:
@@ -137,20 +130,18 @@ class OfferResource(Resource):
                                             Offer.level_id == offer_args['level_id']).first()
         if offer:
             # If inactive, reactivate it
-            if offer.active == False:
+            if not offer.active:
                 session.query(Offer).filter(Offer.id == offer.id).update({"active": True})
                 session.commit()
                 return {}, 201
             else:
                 return {}, 200
 
-        offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
-                              level_id=offer_args['level_id'],
-                              subject_id=offer_args['subject_id'],
-                              active=True)
+        # Create offer when it doesn't already exist
+        offer = Offer(user_id=loggedin_data['user_id'],
+                      level_id=offer_args['level_id'],
+                      subject_id=offer_args['subject_id'], active=True)
 
-        session.add(offer)
-        session.commit()
         return {}, 201
 
 
@@ -163,12 +154,6 @@ class OfferByIdResource(Resource):
            to permit only deleting offers when they are yours
 
     """
-
-    def __init__(self):
-        # Parse all class-wide used data
-        self.method = request.method
-        self.full_path = request.full_path
-        self.args = main_parser.parse_args()
 
     @api_validation
     @authentication(None)
@@ -186,9 +171,7 @@ class OfferByIdResource(Resource):
         review = session.query(Review).filter(Review.offer_id == id).first()
         if not review:
             session.delete(offer)
-            session.commit()
         else:
             session.query(Offer).filter(Offer.id == id).update({"active": False})
-            session.commit()
 
         return {}, 200

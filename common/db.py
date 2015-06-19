@@ -18,6 +18,7 @@ db_uri = 'mysql://{user}:{password}@{host}/{name}?charset=utf8'.format(
 Session = sessionmaker(autocommit=False,
                        autoflush=False,
                        bind=create_engine(db_uri))
+
 session = scoped_session(Session)
 
 
@@ -28,5 +29,4 @@ def get_or_create(session, model, **kwargs):
     else:
         instance = model(**kwargs)
         session.add(instance)
-        session.commit()
         return instance

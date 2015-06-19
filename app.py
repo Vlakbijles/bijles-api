@@ -3,6 +3,8 @@
 from flask import Flask
 from flask.ext.restful import Api
 
+from common.db import session
+
 from config import server
 
 app = Flask(__name__)
@@ -14,6 +16,7 @@ from resources.FbLoginResource import FbLoginResource
 from resources.ReviewResource import ReviewByUserIdResource
 from resources.SubjectResource import SubjectResource
 from resources.LevelResource import LevelResource
+from resources.TestResource import TestResource
 
 # Routes
 # User
@@ -37,5 +40,17 @@ api.add_resource(SubjectResource, '/subject/all')
 # Levels
 api.add_resource(LevelResource, '/level/all')
 
+# Test
+api.add_resource(TestResource, '/test')
+
+
+@app.teardown_request
+def shutdown_session(response_or_exc):
+    if response_or_exc is None:
+        session.commit()
+    session.remove()
+    return response_or_exc
+
 if __name__ == '__main__':
+    # app.run(host=server["host"], port=server["port"])
     app.run(host=server["host"], port=server["port"], debug=True)
