@@ -28,6 +28,10 @@ offer_fields = {
     'user.meta.no_reviews': fields.Integer,
 }
 
+offer_id_fields = {
+    'id': fields.Integer,
+}
+
 
 class OfferByUserIdResource(Resource):
     """
@@ -140,7 +144,7 @@ class OfferResource(Resource):
             if offer.active == False:
                 session.query(Offer).filter(Offer.id == offer.id).update({"active": True})
                 session.commit()
-                return {}, 201
+                return marshal({'id': offer.id}, offer_id_fields), 201
             else:
                 return {}, 200
 
@@ -151,7 +155,7 @@ class OfferResource(Resource):
 
         session.add(offer)
         session.commit()
-        return {}, 201
+        return marshal({'id': offer.id}, offer_id_fields), 201
 
 
 class OfferByIdResource(Resource):
