@@ -150,6 +150,7 @@ class OfferResource(Resource):
                       level_id=offer_args['level_id'],
                       subject_id=offer_args['subject_id'])
         session.add(offer)
+        session.flush()
 
         return offer, 201
 
