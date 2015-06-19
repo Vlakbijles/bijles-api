@@ -66,7 +66,7 @@ class Offer(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     subject_id = Column(Integer, ForeignKey('subject.id'))
     level_id = Column(Integer, ForeignKey('level.id'))
-    active = Column(Boolean, default=False)
+    active = Column(Boolean, default=True)
 
     # Define uniqueness of combination of columns
     Index('user_id', 'subject_id', 'level_id', unique=True)
