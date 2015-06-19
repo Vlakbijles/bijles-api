@@ -143,7 +143,7 @@ class OfferResource(Resource):
                 session.query(Offer).filter(Offer.id == offer.id).update({"active": True})
                 return offer, 201
             else:
-                return {}, 200
+                return [], 200
 
         # Create offer when it doesn't already exist
         offer = Offer(user_id=loggedin_data['user_id'],
