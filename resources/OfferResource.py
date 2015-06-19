@@ -131,6 +131,13 @@ class OfferResource(Resource):
         if not level:
             abort(404, message="Level with id={} doesn't exist".format(offer_args['level_id']))
 
+        # Check if user already has this offer
+        offer = session.query(Offer).filter(Offer.user_id == loggedin_data['user_id'],
+                                            Offer.subject_id == offer_args['subject_id'],
+                                            Offer.level_id == offer_args['level_id']).first()
+        if offer:
+            return {}, 200
+
         offer = get_or_create(session, Offer, user_id=loggedin_data['user_id'],
                               level_id=offer_args['level_id'],
                               subject_id=offer_args['subject_id'],
