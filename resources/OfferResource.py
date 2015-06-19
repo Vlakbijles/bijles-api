@@ -28,6 +28,14 @@ offer_fields = {
     'user.meta.no_reviews': fields.Integer,
 }
 
+offer_created_fields = {
+    'id': fields.Integer,
+    'level_id': fields.Integer,
+    'subject_id': fields.Integer,
+    'level.name': fields.String,
+    'subject.name': fields.String,
+}
+
 
 class OfferByUserIdResource(Resource):
     """
@@ -108,6 +116,7 @@ class OfferResource(Resource):
 
     @api_validation
     @authentication(None)
+    @marshal_with(offer_created_fields)
     def post(self):
         offer_args = offer_parser.parse_args(data_parser("offer", self.args))
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", self.args))
@@ -133,7 +142,7 @@ class OfferResource(Resource):
             if not offer.active:
                 session.query(Offer).filter(Offer.id == offer.id).update({"active": True})
                 session.commit()
-                return {}, 201
+                return offer, 201
             else:
                 return {}, 200
 
@@ -142,7 +151,7 @@ class OfferResource(Resource):
                       level_id=offer_args['level_id'],
                       subject_id=offer_args['subject_id'], active=True)
 
-        return {}, 201
+        return offer, 201
 
 
 class OfferByIdResource(Resource):
