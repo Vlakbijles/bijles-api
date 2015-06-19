@@ -14,7 +14,7 @@ from flask.ext.restful import abort
 
 from models import Token
 from common.db import session
-from common.args_parsers import main_parser, data_parser, loggedin_parser
+from common.args_parsers import data_parser, loggedin_parser
 
 
 # TODO: different types of authentication
@@ -30,7 +30,7 @@ def authentication(auth_type):
 
             utc_now = int(time.time())
 
-            loggedin_data = loggedin_parser.parse_args(data_parser("loggedin", main_parser.parse_args()))
+            loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
 
             # Query for Token with given user id and hash
             token = session.query(Token).filter(Token.user_id == loggedin_data['user_id'],
