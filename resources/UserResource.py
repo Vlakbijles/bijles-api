@@ -117,7 +117,41 @@ class UserResource(Resource):
     @authentication(None)
     @marshal_with(user_fields)
     def put(self):
-        pass
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
+        user_data = user_parser.parse_args(data_parser("user"))
+        usermeta_data = usermeta_put_parser.parse_args(data_parser("usermeta"))
+
+        # Check if email is already used for another user
+        user = session.query(User).filter(User.id != loggedin_data["user_id"],
+                                          User.email == user_data['email']).first()
+        if user:
+            abort(400, message="Email ({}) is already in use".format(user_data['email']))
+
+        # Check if zipcode is valid
+        zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
+        if not zipcode:
+            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+
+        # Check if description does not exceed max length of 1000
+        if len(usermeta_data) > 1000:
+            abort(400, message="Description exceeded max length of 1000 chars")
+
+        # Update user data, TODO: combine in one query
+        session.query(User).filter(
+                User.id == loggedin_data["user_id"]).update(
+                        {"email": user_data["email"]})
+        session.query(UserMeta).filter(
+                UserMeta.id == loggedin_data["user_id"]).update(
+                        {"description": usermeta_data["description"],
+                         "zipcode": usermeta_data["zipcode"],
+                         "latitude": zipcode.lat,
+                         "longitude": zipcode.lon,
+                         "city": zipcode.city})
+
+        # TODO find a better way, not pretty
+        updated_user = session.query(User).filter(User.id == loggedin_data["user_id"]).first()
+        return updated_user, 200
+
 
     @api_validation
     @marshal_with(user_fields)

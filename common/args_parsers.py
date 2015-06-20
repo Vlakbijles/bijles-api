@@ -35,6 +35,10 @@ usermeta_parser.add_argument('fb_token', required=True, type=str, help="fb_token
 usermeta_parser.add_argument('phone', type=str, help="phone", location=('usermeta'))
 usermeta_parser.add_argument('description', type=str, help="description", location=('usermeta'))
 
+# Used for parsing the fields inside the usermeta field when updating a users profile
+usermeta_put_parser = reqparse.RequestParser()
+usermeta_put_parser.add_argument('zipcode', required=True, type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
+usermeta_put_parser.add_argument('description', type=str, help="description", location=('usermeta'))
 
 # Used for parsing the fields inside the loggedin field
 loggedin_parser = reqparse.RequestParser()
