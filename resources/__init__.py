@@ -21,7 +21,7 @@ from common.api_validation import api_validation
 from common.authentication import authentication, create_token
 from common.fbapi import get_fb_user_data
 from common.args_parsers import (main_parser, data_parser, user_parser,
-                                 usermeta_parser, usermeta_put_parser, offer_parser,
+                                 user_meta_parser, user_meta_put_parser, offer_parser,
                                  offersearch_parser, loggedin_parser,
                                  fb_access_token_parser)
 
@@ -29,5 +29,5 @@ from common.args_parsers import (main_parser, data_parser, user_parser,
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
            'create_token', 'main_parser', 'data_parser', 'user_parser',
-           'usermeta_parser', 'usermeta_put_parser', 'offer_parser', 'offersearch_parser',
+           'user_meta_parser', 'user_meta_put_parser', 'offer_parser', 'offersearch_parser',
            'loggedin_parser', 'fb_access_token_parser', 'get_or_create', 'get_fb_user_data']

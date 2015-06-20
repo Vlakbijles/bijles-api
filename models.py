@@ -40,7 +40,7 @@ class User(Base):
 
 
 class UserMeta(Base):
-    __tablename__ = 'usermeta'
+    __tablename__ = 'user_meta'
 
     id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
     name = Column(String(64), nullable=False)

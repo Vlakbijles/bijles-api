@@ -177,7 +177,7 @@ POST
 		        "user_data":     {
                                    "email":   "<user email>"
                                  },
-                "usermeta_data": {
+                "user_meta_data": {
                                    "zipcode": "<user zipcode>",
                                    "fb_id":   "<user facebook token>",
                                  }
@@ -195,7 +195,7 @@ PUT
 		        "user_data":     {
                                    "email":   "<user email>"
                                  },
-                "usermeta_data": {
+                "user_meta_data": {
                                    "phone":       "<user phone>",
                                    "zipcode":     "<user zipcode>",
                                    "description": "<user description>"

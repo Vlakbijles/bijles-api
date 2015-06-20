@@ -60,10 +60,10 @@ class UserByIdResource(Resource):
     # @api_validation
     # @marshal_with(user_fields)
     # def put(self, id):
-    #     # Parse from the "user" field and "usermeta" field
+    #     # Parse from the "user" field and "user_meta" field
     #     user_data_args = user_data_parser.parse_args(self.args)
     #     user_data = user_parser.parse_args(user_data_args)
-    #     usermeta_data = usermeta_parser.parse_args(user_data_args)
+    #     user_meta_data = user_meta_parser.parse_args(user_data_args)
     #
     #     # Check if user with id exists
     #     user = session.query(User).filter(User.id == id).first()
@@ -77,7 +77,7 @@ class UserByIdResource(Resource):
     #     session.add(user)
     #     session.commit()
     #
-    #     return usermeta_data, 201
+    #     return user_meta_data, 201
     #
     # @api_validation
     # def delete(self, id):
@@ -119,7 +119,7 @@ class UserResource(Resource):
     def put(self):
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
         user_data = user_parser.parse_args(data_parser("user"))
-        usermeta_data = usermeta_put_parser.parse_args(data_parser("usermeta"))
+        user_meta_data = user_meta_put_parser.parse_args(data_parser("user_meta"))
 
         # Get model of the user that is logged in
         user = session.query(User).filter(User.id == loggedin_data["user_id"]).one()
@@ -130,20 +130,20 @@ class UserResource(Resource):
                 abort(400, message="Email ({}) is already in use".format(user_data['email']))
             user.email = user_data["email"]
 
-        if (user.meta.postal_code != usermeta_data["postal_code"]):
+        if (user.meta.postal_code != user_meta_data["postal_code"]):
             # Check if postal_code is valid
-            postal_code = session.query(PostalCode).filter(PostalCode.postal_code == usermeta_data['postal_code']).first()
+            postal_code = session.query(PostalCode).filter(PostalCode.postal_code == user_meta_data['postal_code']).first()
             if not postal_code:
-                abort(400, message="PostalCode ({}) not found".format(usermeta_data['postal_code']))
+                abort(400, message="PostalCode ({}) not found".format(user_meta_data['postal_code']))
             user.meta.postal_code = postal_code.postal_code
             user.meta.latitude = postal_code.lat
             user.meta.longitude = postal_code.lon
             user.meta.city = postal_code.city
 
-        if (user.meta.description != usermeta_data["description"]):
-            if len(usermeta_data["description"]) > 1000:
+        if (user.meta.description != user_meta_data["description"]):
+            if len(user_meta_data["description"]) > 1000:
                 abort(400, message="Description exceeded max length of 1000 chars")
-            user.meta.description = usermeta_data["description"]
+            user.meta.description = user_meta_data["description"]
 
         session.add(user)
 
@@ -153,7 +153,7 @@ class UserResource(Resource):
     @marshal_with(user_fields)
     def post(self):
         user_data = user_parser.parse_args(data_parser("user"))
-        usermeta_data = usermeta_parser.parse_args(data_parser("usermeta"))
+        user_meta_data = user_meta_parser.parse_args(data_parser("user_meta"))
 
         # Check if email is already used for another user
         user = session.query(User).filter(User.email == user_data['email']).first()
@@ -161,13 +161,13 @@ class UserResource(Resource):
             abort(400, message="Email ({}) is already in use".format(user_data['email']))
 
         # Check if postal_code is valid
-        postal_code = session.query(PostalCode).filter(PostalCode.postal_code == usermeta_data['postal_code']).first()
+        postal_code = session.query(PostalCode).filter(PostalCode.postal_code == user_meta_data['postal_code']).first()
         if not postal_code:
-            abort(400, message="Postal code ({}) not found".format(usermeta_data['postal_code']))
+            abort(400, message="Postal code ({}) not found".format(user_meta_data['postal_code']))
 
         user = User(email=user_data['email'])
 
-        fb_data = get_fb_user_data(usermeta_data['fb_token'])
+        fb_data = get_fb_user_data(user_meta_data['fb_token'])
 
         # Check if the facebook token matches with real account
         if not fb_data:
@@ -182,8 +182,8 @@ class UserResource(Resource):
                              photo_id=fb_data['picture'],
                              facebook_id=fb_data['id'])
 
-        if (usermeta_data['description']):
-            user.meta.description = usermeta_data['description']
+        if (user_meta_data['description']):
+            user.meta.description = user_meta_data['description']
 
         session.add(user)
 
