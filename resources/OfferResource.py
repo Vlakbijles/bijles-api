@@ -12,8 +12,8 @@ Offer Resouces contains the following classes:
 
 
 from resources import *  # NOQA
-from common.helper import latlon_distance, zipcode_to_id
-from models import User, Offer, Zipcode, Review, Subject, Level
+from common.helper import latlon_distance, postal_code_to_id
+from models import User, Offer, PostalCode, Review, Subject, Level
 
 
 offer_fields = {
@@ -81,7 +81,8 @@ class OfferResource(Resource):
         # TODO kloptonnie mn jung, ff overdoen, alleen actieve shit weergeven
         offer_query = offersearch_parser.parse_args()
         offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
-                                             Offer.level_id == offer_query['level']).all()
+                                             Offer.level_id == offer_query['level'],
+                                             Offer.active).all()
 
         subject = session.query(Subject).filter(Subject.id == offer_query['subject']).first()
         if not subject:
@@ -91,12 +92,12 @@ class OfferResource(Resource):
         if not level:
             abort(400, message="Level with id={} doesn't exist".format(offer_query['level']))
 
-        zipcode = session.query(Zipcode).filter(Zipcode.zipcode_id == zipcode_to_id(offer_query['loc'])).first()
-        if not zipcode:
-            abort(400, message="Zipcode ({}) not found".format(offer_query['loc']))
+        postal_code = session.query(PostalCode).filter(PostalCode.postal_code == postal_code_to_id(offer_query['loc'])).first()
+        if not postal_code:
+            abort(400, message="Postal code ({}) not found".format(offer_query['loc']))
 
-        loc_lat = float(zipcode.lat)
-        loc_lon = float(zipcode.lon)
+        loc_lat = float(postal_code.lat)
+        loc_lon = float(postal_code.lon)
 
         result_offers = []
 

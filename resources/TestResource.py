@@ -12,7 +12,7 @@ Offer Resouces contains the following classes:
 
 
 from resources import *  # NOQA
-from models import User, Offer, Zipcode, Review, Subject, Level
+from models import User, Offer, PostalCode, Review, Subject, Level
 
 offer_fields = {
     'id': fields.Integer,

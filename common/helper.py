@@ -29,5 +29,5 @@ def latlon_distance(lat1, lon1, lat2, lon2):
     return distance
 
 
-def zipcode_to_id(zipcode):
-    return zipcode[:4] + str(ord(zipcode[4].upper())) + str(ord(zipcode[5].upper()))
+def postal_code_to_id(postal_code):
+    return postal_code[:4] + str(ord(postal_code[4].upper())) + str(ord(postal_code[5].upper()))

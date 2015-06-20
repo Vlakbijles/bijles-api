@@ -11,7 +11,7 @@
 
 
 from resources import *  # NOQA
-from models import User, UserMeta, Zipcode
+from models import User, UserMeta, PostalCode
 
 
 offer_fields = {
@@ -28,7 +28,7 @@ user_fields = {
     'meta.name': fields.String,
     'meta.surname': fields.String,
     'meta.age': fields.Integer,
-    'meta.zipcode': fields.String,
+    'meta.postal_code': fields.String,
     'meta.city': fields.String,
     'meta.photo_id': fields.String,
     'meta.description': fields.String,
@@ -130,15 +130,15 @@ class UserResource(Resource):
                 abort(400, message="Email ({}) is already in use".format(user_data['email']))
             user.email = user_data["email"]
 
-        if (user.meta.zipcode != usermeta_data["zipcode"]):
-            # Check if zipcode is valid
-            zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
-            if not zipcode:
-                abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
-            user.meta.zipcode = zipcode.zipcode
-            user.meta.latitude = zipcode.lat
-            user.meta.longitude = zipcode.lon
-            user.meta.city = zipcode.city
+        if (user.meta.postal_code != usermeta_data["postal_code"]):
+            # Check if postal_code is valid
+            postal_code = session.query(PostalCode).filter(PostalCode.postal_code == usermeta_data['postal_code']).first()
+            if not postal_code:
+                abort(400, message="PostalCode ({}) not found".format(usermeta_data['postal_code']))
+            user.meta.postal_code = postal_code.postal_code
+            user.meta.latitude = postal_code.lat
+            user.meta.longitude = postal_code.lon
+            user.meta.city = postal_code.city
 
         if (user.meta.description != usermeta_data["description"]):
             if len(usermeta_data["description"]) > 1000:
@@ -160,10 +160,10 @@ class UserResource(Resource):
         if user:
             abort(400, message="Email ({}) is already in use".format(user_data['email']))
 
-        # Check if zipcode is valid
-        zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
-        if not zipcode:
-            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+        # Check if postal_code is valid
+        postal_code = session.query(PostalCode).filter(PostalCode.postal_code == usermeta_data['postal_code']).first()
+        if not postal_code:
+            abort(400, message="Postal code ({}) not found".format(usermeta_data['postal_code']))
 
         user = User(email=user_data['email'])
 
@@ -175,10 +175,10 @@ class UserResource(Resource):
 
         user.meta = UserMeta(name=fb_data['name'],
                              surname=fb_data['surname'],
-                             zipcode=zipcode.zipcode,
-                             latitude=zipcode.lat,
-                             longitude=zipcode.lon,
-                             city=zipcode.city,
+                             postal_code=postal_code.postal_code,
+                             latitude=postal_code.lat,
+                             longitude=postal_code.lon,
+                             city=postal_code.city,
                              photo_id=fb_data['picture'],
                              facebook_id=fb_data['id'])
 

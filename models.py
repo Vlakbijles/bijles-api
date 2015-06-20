@@ -40,13 +40,13 @@ class User(Base):
 
 
 class UserMeta(Base):
-    __tablename__ = 'user_meta'
+    __tablename__ = 'usermeta'
 
     id = Column("user_id", Integer, ForeignKey("user.id"), primary_key=True)
     name = Column(String(64), nullable=False)
     surname = Column(String(64), nullable=False)
     age = Column(Integer)
-    zipcode = Column(String(20))
+    postal_code = Column(String(20))
     city = Column(String(100))
     latitude = Column(DOUBLE)
     longitude = Column(DOUBLE)
@@ -116,19 +116,19 @@ class Review(Base):
             self.offer_id, self.author_id, self.rating)
 
 
-class Zipcode(Base):
-    __tablename__ = 'zipcode'
+class PostalCode(Base):
+    __tablename__ = 'postal_code'
 
     id = Column(Integer, primary_key=True)
-    zipcode = Column(String(7))
-    zipcode_id = Column(Integer)
+    postal_code = Column(String(7))
+    postal_code_id = Column(Integer)
     city = Column(String(100))
     lat = Column(DOUBLE)
     lon = Column(DOUBLE)
 
     def __repr__(self):
-        return "<Zipcode(zipcode='%s', city='%s')>" % (
-            self.zipcode, self.city)
+        return "<PostalCode(postal_code='%s', city='%s')>" % (
+            self.postal_code, self.city)
 
 
 class Token(Base):
