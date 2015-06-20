@@ -107,7 +107,7 @@ class UserResource(Resource):
     def get(self):
         loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
 
-        user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
+        user = session.query(User).filter(User.id == loggedin_data["user_id"]).one()
         if not user:
             abort(204, message="User with id={} doesn't exist".format(id))
 
@@ -121,37 +121,33 @@ class UserResource(Resource):
         user_data = user_parser.parse_args(data_parser("user"))
         usermeta_data = usermeta_put_parser.parse_args(data_parser("usermeta"))
 
-        # Check if email is already used for another user
-        user = session.query(User).filter(User.id != loggedin_data["user_id"],
-                                          User.email == user_data['email']).first()
-        if user:
-            abort(400, message="Email ({}) is already in use".format(user_data['email']))
+        # Get model of the user that is logged in
+        user = session.query(User).filter(User.id == loggedin_data["user_id"]).one()
 
-        # Check if zipcode is valid
-        zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
-        if not zipcode:
-            abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+        if (user.email != user_data["email"]):
+            # Check if email is already used for another user
+            if session.query(User).filter(User.email == user_data['email']).first():
+                abort(400, message="Email ({}) is already in use".format(user_data['email']))
+            user.email = user_data["email"]
 
-        # Check if description does not exceed max length of 1000
-        if len(usermeta_data) > 1000:
-            abort(400, message="Description exceeded max length of 1000 chars")
+        if (user.meta.zipcode != usermeta_data["zipcode"]):
+            # Check if zipcode is valid
+            zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
+            if not zipcode:
+                abort(400, message="Zipcode ({}) not found".format(usermeta_data['zipcode']))
+            user.meta.zipcode = zipcode.zipcode
+            user.meta.latitude = zipcode.lat
+            user.meta.longitude = zipcode.lon
+            user.meta.city = zipcode.city
 
-        # Update user data, TODO: combine in one query
-        session.query(User).filter(
-                User.id == loggedin_data["user_id"]).update(
-                        {"email": user_data["email"]})
-        session.query(UserMeta).filter(
-                UserMeta.id == loggedin_data["user_id"]).update(
-                        {"description": usermeta_data["description"],
-                         "zipcode": usermeta_data["zipcode"],
-                         "latitude": zipcode.lat,
-                         "longitude": zipcode.lon,
-                         "city": zipcode.city})
+        if (user.meta.description != usermeta_data["description"]):
+            if len(usermeta_data["description"]) > 1000:
+                abort(400, message="Description exceeded max length of 1000 chars")
+            user.meta.description = usermeta_data["description"]
 
-        # TODO find a better way, not pretty
-        updated_user = session.query(User).filter(User.id == loggedin_data["user_id"]).first()
-        return updated_user, 200
+        session.add(user)
 
+        return user, 200
 
     @api_validation
     @marshal_with(user_fields)

@@ -27,7 +27,6 @@ def data_parser(field):
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('email', type=str, required=True, help="email", location=('user'))
 
-
 # Used for parsing the fields inside the usermeta field
 usermeta_parser = reqparse.RequestParser()
 usermeta_parser.add_argument('zipcode', required=True, type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), help="zipcode", location=('usermeta'))
