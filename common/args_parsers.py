@@ -54,7 +54,7 @@ offer_parser.add_argument('level_id', type=str, required=True, location=('offer'
 
 # Offer Search parser used for parsing the search query arguments
 offersearch_parser = reqparse.RequestParser()
-offersearch_parser.add_argument('loc', type=str, required=True, location=('args'))
+offersearch_parser.add_argument('loc', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), required=True, location=('args'))
 offersearch_parser.add_argument('range', type=int, required=True, location=('args',))
 offersearch_parser.add_argument('subject', type=int, required=True, location=('args'))
 offersearch_parser.add_argument('level', type=int, required=True, location=('args'))
