@@ -128,7 +128,7 @@ class UserResource(Resource):
         # Check if email is already used for another user
         user = session.query(User).filter(User.email == user_data['email']).first()
         if user:
-            abort(400, message="Email ({}) is already in use".format(user_date['email']))
+            abort(400, message="Email ({}) is already in use".format(user_data['email']))
 
         # Check if zipcode is valid
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode == usermeta_data['zipcode']).first()
