@@ -92,7 +92,7 @@ class OfferResource(Resource):
         if not level:
             abort(400, message="Level with id={} doesn't exist".format(offer_query['level']))
 
-        postal_code = session.query(PostalCode).filter(PostalCode.postal_code == postal_code_to_id(offer_query['loc'])).first()
+        postal_code = session.query(PostalCode).filter(PostalCode.postal_code_id == postal_code_to_id(offer_query['loc'])).first()
         if not postal_code:
             abort(400, message="Postal code ({}) not found".format(offer_query['loc']))
 
