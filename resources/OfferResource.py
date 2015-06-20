@@ -83,11 +83,11 @@ class OfferResource(Resource):
 
         subject = session.query(Subject).filter(Subject.id == offer_query['subject']).first()
         if not subject:
-            abort(404, message="Subject with id={} doesn't exist".format(offer_query['subject']))
+            abort(400, message="Subject with id={} doesn't exist".format(offer_query['subject']))
 
         level = session.query(Level).filter(Level.id == offer_query['level']).first()
         if not level:
-            abort(404, message="Level with id={} doesn't exist".format(offer_query['level']))
+            abort(400, message="Level with id={} doesn't exist".format(offer_query['level']))
 
         zipcode = session.query(Zipcode).filter(Zipcode.zipcode_id == zipcode_to_id(offer_query['loc'])).first()
         if not zipcode:
