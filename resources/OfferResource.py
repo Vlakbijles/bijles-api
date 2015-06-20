@@ -77,6 +77,8 @@ class OfferResource(Resource):
     @api_validation
     @marshal_with(offer_fields)
     def get(self):
+
+        # TODO kloptonnie mn jung, ff overdoen, alleen actieve shit weergeven
         offer_query = offersearch_parser.parse_args()
         offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
                                              Offer.level_id == offer_query['level']).all()
