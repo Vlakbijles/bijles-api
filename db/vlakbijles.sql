@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 18, 2015 at 06:23 AM
+-- Generation Time: Jun 20, 2015 at 01:02 PM
 -- Server version: 5.5.43-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.9
 
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `offer` (
   KEY `fk_offer_user_idx` (`user_id`),
   KEY `fk_offer_subject_idx` (`subject_id`),
   KEY `fk_offer_level_idx` (`level_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=169 ;
 
 -- --------------------------------------------------------
 
@@ -105,14 +105,14 @@ CREATE TABLE IF NOT EXISTS `token` (
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
-  `password` varchar(64) NOT NULL,
-  `verified` tinyint(1) NOT NULL,
+  `password` varchar(64) DEFAULT NULL,
+  `verified` tinyint(1) DEFAULT NULL,
   `join_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_login` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
@@ -124,14 +124,14 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
   `user_id` int(11) NOT NULL,
   `name` varchar(64) NOT NULL,
   `surname` varchar(64) NOT NULL,
-  `age` int(11) NOT NULL,
+  `age` int(11) DEFAULT NULL,
   `zipcode` varchar(20) NOT NULL,
   `city` varchar(100) NOT NULL,
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
-  `phone` varchar(10) NOT NULL,
+  `phone` varchar(10) DEFAULT NULL,
   `photo_id` varchar(255) NOT NULL,
-  `facebook_id` varchar(255) DEFAULT NULL,
+  `facebook_id` varchar(255) NOT NULL,
   `description` text,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_id` (`user_id`)
@@ -192,13 +192,13 @@ ALTER TABLE `review`
 -- Constraints for table `token`
 --
 ALTER TABLE `token`
-  ADD CONSTRAINT `fk_offer_user2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_offer_user2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `user_meta`
 --
 ALTER TABLE `user_meta`
-  ADD CONSTRAINT `fk_user_meta_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_user_meta_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
