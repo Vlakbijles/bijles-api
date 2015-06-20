@@ -109,7 +109,7 @@ class UserResource(Resource):
 
         user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
         if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
+            abort(204, message="User with id={} doesn't exist".format(id))
 
         return user, 200
 
