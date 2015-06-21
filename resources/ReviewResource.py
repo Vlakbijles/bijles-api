@@ -40,10 +40,7 @@ class ReviewByUserIdResource(Resource):
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
 
-        reviews = []
-
-        for offer in user.offers:
-            reviews += offer.review
+        reviews = session.query(Review).join(Review.offer).filter(Offer.user_id == id).all()
 
         return reviews, 200
 
