@@ -169,7 +169,7 @@ class OfferByIdResource(Resource):
 
         offer = session.query(Offer).filter(Offer.id == id).first()
         if not offer:
-            abort(404, message="Offer with id={} doesn't exist".format(id))
+            abort(400, message="Offer with id={} doesn't exist".format(id))
 
         if (offer.user.id != loggedin_data['user_id']):
             abort(401, message="Not authorized to delete offer with id={}".format(id))
