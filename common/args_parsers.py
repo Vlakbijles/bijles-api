@@ -47,12 +47,10 @@ loggedin_parser.add_argument('token_hash', type=str, required=True, help="token_
 fb_access_token_parser = reqparse.RequestParser()
 fb_access_token_parser.add_argument('access_token', type=str, required=True, help="access_token", location=('facebook'))
 
-
 # Offer parser used for parsing the fields inside offer field
 offer_parser = reqparse.RequestParser()
 offer_parser.add_argument('subject_id', type=str, required=True, location=('offer'))
 offer_parser.add_argument('level_id', type=str, required=True, location=('offer'))
-
 
 # Offer Search parser used for parsing the search query arguments
 offersearch_parser = reqparse.RequestParser()
@@ -62,3 +60,8 @@ offersearch_parser.add_argument('subject', type=int, required=True, location=('a
 offersearch_parser.add_argument('level', type=int, required=True, location=('args'))
 offersearch_parser.add_argument('page', type=int, required=True, location=('args'))
 offersearch_parser.add_argument('sortby', type=str, required=True, location=('args'))
+
+# Verify Parser is used for parsing the argument to check verify validity
+verify_parser = reqparse.RequestParser()
+verify_parser.add_argument('verify_type', type=str, required=True, location=('args'))
+verify_parser.add_argument('verify_data', type=str, required=True, location=('args'))

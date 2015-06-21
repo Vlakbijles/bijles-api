@@ -52,6 +52,7 @@ def api_validation(f):
                 reconstructed_hash.update(request.method)
 
                 if reconstructed_hash.hexdigest() == provided_hash:
+                    args[0].data = data_dict
                     return f(*args, **kwargs)
 
         return abort(401, message="Unauthorized API request")

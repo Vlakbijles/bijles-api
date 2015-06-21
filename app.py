@@ -16,6 +16,7 @@ from resources.FbLoginResource import FbLoginResource
 from resources.ReviewResource import ReviewByUserIdResource
 from resources.SubjectResource import SubjectResource
 from resources.LevelResource import LevelResource
+from resources.VerifyResource import VerifyResource
 from resources.TestResource import TestResource
 
 # Routes
@@ -39,6 +40,9 @@ api.add_resource(SubjectResource, '/subject/all')
 
 # Levels
 api.add_resource(LevelResource, '/level/all')
+
+# Verify
+api.add_resource(VerifyResource, '/verify')
 
 # Test
 api.add_resource(TestResource, '/test')
