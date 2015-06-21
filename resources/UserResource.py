@@ -32,7 +32,7 @@ user_fields = {
     'meta.city': fields.String,
     'meta.photo_id': fields.String,
     'meta.description': fields.String,
-    'meta.endorsments': fields.Integer,
+    'meta.no_endorsed': fields.Integer,
     'meta.no_reviews': fields.Integer,
 }
 
