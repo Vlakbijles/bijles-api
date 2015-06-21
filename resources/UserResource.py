@@ -11,7 +11,7 @@
 
 
 from resources import *  # NOQA
-from models import User, UserMeta, PostalCode
+from models import User, UserMeta, PostalCode, Review, Offer
 
 
 offer_fields = {
@@ -32,7 +32,8 @@ user_fields = {
     'meta.city': fields.String,
     'meta.photo_id': fields.String,
     'meta.description': fields.String,
-    # 'offers': fields.List(fields.Nested(offer_fields)),
+    'meta.endorsments': fields.Integer,
+    'meta.no_reviews': fields.Integer,
 }
 
 
@@ -53,6 +54,13 @@ class UserByIdResource(Resource):
         user = session.query(User).filter(User.id == id).first()
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
+
+        # Get average review rating for all user offers, given the user id
+        user.meta.endorsed = session.query(func.count(Review).label('endorsments')). \
+            join(Review.offer).filter(Offer.user_id == id, Review.endorsed).first()[0]
+        # Get number of reviews for all user offers, given the user id
+        user.meta.no_reviews = session.query(func.count(Review).label('no_reviews')). \
+            join(Review.offer).filter(Offer.user_id == id).first()[0]
 
         return user, 200
 
