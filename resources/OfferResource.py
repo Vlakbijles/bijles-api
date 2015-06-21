@@ -79,7 +79,6 @@ class OfferResource(Resource):
 
         offer_query = offersearch_parser.parse_args()
         offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
-                                             Offer.level_id == offer_query['level'],
                                              Offer.active).all()
 
         subject = session.query(Subject).filter(Subject.id == offer_query['subject']).first()
@@ -175,11 +174,7 @@ class OfferByIdResource(Resource):
         if (offer.user.id != loggedin_data['user_id']):
             abort(401, message="Not authorized to delete offer with id={}".format(id))
 
-        # Only delete offers with no reviews linked to them, otherwise deactivate
-        review = session.query(Review).filter(Review.offer_id == id).first()
-        if not review:
-            session.delete(offer)
-        else:
-            session.query(Offer).filter(Offer.id == id).update({"active": False})
+        # Never actually delete offer just set active to False
+        session.query(Offer).filter(Offer.id == id).update({"active": False})
 
         return {}, 200
