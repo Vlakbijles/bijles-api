@@ -16,6 +16,7 @@ review_fields = {
     'endorsed': fields.Boolean,
     'description': fields.String,
     'date': fields.DateTime,
+    'author.id': fields.Integer,
     'author.meta.photo_id': fields.String,
     'author.meta.name': fields.String,
     'author.meta.surname': fields.String,
