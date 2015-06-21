@@ -1,4 +1,4 @@
-#"!/usr/bin/env python
+#!/usr/bin/env python
 """
     ReviewResource.py, for actions on the Review model,
     this file is a module and has no use as stand-alone file
@@ -44,6 +44,7 @@ class ReviewByUserIdResource(Resource):
 
         return reviews, 200
 
+
 class ReviewResource(Resource):
     """
     Class for handling POST "/review"
@@ -71,9 +72,9 @@ class ReviewResource(Resource):
             return [], 200
 
         # Create review
-        review = Review(offer_id = review_data["offer_id"],
-                        author_id = loggedin_data["user_id"],
-                        endorsed = review_data["endorsed"])
+        review = Review(offer_id=review_data["offer_id"],
+                        author_id=loggedin_data["user_id"],
+                        endorsed=review_data["endorsed"])
 
         if review_data["description"]:
             # Check if description exceeds max length
