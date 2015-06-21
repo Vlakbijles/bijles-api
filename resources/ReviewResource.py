@@ -13,7 +13,7 @@ from models import User
 
 
 review_fields = {
-    'rating': fields.Integer,
+    'enorsed': fields.Boolean,
     'description': fields.String,
     'author.meta.photo_id': fields.String,
     'author.meta.name': fields.String,

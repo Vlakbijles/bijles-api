@@ -105,7 +105,7 @@ class Review(Base):
 
     offer_id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
     author_id = Column(Integer, ForeignKey("user.id"))
-    rating = Column(Integer)
+    endorsed = Column(Boolean, default=True)
     description = Column(Text)
     create_date = Column(DateTime)
 
