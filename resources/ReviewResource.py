@@ -9,7 +9,7 @@
 
 
 from resources import *  # NOQA
-from models import User, Review
+from models import User, Review, Offer
 
 
 review_fields = {
@@ -56,4 +56,30 @@ class ReviewResource(Resource):
     @authentication(None)
     @marshal_with(review_fields)
     def post(self):
-        pass
+        loggedin_data = loggedin_parser.parse_args(data_parser("loggedin"))
+        review_data = review_parser.parse_args(data_parser("review"))
+
+        # Check if offer exists
+        offer = session.query(Offer).filter(Offer.id == review_data["offer_id"]).first()
+        if not offer:
+            abort(400, message="Offer with id={} doesn't exist".format(review_data["offer_id"]))
+
+        # Check if user has already reviewed this offer
+        user = session.query(Review).filter(Review.offer_id == review_data["offer_id"],
+                                            Review.author_id == loggedin_data["user_id"]).first()
+        if user:
+            return [], 200
+
+        # Create review
+        review = Review(offer_id = review_data["offer_id"],
+                        author_id = loggedin_data["user_id"],
+                        endorsed = review_data["endorsed"])
+
+        if review_data["description"]:
+            # Check if description exceeds max length
+            if len(review_data["description"]) > 500:
+                abort(400, message="Description exceeded max length of 500 chars")
+            review.description = review_data["description"]
+
+        session.add(review)
+        return review, 201

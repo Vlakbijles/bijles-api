@@ -47,12 +47,16 @@ loggedin_parser.add_argument('token_hash', type=str, required=True, help="token_
 fb_access_token_parser = reqparse.RequestParser()
 fb_access_token_parser.add_argument('access_token', type=str, required=True, help="access_token", location=('facebook'))
 
-
 # Offer parser used for parsing the fields inside offer field
 offer_parser = reqparse.RequestParser()
 offer_parser.add_argument('subject_id', type=str, required=True, location=('offer'))
 offer_parser.add_argument('level_id', type=str, required=True, location=('offer'))
 
+# Review parser, used for parsing new reviews
+review_parser = reqparse.RequestParser()
+review_parser.add_argument("offer_id", type=int, required=True, help="offer_id", location=("review"))
+review_parser.add_argument("description", type=str, required=False, help="description", location=("review"))
+review_parser.add_argument("endorsed", type=bool, required=True, help="endorsed", location=("review"))
 
 # Offer Search parser used for parsing the search query arguments
 offersearch_parser = reqparse.RequestParser()
