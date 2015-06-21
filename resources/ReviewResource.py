@@ -19,6 +19,8 @@ review_fields = {
     'author.meta.photo_id': fields.String,
     'author.meta.name': fields.String,
     'author.meta.surname': fields.String,
+    'offer.subject.name': fields.String,
+    'offer.level.name': fields.String,
 }
 
 
