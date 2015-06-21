@@ -24,7 +24,6 @@ offer_fields = {
     'level.name': fields.String,
     'subject.name': fields.String,
     'distance': fields.Integer,
-    'user.meta.rating': fields.Float,
     'user.meta.no_reviews': fields.Integer,
 }
 
@@ -106,13 +105,6 @@ class OfferResource(Resource):
             offer_lon = float(offer.user.meta.longitude)
             if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < offer_query['range']:
                 offer.distance = latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon)
-                # Get average review rating for all user offers, given the user id
-                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')). \
-                    join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
-                # Get number of reviews for all user offers, given the user id
-                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('no_reviews')). \
-                    join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
-
                 result_offers.append(offer)
 
         if not result_offers:
