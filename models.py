@@ -107,7 +107,7 @@ class Review(Base):
     author_id = Column(Integer, ForeignKey("user.id"))
     endorsed = Column(Boolean, default=True)
     description = Column(Text)
-    create_date = Column(DateTime)
+    date = Column(DateTime)
 
     author = relationship("User", backref="given_reviews")
 

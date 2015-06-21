@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#"!/usr/bin/env python
 """
     ReviewResource.py, for actions on the Review model,
     this file is a module and has no use as stand-alone file
@@ -9,12 +9,13 @@
 
 
 from resources import *  # NOQA
-from models import User
+from models import User, Review
 
 
 review_fields = {
-    'enorsed': fields.Boolean,
+    'endorsed': fields.Boolean,
     'description': fields.String,
+    'date': fields.DateTime,
     'author.meta.photo_id': fields.String,
     'author.meta.name': fields.String,
     'author.meta.surname': fields.String,
@@ -42,3 +43,17 @@ class ReviewByUserIdResource(Resource):
             reviews += offer.review
 
         return reviews, 200
+
+class ReviewResource(Resource):
+    """
+    Class for handling POST "/review"
+
+    POST is used to create reviews
+
+    """
+
+    @api_validation
+    @authentication(None)
+    @marshal_with(review_fields)
+    def post(self):
+        pass
