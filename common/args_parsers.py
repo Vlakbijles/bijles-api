@@ -52,6 +52,12 @@ offer_parser = reqparse.RequestParser()
 offer_parser.add_argument('subject_id', type=str, required=True, location=('offer'))
 offer_parser.add_argument('level_id', type=str, required=True, location=('offer'))
 
+# Review parser, used for parsing new reviews
+review_parser = reqparse.RequestParser()
+review_parser.add_argument("offer_id", type=int, required=True, help="offer_id", location=("review"))
+review_parser.add_argument("description", type=str, required=False, help="description", location=("review"))
+review_parser.add_argument("endorsed", type=bool, required=True, help="endorsed", location=("review"))
+
 # Offer Search parser used for parsing the search query arguments
 offersearch_parser = reqparse.RequestParser()
 offersearch_parser.add_argument('loc', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), required=True, location=('args'))

@@ -19,10 +19,10 @@ api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
 loc = "1012BH"
 # uri = "/user?"
-# uri = "/user/1/review?"
+uri = "/user/1?"
 # uri = "/offer?loc={loc}&range=1000000&subject=1&level=2&page=2&sortby=apj".format(loc=loc)
-uri = "/offer?"
-method = "POST"
+uri = "/verify/email?verify_data=ed1@plus.nl"
+method = "GET"
 utc_time = str(int(time.time()))
 
 
@@ -31,19 +31,21 @@ data = {
     "timestamp": utc_time,
     "data": {
         "user": {
-            "email": "ed@plus.nl",
+            "email": "ed1@plus.nl",
             "password": "edmin",
         },
         "loggedin": {
             "user_id": 1,
-            "token_hash": "4222029021da7403537c00ff01ce8f4068a008333eb28b423e7f5ce68b260db7",
+            "token_hash": "sda",
         },
+
         "offer": {
-            "subject_id": randint(1, 200),
+            "subject_id": 128,  # randint(1, 200),
             "level_id": 2,
         },
-        "usermeta": {
-            "zipcode": "1078MK",
+        "user_meta": {
+            "zipcode": "1078MJ",
+            "description": "JAJAJA HENK",
         }
     },
 }

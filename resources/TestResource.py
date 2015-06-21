@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-OfferResource.py, for actions on the Offer model which is related to the User model.
+OfferResource.py, for ac_tions on the Offer model which is related to the User model.
 this file is a module and has no use as stand-alone file
 
 Offer Resouces contains the following classes:

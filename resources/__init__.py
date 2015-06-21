@@ -22,13 +22,13 @@ from common.authentication import authentication, create_token
 from common.fbapi import get_fb_user_data
 from common.args_parsers import (main_parser, data_parser, user_parser,
                                  user_meta_parser, user_meta_put_parser, offer_parser,
-                                 offersearch_parser, loggedin_parser,
+                                 offersearch_parser, loggedin_parser, review_parser,
                                  fb_access_token_parser, verify_parser)
 
 
 __all__ = ['reqparse', 'request', 'abort', 'Resource', 'fields', 'marshal',
            'marshal_with', 'func', 'session', 'api_validation', 'authentication',
-           'create_token', 'main_parser', 'data_parser', 'user_parser',
+           'create_token', 'main_parser', 'data_parser', 'user_parser', 'review_parser',
            'user_meta_parser', 'user_meta_put_parser', 'offer_parser', 'offersearch_parser',
            'loggedin_parser', 'fb_access_token_parser', 'verify_parser',
            'get_or_create', 'get_fb_user_data']
