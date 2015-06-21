@@ -46,6 +46,8 @@ class OfferByUserIdResource(Resource):
 
     """
 
+    # TODO add param to url for all or only active reviews
+
     @api_validation
     @marshal_with(offer_fields)
     def get(self, id):
