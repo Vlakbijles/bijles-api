@@ -83,4 +83,5 @@ class ReviewResource(Resource):
             review.description = review_data["description"]
 
         session.add(review)
+        session.flush()
         return review, 201
