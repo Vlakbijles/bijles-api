@@ -21,6 +21,7 @@ offer_fields = {
     'user_id': fields.Integer,
     'user.meta.name': fields.String,
     'user.meta.surname': fields.String,
+    'user.meta.photo_id': fields.String,
     'level.name': fields.String,
     'subject.name': fields.String,
     'distance': fields.Integer,
