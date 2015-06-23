@@ -47,7 +47,8 @@ class ReviewByUserIdResource(Resource):
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
 
-        reviews = session.query(Review).join(Review.offer).filter(Offer.user_id == id).all()
+        reviews = session.query(Review).join(Review.offer).\
+            filter(Offer.user_id == id).order_by(Review.date).all()
 
         return reviews, 200
 
@@ -97,19 +98,16 @@ class ReviewResource(Resource):
             abort(400, message="Offer with id={} doesn't exist".format(review_data["offer_id"]))
 
         # Check if user is about to review himself
-        offer = session.query(Offer).filter(Offer.id == review_data["offer_id"],
-                                            Offer.user_id == loggedin_data["user_id"]).first()
-        if offer:
+        if offer.user_id == loggedin_data["user_id"]:
             abort(400, message="Not allowed to review own offer")
 
         # Check if user has already reviewed this offer
-        user = session.query(Review).filter(Review.offer_id == review_data["offer_id"],
-                                            Review.author_id == loggedin_data["user_id"]).first()
-        if user:
+        if session.query(Review).filter(Review.offer_id == offer.id,
+                                        Review.author_id == loggedin_data["user_id"]).first():
             return [], 200
 
         # Create review
-        review = Review(offer_id=review_data["offer_id"],
+        review = Review(offer_id=offer.id,
                         author_id=loggedin_data["user_id"],
                         endorsed=review_data["endorsed"])
 
@@ -121,4 +119,5 @@ class ReviewResource(Resource):
 
         session.add(review)
         session.flush()
+
         return review, 201
