@@ -144,7 +144,7 @@ Retrieving/creating/updating/removing user reviews:
 
 Retrieving offers:
 
-|METHOD   |`/offer?loc=X&range=X&subject=X&level=X&page=&sortby=X`|SUCCESS|ERROR|
+|METHOD   |`/offers?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page number>&order_by<distance, no_reviews, no_endorsed>`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
 |`GET`    |loc:, range:, subject_id:, level:, sortby:|`200`|`204`, `400`|
 
