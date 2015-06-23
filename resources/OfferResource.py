@@ -116,8 +116,8 @@ class OfferResource(Resource):
 
         # Filter offers on subject, level and active status
         offers = session.query((Offer.id).label("id"),
-                               (Subject.name).label("level"),
-                               (Level.name).label("subject"), UserMeta).\
+                               (Subject.name).label("subject"),
+                               (Level.name).label("level"), UserMeta).\
             join(Offer.user).join(User.meta).join(Offer.level).join(Offer.subject).\
             filter(Offer.active, Offer.level_id.like(offer_args['level_id']),
                    Offer.subject_id == offer_args['subject_id']).subquery()
@@ -148,9 +148,9 @@ class OfferResource(Resource):
         if (offer_args['order_by'] == 'distance'):
             offers = session.query(offers).order_by(offers.c.distance).all()
         elif (offer_args['order_by'] == 'no_endorsed'):
-            offers = session.query(offers).order_by(offers.c.no_endorsed).all()
+            offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).all()
         elif (offer_args['order_by'] == 'no_reviews'):
-            offers = session.query(offers).order_by(offers.c.no_reviews).all()
+            offers = session.query(offers).order_by(offers.c.no_reviews.desc()).all()
         # If not specified or specified invalid, order by distance
         else:
             offers = session.query(offers).order_by(offers.c.distance).all()

@@ -31,6 +31,7 @@ endorsment_fields = {
     'author.meta.surname': fields.String,
 }
 
+
 class ReviewByUserIdResource(Resource):
     """
     Class for handling the GET "/user/<int:id>/review"
@@ -66,7 +67,9 @@ class EndorsmentByUserIdResource(Resource):
         if not user:
             abort(404, message="User with id={} doesn't exist".format(id))
 
-        endorsments = session.query(Review).join(Review.offer).join(Offer.user).filter(Review.endorsed, User.id == id).group_by(Review.author_id).all()
+        endorsments = session.query(Review).join(Review.offer).join(Offer.user).\
+            filter(Review.endorsed, User.id == id).group_by(Review.author_id).all()
+
         if endorsments:
             return endorsments, 200
         else:
