@@ -30,7 +30,7 @@ class SubjectResource(Resource):
         subjects = session.query(Subject).all()
 
         if not subjects:
-            abort(404, message="No subjects found")
+            abort(204, message="No subjects found")
 
         # TODO remove extra header in final, temporarily allows cross-site ajax
         return subjects, 200, {"Access-Control-Allow-Origin": "*"}
