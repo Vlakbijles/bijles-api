@@ -39,5 +39,10 @@ class VerifyResource(Resource):
         elif (args['verify_type'] == "postal_code"):
             postal_code = session.query(PostalCode).filter(PostalCode.postal_code == args['verify_data']).first()
             if not postal_code:
-                abort(400, message="Postal code ({}) not found".format(postal_code.postal_code))
+                abort(400, message="Postal code ({}) not found".format(args['verify_data']))
+            return {}, 200
+        elif (args['verify_type'] == "subject"):
+            subject = session.query(Subject).filter(Subject.id == args['verify_data']).first()
+            if not subject:
+                abort(400, message="Subject with id=({}) not found".format(args['verify_data']))
             return {}, 200
