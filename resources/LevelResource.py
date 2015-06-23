@@ -31,7 +31,7 @@ class LevelResource(Resource):
         levels = session.query(Level).all()
 
         if not levels:
-            abort(404, message="No levels found")
+            abort(204, message="No levels found")
 
         # TODO remove extra header in final, temporarily allows cross-site ajax
         return levels, 200, {"Access-Control-Allow-Origin": "*"}

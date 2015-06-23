@@ -169,15 +169,15 @@ class OfferResource(Resource):
 
         user = session.query(User).filter(User.id == loggedin_data['user_id']).first()
         if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
+            abort(400, message="User with id={} doesn't exist".format(id))
 
         subject = session.query(Subject).filter(Subject.id == offer_args['subject_id']).first()
         if not subject:
-            abort(404, message="Subject with id={} doesn't exist".format(offer_args['subject_id']))
+            abort(400, message="Subject with id={} doesn't exist".format(offer_args['subject_id']))
 
         level = session.query(Level).filter(Level.id == offer_args['level_id']).first()
         if not level:
-            abort(404, message="Level with id={} doesn't exist".format(offer_args['level_id']))
+            abort(400, message="Level with id={} doesn't exist".format(offer_args['level_id']))
 
         # Check if user already has this offer
         offer = session.query(Offer).filter(Offer.user_id == loggedin_data['user_id'],
