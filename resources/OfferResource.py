@@ -24,10 +24,10 @@ offer_fields = {
     'user_id': fields.Integer,
     'user.meta.name': fields.String,
     'user.meta.surname': fields.String,
+    'user.meta.photo_id': fields.String,
     'level.name': fields.String,
     'subject.name': fields.String,
     'distance': fields.Integer,
-    'user.meta.rating': fields.Float,
     'user.meta.no_reviews': fields.Integer,
 }
 
@@ -63,6 +63,8 @@ class OfferByUserIdResource(Resource):
     POST is used for creating a new offer linked to the User model given the User id
 
     """
+
+    # TODO add param to url for all or only active reviews
 
     @api_validation
     @marshal_with(offer_fields)
@@ -213,7 +215,7 @@ class OfferByIdResource(Resource):
 
         offer = session.query(Offer).filter(Offer.id == id).first()
         if not offer:
-            abort(404, message="Offer with id={} doesn't exist".format(id))
+            abort(400, message="Offer with id={} doesn't exist".format(id))
 
         if (offer.user.id != loggedin_data['user_id']):
             abort(401, message="Not authorized to delete offer with id={}".format(id))
