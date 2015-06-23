@@ -85,10 +85,10 @@ class OfferResource(Resource):
 
     GET is used for receiving all offers given a searching specification,
         the search specification are:
-            - Location's latitude and longitude given in degrees
-            - Range around location, allowed distance to location in meters
-            - Subject, id of the subject
-            - Level, id of the level
+            - postal code
+            - Range around postal code, allowed distance to postal code in meters
+            - Subject id
+            - Level id
             - Sorting by, specifies the criteria to sort on
 
     """
