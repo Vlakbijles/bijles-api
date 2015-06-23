@@ -155,6 +155,9 @@ class OfferResource(Resource):
         else:
             offers = session.query(offers).order_by(offers.c.distance).all()
 
+        if not offers:
+            return [], 204
+
         return [offer._asdict() for offer in offers], 200
 
     @api_validation
