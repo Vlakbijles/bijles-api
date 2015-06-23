@@ -11,7 +11,7 @@ from sqlalchemy import Column
 from sqlalchemy import Index
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
-from sqlalchemy.dialects.mysql import DOUBLE
+from sqlalchemy import Float
 from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
@@ -32,7 +32,7 @@ class User(Base):
     last_login = Column(DateTime)
 
     meta = relationship("UserMeta", uselist=False, backref="user")
-    offers = relationship("Offer", backref="user")
+    offers = relationship("Offer")
     token = relationship("Token", backref="user")
 
     def __repr__(self):
@@ -48,8 +48,8 @@ class UserMeta(Base):
     age = Column(Integer)
     postal_code = Column(String(20))
     city = Column(String(100))
-    latitude = Column(DOUBLE)
-    longitude = Column(DOUBLE)
+    latitude = Column(Float)
+    longitude = Column(Float)
     phone = Column(String(10))
     photo_id = Column(String(255), nullable=False)
     facebook_id = Column(String(255), nullable=False)
@@ -71,9 +71,10 @@ class Offer(Base):
     # Define uniqueness of combination of columns
     Index('user_id', 'subject_id', 'level_id', unique=True)
 
+    user = relationship("User")
     subject = relationship("Subject")
     level = relationship("Level")
-    review = relationship("Review", backref="offer")
+    review = relationship("Review")
 
     def __repr__(self):
         return "<Offer(user_id='%d', subject_id='%d', level id='%d')>" % (
@@ -109,11 +110,12 @@ class Review(Base):
     description = Column(Text)
     date = Column(DateTime)
 
-    author = relationship("User", backref="given_reviews")
+    author = relationship("User")
+    offer = relationship("Offer")
 
     def __repr__(self):
-        return "<Author(offer_id='%d', author_id='%d', rating='%d')>" % (
-            self.offer_id, self.author_id, self.rating)
+        return "<Author(offer_id='%d', author_id='%d', endorsed='%d')>" % (
+            self.offer_id, self.author_id, self.endorsed)
 
 
 class PostalCode(Base):
@@ -123,8 +125,8 @@ class PostalCode(Base):
     postal_code = Column(String(7))
     postal_code_id = Column(Integer)
     city = Column(String(100))
-    lat = Column(DOUBLE)
-    lon = Column(DOUBLE)
+    lat = Column(Float)
+    lon = Column(Float)
 
     def __repr__(self):
         return "<PostalCode(postal_code='%s', city='%s')>" % (

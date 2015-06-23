@@ -12,9 +12,12 @@ Offer Resouces contains the following classes:
 
 
 from resources import *  # NOQA
-from common.helper import latlon_distance, postal_code_to_id
-from models import User, Offer, PostalCode, Review, Subject, Level
+from common.helper import postal_code_to_id
+from models import User, UserMeta, Offer, PostalCode, Review, Subject, Level
 
+from sqlalchemy import between
+from sqlalchemy import and_
+from sqlalchemy import case
 
 offer_fields = {
     'id': fields.Integer,
@@ -26,6 +29,20 @@ offer_fields = {
     'distance': fields.Integer,
     'user.meta.rating': fields.Float,
     'user.meta.no_reviews': fields.Integer,
+}
+
+offersearch_fields = {
+    'id': fields.Integer,
+    'user_id': fields.Integer,
+    'name': fields.String,
+    'surname': fields.String,
+    'photo_id': fields.String,
+    'city': fields.String,
+    'level': fields.String,
+    'subject': fields.String,
+    'distance': fields.Float,
+    'no_endorsed': fields.Float,
+    'no_reviews': fields.Integer,
 }
 
 offer_created_fields = {
@@ -75,49 +92,68 @@ class OfferResource(Resource):
     """
 
     @api_validation
-    @marshal_with(offer_fields)
+    @marshal_with(offersearch_fields)
     def get(self):
+        offer_args = offersearch_parser.parse_args()
 
-        offer_query = offersearch_parser.parse_args()
-        offers = session.query(Offer).filter(Offer.subject_id == offer_query['subject'],
-                                             Offer.active).all()
+        if not session.query(Subject).filter(Subject.id == offer_args['subject_id']).first():
+            abort(400, message="Subject with id={} doesn't exist".format(offer_args['subject_id']))
 
-        subject = session.query(Subject).filter(Subject.id == offer_query['subject']).first()
-        if not subject:
-            abort(400, message="Subject with id={} doesn't exist".format(offer_query['subject']))
+        if (offer_args['level_id'] != '%') and (not session.query(Level).filter(Level.id == offer_args['level_id']).first()):
+            abort(400, message="Level with id={} doesn't exist".format(offer_args['level_id']))
 
-        level = session.query(Level).filter(Level.id == offer_query['level']).first()
-        if not level:
-            abort(400, message="Level with id={} doesn't exist".format(offer_query['level']))
-
-        postal_code = session.query(PostalCode).filter(PostalCode.postal_code_id == postal_code_to_id(offer_query['loc'])).first()
+        # Check if given postal code is valid
+        postal_code = session.query(PostalCode).\
+            filter(PostalCode.postal_code_id == postal_code_to_id(offer_args['postal_code'])).first()
         if not postal_code:
-            abort(400, message="Postal code ({}) not found".format(offer_query['loc']))
+            abort(400, message="Postal code ({}) not found".format(offer_args['postal_code']))
 
-        loc_lat = float(postal_code.lat)
-        loc_lon = float(postal_code.lon)
+        # Cast to float for further use
+        postal_code.lat = float(postal_code.lat)
+        postal_code.lon = float(postal_code.lon)
 
-        result_offers = []
+        # Filter offers on subject, level and active status
+        offers = session.query((Offer.id).label("id"),
+                               (Subject.name).label("level"),
+                               (Level.name).label("subject"), UserMeta).\
+            join(Offer.user).join(User.meta).join(Offer.level).join(Offer.subject).\
+            filter(Offer.active, Offer.level_id.like(offer_args['level_id']),
+                   Offer.subject_id == offer_args['subject_id']).subquery()
 
-        # Check which offers are within given range and calculate their average rating
-        for offer in offers:
-            offer_lat = float(offer.user.meta.latitude)
-            offer_lon = float(offer.user.meta.longitude)
-            if latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon) < offer_query['range']:
-                offer.distance = latlon_distance(loc_lat, loc_lon, offer_lat, offer_lon)
-                # Get average review rating for all user offers, given the user id
-                offer.user.meta.rating = session.query(func.avg(Review.rating).label('rating_avg')). \
-                    join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
-                # Get number of reviews for all user offers, given the user id
-                offer.user.meta.no_reviews = session.query(func.count(Review.rating).label('no_reviews')). \
-                    join(Review.offer).filter(Offer.user_id == offer.user.id).first()[0]
+        # Calculate distance for each offer from given postal code, and filter on given range
+        offers = session.query(offers, func.round((111.045 * func.degrees(func.acos(func.cos(func.radians(postal_code.lat)) *
+                           func.cos(func.radians(offers.c.latitude)) *  # NOQA
+                           func.cos(func.radians(postal_code.lon - offers.c.longitude)) +
+                           func.sin(func.radians(postal_code.lat)) *
+                           func.sin(func.radians(offers.c.latitude))))), 2).label("distance")).\
+            filter(and_(between(offers.c.latitude,
+                                postal_code.lat - (offer_args['range'] / 111.045),
+                                postal_code.lat + (offer_args['range'] / 111.045)),
+                        between(offers.c.longitude,
+                                postal_code.lon - (offer_args['range'] /
+                                                     (111.045 * func.cos(func.radians(postal_code.lat)))),
+                                postal_code.lat + (offer_args['range'] /
+                                                     (111.045 * func.cos(func.radians(postal_code.lat))))))).subquery()
 
-                result_offers.append(offer)
+        # Calculate number of (endorsed) reviews for each user corresponding with a result offers
+        offers = session.query(offers, func.count(Review.endorsed).label("no_reviews"),
+                               func.count(case([(Review.endorsed, 1)])).label("no_endorsed")).\
+            join(Offer, Offer.user_id == offers.c.user_id).\
+            outerjoin(Review, Review.offer_id == Offer.id).\
+            group_by(offers.c.user_id).subquery()
 
-        if not result_offers:
-            abort(404, message="No offers found")
+        # Order result offers based on given argument
+        if (offer_args['order_by'] == 'distance'):
+            offers = session.query(offers).order_by(offers.c.distance).all()
+        elif (offer_args['order_by'] == 'no_endorsed'):
+            offers = session.query(offers).order_by(offers.c.no_endorsed).all()
+        elif (offer_args['order_by'] == 'no_reviews'):
+            offers = session.query(offers).order_by(offers.c.no_reviews).all()
+        # If not specified or specified invalid, order by distance
+        else:
+            offers = session.query(offers).order_by(offers.c.distance).all()
 
-        return result_offers, 200
+        return [offer._asdict() for offer in offers], 200
 
     @api_validation
     @authentication(None)
