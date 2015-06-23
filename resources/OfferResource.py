@@ -41,7 +41,7 @@ offersearch_fields = {
     'level': fields.String,
     'subject': fields.String,
     'distance': fields.Float,
-    'no_endorsed': fields.Float,
+    'no_endorsed': fields.Integer,
     'no_reviews': fields.Integer,
 }
 
