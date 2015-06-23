@@ -24,6 +24,12 @@ review_fields = {
     'offer.level.name': fields.String,
 }
 
+endorsment_fields = {
+    'author.id': fields.Integer,
+    'author.meta.photo_id': fields.String,
+    'author.meta.name': fields.String,
+    'author.meta.surname': fields.String,
+}
 
 class ReviewByUserIdResource(Resource):
     """
@@ -43,6 +49,28 @@ class ReviewByUserIdResource(Resource):
         reviews = session.query(Review).join(Review.offer).filter(Offer.user_id == id).all()
 
         return reviews, 200
+
+
+class EndorsmentByUserIdResource(Resource):
+    """
+    Class for handling the GET "/user/<int:id>/endorsment
+
+    GET is used to get a list of users who endorse the provided user
+
+    """
+
+    @api_validation
+    @marshal_with(endorsment_fields)
+    def get(self, id):
+        user = session.query(User).filter(User.id == id).first()
+        if not user:
+            abort(404, message="User with id={} doesn't exist".format(id))
+
+        endorsments = session.query(Review).join(Review.offer).join(Offer.user).filter(Review.endorsed, User.id == id).group_by(Review.author_id).all()
+        if endorsments:
+            return endorsments, 200
+        else:
+            return [], 204
 
 
 class ReviewResource(Resource):

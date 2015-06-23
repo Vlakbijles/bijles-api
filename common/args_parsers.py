@@ -60,12 +60,12 @@ review_parser.add_argument("endorsed", type=bool, required=True, help="endorsed"
 
 # Offer Search parser used for parsing the search query arguments
 offersearch_parser = reqparse.RequestParser()
-offersearch_parser.add_argument('loc', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), required=True, location=('args'))
-offersearch_parser.add_argument('range', type=int, required=True, location=('args',))
-offersearch_parser.add_argument('subject', type=int, required=True, location=('args'))
-offersearch_parser.add_argument('level', type=int, required=True, location=('args'))
+offersearch_parser.add_argument('postal_code', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), required=True, location=('args'))
+offersearch_parser.add_argument('range', type=int, default=50, location=('args'))
+offersearch_parser.add_argument('subject_id', type=int, required=True, location=('args'))
+offersearch_parser.add_argument('level_id', type=inputs.regex("[0-5]"), default='%', location=('args'))
 offersearch_parser.add_argument('page', type=int, required=True, location=('args'))
-offersearch_parser.add_argument('sortby', type=str, required=True, location=('args'))
+offersearch_parser.add_argument('order_by', type=str, default='distance', location=('args'))
 
 # Verify Parser is used for parsing the argument to check verify validity
 verify_parser = reqparse.RequestParser()
