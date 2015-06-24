@@ -53,7 +53,7 @@ class UserByIdResource(Resource):
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(404, message="User with id={} doesn't exist".format(id))
+            abort(204, message="User with id={} doesn't exist".format(id))
 
         # Get average review rating for all user offers, given the user id
         user.meta.no_endorsed = session.query(func.count(Review).label('no_endorsed')). \

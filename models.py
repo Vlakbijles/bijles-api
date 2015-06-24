@@ -74,7 +74,7 @@ class Offer(Base):
     user = relationship("User")
     subject = relationship("Subject")
     level = relationship("Level")
-    review = relationship("Review")
+    reviews = relationship("Review")
 
     def __repr__(self):
         return "<Offer(user_id='%d', subject_id='%d', level id='%d')>" % (
