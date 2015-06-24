@@ -111,6 +111,8 @@ Available requests
 201: succesfully created resource
 200: valid request, data sent in return
 
+Note: `200` where a `201` is also possible indicates the resource already exists
+
 
 Creating/editing users (POST, PUT), get own profile (GET):
 
@@ -128,6 +130,40 @@ Retrieving/updating user data:
 |`GET`    |data:-|`200`|`404`|
 
 
+Logging in
+
+|METHOD   |`/fblogin?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`POST`   |data:-|`200`, `202`|-|
+
+
+Verifying email addresses, postal codes and subject id's:
+
+|METHOD   |`/fblogin?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`   |Query string: ?verify_type=<str=email, postal_code, subject>&verify_data=<str:data>|`200`|`400`|
+
+Deleting offers
+
+|METHOD   |`/offer/<int:offer_id>?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`DELETE` |data:loggedin|`200`|`401`, `404`|
+
+
+List of subjects
+
+|METHOD   |`/subject/all?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data:-|`200`|`204`|
+
+
+List of levels
+
+|METHOD   |`/level/all?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data:-|`200`|`204`|
+
+
 Retrieving user's offers:
 
 |METHOD   |`/user/<int:user_id>/offer?`|SUCCESS|ERROR|
@@ -137,9 +173,24 @@ Retrieving user's offers:
 
 Retrieving list of reviews of user:
 
-|METHOD   |`/user/<int:user_id>/review?`|SUCCESS|ERROR|
+|method   |`/user/<int:user_id>/review?`|success|error|
 |---------|----------------------|-------|-----|
-|`GET`    |data:-|`200`|`404`|
+|`GET`    |data:-|`200`|`400`|
+
+
+Creating review:
+
+|METHOD   |`/review?`|SUCCESS|ERROR|
+|---------|----------------------|-------|-----|
+|`POST`   |data:-|`200`, `201`|`400`|
+
+
+Retrieving list of users endorsing a user:
+
+|METHOD   |`/user/<int:user_id>/endorsment?`|SUCCESS|ERROR|
+|---------|----------------------|-------|-----|
+|`GET`    |data:-|`200`|`400`, `404`|
+
 
 Retrieving/creating/updating/removing user reviews:
 
@@ -149,6 +200,7 @@ Retrieving/creating/updating/removing user reviews:
 |`POST`   |data:token,reviewdata|`201`|`400`, `401`|
 |`PUT`    |data:token,reviewdata|`200`|`400`, `401`, `404`|
 |`DELETE` |data:token|`200`|`401`, `404`|
+
 
 Retrieving offers (GET), creating offers (POST):
 
