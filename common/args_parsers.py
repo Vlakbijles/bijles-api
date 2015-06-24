@@ -58,6 +58,13 @@ review_parser.add_argument("offer_id", type=int, required=True, help="offer_id",
 review_parser.add_argument("description", type=str, required=False, help="description", location=("review"))
 review_parser.add_argument("endorsed", type=bool, required=True, help="endorsed", location=("review"))
 
+
+# Constants used for offer searching
+OFFER_PAGE_SIZE = 8
+ORDER_BY_DISTANCE = 'distance'
+ORDER_BY_NO_REVIEWS = 'reviews'
+ORDER_BY_NO_ENDORSED = 'no_endorsed'
+
 # Offer Search parser used for parsing the search query arguments
 offersearch_parser = reqparse.RequestParser()
 offersearch_parser.add_argument('postal_code', type=inputs.regex("[0-9]{4}[A-Za-z]{2}"), required=True, location=('args'))
@@ -65,7 +72,11 @@ offersearch_parser.add_argument('range', type=int, default=50, location=('args')
 offersearch_parser.add_argument('subject_id', type=int, required=True, location=('args'))
 offersearch_parser.add_argument('level_id', type=inputs.regex("[0-5]"), default='%', location=('args'))
 offersearch_parser.add_argument('page', type=int, required=True, location=('args'))
-offersearch_parser.add_argument('order_by', type=str, default='distance', location=('args'))
+offersearch_parser.add_argument('order_by', type=str, default=ORDER_BY_DISTANCE, location=('args'),
+                                choices=[ORDER_BY_DISTANCE,
+                                         ORDER_BY_NO_REVIEWS,
+                                         ORDER_BY_NO_ENDORSED])
+
 
 # Verify Parser is used for parsing the argument to check verify validity
 verify_parser = reqparse.RequestParser()

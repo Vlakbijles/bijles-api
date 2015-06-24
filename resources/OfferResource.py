@@ -73,6 +73,7 @@ class OfferByUserIdResource(Resource):
         if not user:
             abort(400, message="User with id={} doesn't exist".format(id))
         offers = session.query(Offer).filter(Offer.user_id == id, Offer.active).all()
+
         if not offers:
             return [], 204
 
@@ -144,16 +145,20 @@ class OfferResource(Resource):
             outerjoin(Review, Review.offer_id == Offer.id).\
             group_by(offers.c.user_id).subquery()
 
-        # Order result offers based on given argument
-        if (offer_args['order_by'] == 'distance'):
-            offers = session.query(offers).order_by(offers.c.distance).all()
-        elif (offer_args['order_by'] == 'no_endorsed'):
-            offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).all()
-        elif (offer_args['order_by'] == 'no_reviews'):
-            offers = session.query(offers).order_by(offers.c.no_reviews.desc()).all()
+        # Order result offers based on given argument, and add paging (8 results per page)
+        if (offer_args['order_by'] == ORDER_BY_DISTANCE):
+            offers = session.query(offers).order_by(offers.c.distance).\
+                limit(8).offset(8*offer_args['order_by']).all()
+        elif (offer_args['order_by'] == ORDER_BY_NO_ENDORSED):
+            offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).\
+                limit(8).offset(8*offer_args['order_by']).all()
+        elif (offer_args['order_by'] == ORDER_BY_NO_REVIEWS):
+            offers = session.query(offers).order_by(offers.c.no_reviews.desc()).\
+                limit(8).offset(8*offer_args['order_by']).all()
         # If not specified or specified invalid, order by distance
         else:
-            offers = session.query(offers).order_by(offers.c.distance).all()
+            offers = session.query(offers).order_by(offers.c.distance).\
+                limit(OFFER_PAGE_SIZE).offset(OFFER_PAGE_SIZE*offer_args['order_by']).all()
 
         if not offers:
             return [], 204
