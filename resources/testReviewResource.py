@@ -50,9 +50,7 @@ class ReviewByUserIdResource(Resource):
         reviews = session.query(Review).join(Review.offer).\
             filter(Offer.user_id == id, Review.description != "").order_by(Review.date.desc()).all()
 
-          if reviews:
-            return reviews, 200
-        else:
+        if not reviews:
             reviews = session.query(Review).filter(Review.author_id == id).all()
 
         return reviews, 200
@@ -76,10 +74,7 @@ class ReviewByUserSubjectIdResource(Resource):
         reviews = session.query(Review).join(Review.offer).filter(Offer.user_id == review_args['user_id'],
                                                                   Offer.subject_id == review_args['subject_id'])
 
-        if reviews:
-                return reviews, 200
-        else:
-            return [], 204
+        return reviews, 200
 
 
 class EndorsmentByUserIdResource(Resource):
