@@ -105,7 +105,7 @@ class Review(Base):
     __tablename__ = 'review'
 
     offer_id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
-    author_id = Column(Integer, ForeignKey("user.id"))
+    author_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
     endorsed = Column(Boolean, default=True)
     description = Column(Text)
     date = Column(DateTime)
