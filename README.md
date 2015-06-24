@@ -106,47 +106,56 @@ Content-type: application/json
 
 Available requests
 -------------------
-Creating users:
+400: invalid API request, error message attached
+204: valid request but no results
+201: succesfully created resource
+200: valid request, data sent in return
 
-|METHOD   |`/user`|SUCCESS|ERROR|
+
+Creating/editing users (POST, PUT), get own profile (GET):
+
+|METHOD   |`/user?`|SUCCESS|ERROR|
 |---------|-------|-------|-----|
 |`POST`   |data:userdata|`201`|`400`|
+|`PUT`    |data:userdata|`200`|`400`|
+|`GET`    |data:loggedin|`200`|`400`|
 
-Retrieving/updating user data, removing users:
 
-|METHOD   |`/user/user_id`|SUCCESS|ERROR|
+Retrieving/updating user data:
+
+|METHOD   |`/user/<int:user_id>?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`GET`    |data:-|`200`|`404`|
-|`PUT`    |data:token,iets|`200`|`400`, `401`, `404`|
-|`DELETE` |data:token,password|`200`|`400`, `401`, `404`|
 
-Retrieving/creating user offers:
 
-|METHOD   |`/user/user_id/offer`|SUCCESS|ERROR|
+Retrieving user's offers:
+
+|METHOD   |`/user/<int:user_id>/offer?`|SUCCESS|ERROR|
 |---------|---------------------|-------|-----|
-|`GET`    |data:-|`200`|`404`|
-|`POST`   |data:token,iets|`201`|`400`, `401`|
+|`GET`    |data:-|`200`|`204, 400`|
+
 
 Retrieving list of reviews of user:
 
-|METHOD   |`/user/user_id/review`|SUCCESS|ERROR|
+|METHOD   |`/user/<int:user_id>/review?`|SUCCESS|ERROR|
 |---------|----------------------|-------|-----|
 |`GET`    |data:-|`200`|`404`|
 
 Retrieving/creating/updating/removing user reviews:
 
-|METHOD   |`/review/offer_id`|SUCCESS|ERROR|
+|METHOD   |`/review/<int:offer_id>?`|SUCCESS|ERROR|
 |---------|------------------|-------|-----|
 |`GET`    |data:-|`200`|`404`|
 |`POST`   |data:token,reviewdata|`201`|`400`, `401`|
 |`PUT`    |data:token,reviewdata|`200`|`400`, `401`, `404`|
 |`DELETE` |data:token|`200`|`401`, `404`|
 
-Retrieving offers:
+Retrieving offers (GET), creating offers (POST):
 
-|METHOD   |`/offers?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page number>&order_by<distance, no_reviews, no_endorsed>`|SUCCESS|ERROR|
+|METHOD   |`/offers?`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
-|`GET`    |loc:, range:, subject_id:, level:, sortby:|`200`|`204`, `400`|
+|`GET`    |Query string: /offers?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page_nr>&order_by<str=distance, no_reviews, no_endorsed>|`200`|`204`, `400`|
+|`POST`   |data:userdata|`200` `201`|`400`|
 
 
 
