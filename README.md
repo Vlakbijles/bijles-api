@@ -1,9 +1,9 @@
 Vlakbijles API
 ===================
-Requirements:
-    - flask
-    - flask-restful
-    - sqlalchemy
+Required Python modules:
+* flask
+* flask-restful
+* sqlalchemy
 
 Formatting requests
 -------------------
@@ -75,8 +75,8 @@ above, the resulting string used in the hash calculation looks like this:
 
 Note that the final JSON object should include the calculated hash in the
 `"hash"` field, while JSON object used in the hash calculation itself does not.
-The final JSON string in the HTTP request body does _not_ need to be formatted
-a described above, it is only required for the hash calculation.
+The final JSON string in the HTTP request body does **_not need_** to be
+formatted a described above, it is only required for the hash calculation.
 
 Example request:
 
@@ -106,15 +106,17 @@ Content-type: application/json
 
 Available requests
 -------------------
-400: invalid API request, error message attached
-204: valid request but no results
-201: succesfully created resource
-200: valid request, data sent in return
 
-Note: `200` where a `201` is also possible indicates the resource already exists
+### Response codes
+* `200`: Valid request, either empty or resulting resource is sent back
+* `201`: Succesfully created resource
+* `204`: Valid request but no results
+* `400`: Invalid API request, error message attached
 
+Note: some requests have both `200` and `201` as a response code, if `200` is
+returned instead of `201` this means the resource already exists
 
-Creating/editing users (POST, PUT), get own profile (GET):
+#### Creating/editing users (POST, PUT), get own profile (GET):
 
 |METHOD   |`/user?`|SUCCESS|ERROR|
 |---------|-------|-------|-----|
