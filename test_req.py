@@ -19,9 +19,9 @@ api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
 loc = "1012BH"
 # uri = "/user?"
-uri = "/user/1?"
-# uri = "/offer?loc={loc}&range=1000000&subject=1&level=2&page=2&sortby=apj".format(loc=loc)
-uri = "/verify/email?verify_data=ed1@plus.nl"
+# uri = "/user/1?"
+# uri = "/verify/email?verify_data=ed1@plus.nl"
+uri = "/offer?postal_code={loc}&range=1000000&subject_id=387&page=2".format(loc=loc)
 method = "GET"
 utc_time = str(int(time.time()))
 

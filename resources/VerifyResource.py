@@ -10,7 +10,7 @@
 
 
 from resources import *  # NOQA
-from models import User, PostalCode
+from models import User, PostalCode, Subject
 
 
 class VerifyResource(Resource):
