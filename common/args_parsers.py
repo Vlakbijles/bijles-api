@@ -62,7 +62,7 @@ review_parser.add_argument("endorsed", type=bool, required=True, help="endorsed"
 # Constants used for offer searching
 OFFER_PAGE_SIZE = 8
 ORDER_BY_DISTANCE = 'distance'
-ORDER_BY_NO_REVIEWS = 'reviews'
+ORDER_BY_NO_REVIEWS = 'no_reviews'
 ORDER_BY_NO_ENDORSED = 'no_endorsed'
 
 # Offer Search parser used for parsing the search query arguments

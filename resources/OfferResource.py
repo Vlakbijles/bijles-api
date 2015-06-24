@@ -148,17 +148,17 @@ class OfferResource(Resource):
         # Order result offers based on given argument, and add paging (8 results per page)
         if (offer_args['order_by'] == ORDER_BY_DISTANCE):
             offers = session.query(offers).order_by(offers.c.distance).\
-                limit(8).offset(8*offer_args['order_by']).all()
+                limit(8).offset(8*offer_args['page']).all()
         elif (offer_args['order_by'] == ORDER_BY_NO_ENDORSED):
             offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).\
-                limit(8).offset(8*offer_args['order_by']).all()
+                limit(8).offset(8*offer_args['page']).all()
         elif (offer_args['order_by'] == ORDER_BY_NO_REVIEWS):
             offers = session.query(offers).order_by(offers.c.no_reviews.desc()).\
-                limit(8).offset(8*offer_args['order_by']).all()
+                limit(8).offset(8*offer_args['page']).all()
         # If not specified or specified invalid, order by distance
         else:
             offers = session.query(offers).order_by(offers.c.distance).\
-                limit(OFFER_PAGE_SIZE).offset(OFFER_PAGE_SIZE*offer_args['order_by']).all()
+                limit(OFFER_PAGE_SIZE).offset(OFFER_PAGE_SIZE*offer_args['page']).all()
 
         if not offers:
             return [], 204
