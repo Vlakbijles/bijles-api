@@ -45,10 +45,10 @@ class ReviewByUserIdResource(Resource):
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(204, message="User with id={} doesn't exist".format(id))
+            abort(400, message="User with id={} doesn't exist".format(id))
 
         reviews = session.query(Review).join(Review.offer).\
-            filter(Offer.user_id == id).order_by(Review.date).all()
+            filter(Offer.user_id == id, Review.description != "").order_by(Review.date.desc()).all()
 
         return reviews, 200
 
@@ -66,7 +66,7 @@ class EndorsmentByUserIdResource(Resource):
     def get(self, id):
         user = session.query(User).filter(User.id == id).first()
         if not user:
-            abort(204, message="User with id={} doesn't exist".format(id))
+            abort(400, message="User with id={} doesn't exist".format(id))
 
         endorsments = session.query(Review).join(Review.offer).join(Offer.user).\
             filter(Review.endorsed, User.id == id).group_by(Review.author_id).all()
