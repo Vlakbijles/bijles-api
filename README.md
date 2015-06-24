@@ -108,10 +108,10 @@ Available requests
 -------------------
 
 ### Response codes
-* `200`: Valid request, either empty or resulting resource is sent back
-* `201`: Succesfully created resource
-* `204`: Valid request but no results
-* `400`: Invalid API request, error message attached
+* `200` Valid request, either empty or resulting resource is sent back
+* `201` Succesfully created resource
+* `204` Valid request but no results
+* `400` Invalid API request, error message attached
 
 Note: some requests have both `200` and `201` as a response code, if `200` is
 returned instead of `201` this means the resource already exists
@@ -124,77 +124,78 @@ returned instead of `201` this means the resource already exists
 |`PUT`    |data:userdata|`200`|`400`|
 |`GET`    |data:loggedin|`200`|`400`|
 
-
-Retrieving/updating user data:
+#### Retrieving user profile
 
 |METHOD   |`/user/<int:user_id>?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`GET`    |data:-|`200`|`404`|
 
-
-Logging in
+#### Logging in
 
 |METHOD   |`/fblogin?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`POST`   |data:-|`200`, `202`|-|
 
-
-Verifying email addresses, postal codes and subject id's:
+#### Email/postal code/subject verification
+**IMPORTANT**: returns strings, `"true"` or `"false"`
 
 |METHOD   |`/fblogin?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`GET`   |Query string: ?verify_type=<str=email, postal_code, subject>&verify_data=<str:data>|`200`|`400`|
 
-Deleting offers
+Note: email verification returns false if email is already in use, subject
+verification is by **id**, _not_ by name
+
+#### Deleting offers
 
 |METHOD   |`/offer/<int:offer_id>?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`DELETE` |data:loggedin|`200`|`401`, `404`|
 
 
-List of subjects
+#### List of subjects
 
 |METHOD   |`/subject/all?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`GET`    |data:-|`200`|`204`|
 
 
-List of levels
+#### List of levels
 
 |METHOD   |`/level/all?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
 |`GET`    |data:-|`200`|`204`|
 
 
-Retrieving user's offers:
+#### Retrieving a user's offers:
 
 |METHOD   |`/user/<int:user_id>/offer?`|SUCCESS|ERROR|
 |---------|---------------------|-------|-----|
 |`GET`    |data:-|`200`|`204, 400`|
 
 
-Retrieving list of reviews of user:
+#### Retrieving the reviews of user identified by id:
 
 |method   |`/user/<int:user_id>/review?`|success|error|
 |---------|----------------------|-------|-----|
 |`GET`    |data:-|`200`|`400`|
 
 
-Creating review:
+#### Creating a review:
 
 |METHOD   |`/review?`|SUCCESS|ERROR|
 |---------|----------------------|-------|-----|
 |`POST`   |data:-|`200`, `201`|`400`|
 
 
-Retrieving list of users endorsing a user:
+#### Retrieving list of users endorsing a user:
 
 |METHOD   |`/user/<int:user_id>/endorsment?`|SUCCESS|ERROR|
 |---------|----------------------|-------|-----|
 |`GET`    |data:-|`200`|`400`, `404`|
 
 
-Retrieving/creating/updating/removing user reviews:
+#### Retrieving/creating/updating/removing user reviews:
 
 |METHOD   |`/review/<int:offer_id>?`|SUCCESS|ERROR|
 |---------|------------------|-------|-----|
@@ -204,7 +205,7 @@ Retrieving/creating/updating/removing user reviews:
 |`DELETE` |data:token|`200`|`401`, `404`|
 
 
-Retrieving offers (GET), creating offers (POST):
+#### Searching for offers (GET), creating offers (POST):
 
 |METHOD   |`/offers?`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
