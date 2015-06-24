@@ -116,13 +116,23 @@ Available requests
 Note: some requests have both `200` and `201` as a response code, if `200` is
 returned instead of `201` this means the resource already exists
 
-#### Creating/editing users (POST, PUT), get own profile (GET):
+#### Logging in
 
-|METHOD   |`/user?`|SUCCESS|ERROR|
-|---------|-------|-------|-----|
-|`POST`   |data:userdata|`201`|`400`|
-|`PUT`    |data:userdata|`200`|`400`|
-|`GET`    |data:loggedin|`200`|`400`|
+|METHOD   |`/fblogin?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`POST`   |data:-|`200`, `202`|-|
+
+#### List of subjects
+
+|METHOD   |`/subject/all?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data:-|`200`|`204`|
+
+#### List of levels
+
+|METHOD   |`/level/all?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data:-|`200`|`204`|
 
 #### Retrieving user profile
 
@@ -130,11 +140,16 @@ returned instead of `201` this means the resource already exists
 |---------|---------------|-------|-----|
 |`GET`    |data:-|`200`|`404`|
 
-#### Logging in
+#### Creating/editing users (POST, PUT), get own profile (GET)
 
-|METHOD   |`/fblogin?`|SUCCESS|ERROR|
-|---------|---------------|-------|-----|
-|`POST`   |data:-|`200`, `202`|-|
+|METHOD   |`/user?`|SUCCESS|ERROR|
+|---------|-------|-------|-----|
+|`POST`   |data:userdata|`201`|`400`|
+|`PUT`    |data:userdata|`200`|`400`|
+|`GET`    |data:loggedin|`200`|`400`|
+
+Note: `GET` and `PUT` require the user to be logged in, `GET` can therefore be
+used as a login check
 
 #### Email/postal code/subject verification
 **IMPORTANT**: returns strings, `"true"` or `"false"`
@@ -152,34 +167,17 @@ verification is by **id**, _not_ by name
 |---------|---------------|-------|-----|
 |`DELETE` |data:loggedin|`200`|`401`, `404`|
 
-
-#### List of subjects
-
-|METHOD   |`/subject/all?`|SUCCESS|ERROR|
-|---------|---------------|-------|-----|
-|`GET`    |data:-|`200`|`204`|
-
-
-#### List of levels
-
-|METHOD   |`/level/all?`|SUCCESS|ERROR|
-|---------|---------------|-------|-----|
-|`GET`    |data:-|`200`|`204`|
-
-
-#### Retrieving a user's offers:
+#### Retrieving a user's offers
 
 |METHOD   |`/user/<int:user_id>/offer?`|SUCCESS|ERROR|
 |---------|---------------------|-------|-----|
 |`GET`    |data:-|`200`|`204, 400`|
 
-
-#### Retrieving the reviews of user identified by id:
+#### Retrieving the reviews of user identified by id
 
 |method   |`/user/<int:user_id>/review?`|success|error|
 |---------|----------------------|-------|-----|
 |`GET`    |data:-|`200`|`400`|
-
 
 #### Creating a review:
 
@@ -187,15 +185,13 @@ verification is by **id**, _not_ by name
 |---------|----------------------|-------|-----|
 |`POST`   |data:-|`200`, `201`|`400`|
 
-
-#### Retrieving list of users endorsing a user:
+#### Retrieving list of users endorsing a user
 
 |METHOD   |`/user/<int:user_id>/endorsment?`|SUCCESS|ERROR|
 |---------|----------------------|-------|-----|
 |`GET`    |data:-|`200`|`400`, `404`|
 
-
-#### Retrieving/creating/updating/removing user reviews:
+#### Retrieving/creating/updating/removing user reviews
 
 |METHOD   |`/review/<int:offer_id>?`|SUCCESS|ERROR|
 |---------|------------------|-------|-----|
@@ -204,14 +200,12 @@ verification is by **id**, _not_ by name
 |`PUT`    |data:token,reviewdata|`200`|`400`, `401`, `404`|
 |`DELETE` |data:token|`200`|`401`, `404`|
 
-
-#### Searching for offers (GET), creating offers (POST):
+#### Searching for offers (GET), creating offers (POST)
 
 |METHOD   |`/offers?`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
 |`GET`    |Query string: /offers?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page_nr>&order_by<str=distance, no_reviews, no_endorsed>|`200`|`204`, `400`|
 |`POST`   |data:userdata|`200` `201`|`400`|
-
 
 
 ```
