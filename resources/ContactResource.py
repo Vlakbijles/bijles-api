@@ -42,7 +42,7 @@ class ContactResource(Resource):
             abort(400, message="Sender User with id={} doesn't exist".format(loggedin_data["user_id"]))
 
         subject = "{} heeft gereageerd op je vak aanbieding: {}.".format(user_sender.meta.name, offer.subject.name)
-        message = "Beste {},<br><br>{} heeft gereageerd op uw {} bijles aanbieding met het volgende bericht:<br><br>\"{}\"<br><br>U kunt contact opnemen met de afzender door te antwoorden op deze email, of door rechtstreeks een email te sturen naar het volgende adres:<br>{}<br><br>Met vriendelijke groet,<br>Het Vlakbijles team".format(user_recipient.meta.name, user_sender.meta.name, offer.subject.name, offer_contact_data["message"], user_sender.email)
+        message = "Beste {},<br><br>{} heeft gereageerd op uw {} bijles aanbieding met het volgende bericht:<br><br>\"{}\"<br><br>U kunt contact opnemen met de afzender door te antwoorden op deze email, of door rechtstreeks een email te sturen naar het volgende adres:<br><br>{}<br><br>Met vriendelijke groet,<br>Het Vlakbijles team".format(user_recipient.meta.name, user_sender.meta.name, offer.subject.name, offer_contact_data["message"], user_sender.email)
         offer_contact(subject, message, user_recipient.email, user_sender.email)
 
         return {}, 200
