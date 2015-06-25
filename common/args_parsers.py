@@ -82,3 +82,8 @@ offersearch_parser.add_argument('order_by', type=str, default=ORDER_BY_DISTANCE,
 verify_parser = reqparse.RequestParser()
 verify_parser.add_argument('verify_type', type=str, required=True, location=('args'))
 verify_parser.add_argument('verify_data', type=str, required=True, location=('args'))
+
+
+# Offer Contact Parser is used for parsing the argument to check verify validity
+offer_contact_parser = reqparse.RequestParser()
+offer_contact_parser.add_argument('message', type=str, required=True, location=('contact'))

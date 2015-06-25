@@ -17,7 +17,7 @@ from resources.ReviewResource import ReviewByUserIdResource, ReviewResource, End
 from resources.SubjectResource import SubjectResource
 from resources.LevelResource import LevelResource
 from resources.VerifyResource import VerifyResource
-from resources.TestResource import TestResource
+from resources.ContactResource import ContactResource
 
 # Routes
 # User
@@ -47,7 +47,7 @@ api.add_resource(LevelResource, '/level/all')
 api.add_resource(VerifyResource, '/verify')
 
 # Test
-api.add_resource(TestResource, '/test')
+api.add_resource(ContactResource, '/contact/<int:offer_id>')
 
 
 @app.teardown_request

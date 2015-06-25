@@ -10,19 +10,19 @@ import httplib
 import json
 import hmac
 import time
-from random import randint
 from hashlib import sha256
 
 conn = httplib.HTTPConnection("localhost:5000")
 
 api_user = "test"
 private_key = "9103fb5e80d7747ee407505dfa4ca3dc"
-loc = "1012BH"
+loc = "1078MJ"
 # uri = "/user?"
 # uri = "/user/1?"
 # uri = "/verify/email?verify_data=ed1@plus.nl"
-uri = "/offer?postal_code={loc}&range=1000000&subject_id=387&page=2".format(loc=loc)
-method = "GET"
+# uri = "/offer?postal_code={loc}&range=20&subject_id=387&page=1".format(loc=loc)
+uri = "/contact/1?"
+method = "POST"
 utc_time = str(int(time.time()))
 
 
@@ -30,13 +30,16 @@ data = {
     "api_user": api_user,
     "timestamp": utc_time,
     "data": {
+        "contact": {
+            "message": "hallo",
+        },
         "user": {
             "email": "ed1@plus.nl",
             "password": "edmin",
         },
         "loggedin": {
             "user_id": 1,
-            "token_hash": "sda",
+            "token_hash": "asd",
         },
 
         "offer": {
