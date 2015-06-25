@@ -18,6 +18,7 @@ from models import User, UserMeta, Offer, PostalCode, Review, Subject, Level
 from sqlalchemy import between
 from sqlalchemy import and_
 from sqlalchemy import case
+from sqlalchemy import distinct
 
 offer_fields = {
     'id': fields.Integer,
@@ -43,6 +44,11 @@ offersearch_fields = {
     'distance': fields.Float,
     'no_endorsed': fields.Integer,
     'no_reviews': fields.Integer,
+}
+
+offersearch = {
+    'total_offers': fields.Integer,
+    'offers': fields.Nested(offersearch_fields),
 }
 
 offer_created_fields = {
@@ -73,6 +79,7 @@ class OfferByUserIdResource(Resource):
         if not user:
             abort(400, message="User with id={} doesn't exist".format(id))
         offers = session.query(Offer).filter(Offer.user_id == id, Offer.active).all()
+
         if not offers:
             return [], 204
 
@@ -94,7 +101,7 @@ class OfferResource(Resource):
     """
 
     @api_validation
-    @marshal_with(offersearch_fields)
+    @marshal_with(offersearch)
     def get(self):
         offer_args = offersearch_parser.parse_args()
 
@@ -137,6 +144,8 @@ class OfferResource(Resource):
                                 postal_code.lat + (offer_args['range'] /
                                                      (111.045 * func.cos(func.radians(postal_code.lat))))))).subquery()
 
+        total_offers = session.query(func.count(offers.c.id)).scalar()
+
         # Calculate number of (endorsed) reviews for each user corresponding with a result offers
         offers = session.query(offers, func.count(Review.endorsed).label("no_reviews"),
                                func.count(case([(Review.endorsed, 1)])).label("no_endorsed")).\
@@ -144,21 +153,29 @@ class OfferResource(Resource):
             outerjoin(Review, Review.offer_id == Offer.id).\
             group_by(offers.c.user_id).subquery()
 
-        # Order result offers based on given argument
-        if (offer_args['order_by'] == 'distance'):
-            offers = session.query(offers).order_by(offers.c.distance).all()
-        elif (offer_args['order_by'] == 'no_endorsed'):
-            offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).all()
-        elif (offer_args['order_by'] == 'no_reviews'):
-            offers = session.query(offers).order_by(offers.c.no_reviews.desc()).all()
+        # Order result offers based on given argument, and add paging (8 results per page)
+        if (offer_args['order_by'] == ORDER_BY_DISTANCE):
+            offers = session.query(offers).order_by(offers.c.distance).\
+                limit(8).offset(8*(offer_args['page']-1)).all()
+        elif (offer_args['order_by'] == ORDER_BY_NO_ENDORSED):
+            offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).\
+                limit(8).offset(8*(offer_args['page']-1)).all()
+        elif (offer_args['order_by'] == ORDER_BY_NO_REVIEWS):
+            offers = session.query(offers).order_by(offers.c.no_reviews.desc()).\
+                limit(8).offset(8*(offer_args['page']-1)).all()
         # If not specified or specified invalid, order by distance
         else:
-            offers = session.query(offers).order_by(offers.c.distance).all()
+            offers = session.query(offers).order_by(offers.c.distance).\
+                limit(OFFER_PAGE_SIZE).offset(OFFER_PAGE_SIZE*(offer_args['page']-1)).all()
+
+        print offers
+        result = {'total_offers': total_offers,
+                  'offers': [offer._asdict() for offer in offers]}
 
         if not offers:
-            return [], 204
+            return result, 204
 
-        return [offer._asdict() for offer in offers], 200
+        return result, 200
 
     @api_validation
     @authentication(None)

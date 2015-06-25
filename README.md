@@ -1,9 +1,9 @@
 Vlakbijles API
 ===================
-Requirements:
-    - flask
-    - flask-restful
-    - sqlalchemy
+Required Python modules:
+* flask
+* flask-restful
+* sqlalchemy
 
 Formatting requests
 -------------------
@@ -75,8 +75,8 @@ above, the resulting string used in the hash calculation looks like this:
 
 Note that the final JSON object should include the calculated hash in the
 `"hash"` field, while JSON object used in the hash calculation itself does not.
-The final JSON string in the HTTP request body does _not_ need to be formatted
-a described above, it is only required for the hash calculation.
+The final JSON string in the HTTP request body does **_not need_** to be
+formatted a described above, it is only required for the hash calculation.
 
 Example request:
 
@@ -106,107 +106,127 @@ Content-type: application/json
 
 Available requests
 -------------------
-Creating users:
+### Data fields
+Populate these fields and add them to the 'data' section described above when necessary
 
-|METHOD   |`/user`|SUCCESS|ERROR|
-|---------|-------|-------|-----|
-|`POST`   |data:userdata|`201`|`400`|
+User authentication:
+```
+"loggedin": {"user_id": <user_id>
+             "token_hash": <token_hash>}
+```
+```
+"user": {"email": <user_email>}
+```
+```
+# During registration
+"user_meta": {"postal_code": <postal_code>
+              "fb_token": <fb_token>,
+              "description": <description>}
+```
+```
+# When updating (PUT)
+"user_meta": {"postal_code": <postal_code>,
+              "description": <description>}
+```
+```
+"facebook": {"access_token": <access_token>}
+```
+```
+"offer": {"subject_id": <subject_id>,
+          "level_id": <level_id>}
+```
+```
+"review": {"offer_id": <offer_id>,
+           "description": <description>,
+           "endorsed": <true/false>}
+```
+### Response codes
+* `200` Valid request, either empty or resulting resource is sent back
+* `201` Succesfully created resource
+* `204` Valid request but no results
+* `400` Invalid API request, error message attached
 
-Retrieving/updating user data, removing users:
+Note: some requests have both `200` and `201` as a response code, if `200` is
+returned instead of `201` this means the resource already exists
 
-|METHOD   |`/user/user_id`|SUCCESS|ERROR|
+#### Logging in
+
+|METHOD   |`/fblogin?`|SUCCESS|ERROR|
 |---------|---------------|-------|-----|
-|`GET`    |data:-|`200`|`404`|
-|`PUT`    |data:token,iets|`200`|`400`, `401`, `404`|
-|`DELETE` |data:token,password|`200`|`400`, `401`, `404`|
+|`POST`   |data: `facebook`|`200`, `202`|-|
 
-Retrieving/creating user offers:
+#### List of subjects
 
-|METHOD   |`/user/user_id/offer`|SUCCESS|ERROR|
-|---------|---------------------|-------|-----|
-|`GET`    |data:-|`200`|`404`|
-|`POST`   |data:token,iets|`201`|`400`, `401`|
+|METHOD   |`/subject/all?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data: `{}`|`200`|`204`|
 
-Retrieving list of reviews of user:
+#### List of levels
 
-|METHOD   |`/user/user_id/review`|SUCCESS|ERROR|
-|---------|----------------------|-------|-----|
-|`GET`    |data:-|`200`|`404`|
+|METHOD   |`/level/all?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data:`{}`|`200`|`204`|
 
-Retrieving/creating/updating/removing user reviews:
+#### Retrieving user profile
 
-|METHOD   |`/review/offer_id`|SUCCESS|ERROR|
-|---------|------------------|-------|-----|
-|`GET`    |data:-|`200`|`404`|
-|`POST`   |data:token,reviewdata|`201`|`400`, `401`|
-|`PUT`    |data:token,reviewdata|`200`|`400`, `401`, `404`|
-|`DELETE` |data:token|`200`|`401`, `404`|
+|METHOD   |`/user/<int:user_id>?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`    |data:`{}`|`200`|`404`|
 
-Retrieving offers:
+#### Creating/editing users (POST, PUT), get own profile (GET)
 
-|METHOD   |`/offers?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page number>&order_by<distance, no_reviews, no_endorsed>`|SUCCESS|ERROR|
+|METHOD   |`/user?`|SUCCESS|ERROR|
+|---------|-------|-------|-----|
+|`GET`    |data: `loggedin`|`200`|`400`|
+|`POST`   |data: `loggedin`, `user`, `user_meta`|`201`|`400`|
+|`PUT`    |data: `loggedin`, `user`, `user_meta`|`200`|`400`|
+
+Note: `GET` can be used as a login check
+
+#### Email/postal code/subject verification
+**IMPORTANT**: returns strings, `"true"` or `"false"`
+
+|METHOD   |`/verify?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`GET`   |`?verify_type=<str=email, postal_code, subject>&verify_data=<str:data>`|`200`|`400`|
+
+Note: email verification returns false if email is already in use, subject
+verification is by **id**, _not_ by name
+
+#### Searching for offers (GET), creating offers (POST)
+
+|METHOD   |`/offers?`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
-|`GET`    |loc:, range:, subject_id:, level:, sortby:|`200`|`204`, `400`|
+|`GET`    |`?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page_nr>&order_by<str=distance, no_reviews, no_endorsed>`|`200`|`204`, `400`|
+|`POST`   |data: `loggedin`, `offer`|`200` `201`|`400`|
 
 
+#### Deleting offers
 
-```
-/user?
-```
+|METHOD   |`/offer/<int:offer_id>?`|SUCCESS|ERROR|
+|---------|---------------|-------|-----|
+|`DELETE` |data: `loggedin`|`200`|`401`, `404`|
 
-GET
-```
-{
-	"api_user": "<api user>",
-    "data": {
-                "loggedin_data": {
-                                    "user_id":    "<user id>",
-                                    "token_hash": "<user token hash>"
-                                 }
-            },
-	"timestamp": "<timestamp>",
-	"hash": "<hash>"
-}
-```
+#### Retrieving a user's offers
 
-POST
-```
-{
-	"api_user": "<api user>",
-    "data": {
-		        "user_data":     {
-                                   "email":   "<user email>"
-                                 },
-                "user_meta_data": {
-                                   "zipcode": "<user zipcode>",
-                                   "fb_id":   "<user facebook token>",
-                                 }
-            },
-	"timestamp": "<timestamp>",
-	"hash": "<hash>"
-}
-```
+|METHOD   |`/user/<int:user_id>/offer?`|SUCCESS|ERROR|
+|---------|---------------------|-------|-----|
+|`GET`    |data:`{}`|`200`|`204, 400`|
 
-PUT
-```
-{
-	"api_user": "<api user>",
-    "data": {
-		        "user_data":     {
-                                   "email":   "<user email>"
-                                 },
-                "user_meta_data": {
-                                   "phone":       "<user phone>",
-                                   "zipcode":     "<user zipcode>",
-                                   "description": "<user description>"
-                                 }
-            },
-	"timestamp": "<timestamp>",
-	"hash": "<hash>"
-}
-```
+#### Retrieving the reviews written about a user
 
-```
-/user/<user_id>?
-```
-GET
+|method   |`/user/<int:user_id>/review?`|success|error|
+|---------|----------------------|-------|-----|
+|`GET`    |data:`{}`|`200`|`400`|
+
+#### Creating a review:
+
+|METHOD   |`/review?`|SUCCESS|ERROR|
+|---------|----------------------|-------|-----|
+|`POST`   |data:`loggedin`, `review`|`200`, `201`|`400`|
+
+#### Retrieving list of users endorsing a user
+
+|METHOD   |`/user/<int:user_id>/endorsment?`|SUCCESS|ERROR|
+|---------|----------------------|-------|-----|
+|`GET`    |data:`{}`|`200`|`400`, `404`|

@@ -26,8 +26,6 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String(255), nullable=False, unique=True)
-    password = Column(String(64))
-    verified = Column(Boolean)
     join_date = Column(DateTime)
     last_login = Column(DateTime)
 
@@ -105,7 +103,7 @@ class Review(Base):
     __tablename__ = 'review'
 
     offer_id = Column(Integer, ForeignKey("offer.id"), primary_key=True)
-    author_id = Column(Integer, ForeignKey("user.id"))
+    author_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
     endorsed = Column(Boolean, default=True)
     description = Column(Text)
     date = Column(DateTime)
