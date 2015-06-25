@@ -13,7 +13,7 @@ def offer_contact(subject, text, recipient, sender):
     message = """From: %s
     To: %s
     Reply-To: %s
-    Content-type= text/html
+    Content-type: text/html
     Subject: %s
 
     %s
