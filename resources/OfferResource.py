@@ -144,7 +144,7 @@ class OfferResource(Resource):
                                                      (111.045 * func.cos(func.radians(postal_code.lat))))))).subquery()
 
         # Calculate number of (endorsed) reviews for each user corresponding with a result offers
-        offers = session.query(offers, func.count(case([(Review.desc != "", 1)])).label("no_reviews"),
+        offers = session.query(offers, func.count(case([(Review.description != "", 1)])).label("no_reviews"),
                                func.count(case([(Review.endorsed, 1)])).label("no_endorsed")).\
             join(Offer, Offer.user_id == offers.c.user_id).\
             outerjoin(Review, Review.offer_id == Offer.id).\
