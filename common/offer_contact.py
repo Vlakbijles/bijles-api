@@ -44,8 +44,6 @@ def offer_contact(subject, text, recipient, sender):
     try:
         # Send the message via local SMTP server.
         s = smtplib.SMTP('localhost')
-        # sendmail function takes 3 arguments: sender's address, recipient's address
-        # and message to send - here it is sent as one string.
         s.sendmail(FROM, recipient, msg.as_string())
         s.quit()
         print("Successfully sent email")
