@@ -8,15 +8,17 @@ SUBJECT = "Vlakbijles Gebuiker heeft je een bericht gestuurd over vak"
 TEXT = "This message was sent with Python's smtplib."
 
 
-def email(subject, text, recipient):
+def email(subject, text, recipient, sender):
     # Message template, insert actual data
     message = """\
     From: %s
     To: %s
+    Reply-To: %s
+    Content-type= text/html
     Subject: %s
 
     %s
-    """ % (FROM, ", ".join(recipient), subject, text)
+    """ % (FROM, ", ".join(recipient), sender, subject, text)
 
     try:
         server = smtplib.SMTP(SERVER)
@@ -27,4 +29,4 @@ def email(subject, text, recipient):
 
 
 if __name__ == '__main__':
-    email(SUBJECT, TEXT, "gmverkes@gmail.com")
+    email(SUBJECT, TEXT, "gmverkes@gmail.com", "phineasandperry@hotmail.com")
