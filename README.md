@@ -195,7 +195,7 @@ verification is by **id**, _not_ by name
 
 #### Searching for offers (GET), creating offers (POST)
 
-|METHOD   |`/offers?`|SUCCESS|ERROR|
+|METHOD   |`/offer?`|SUCCESS|ERROR|
 |---------|-------------------------------------------------------|-------|-----|
 |`GET`    |`?subject_id=<int:subject_id>&postal_code=<str:postal_code>&level_id=<int:level_id>&page=<int:page_nr>&order_by<str=distance, no_reviews, no_endorsed>`|`200`|`204`, `400`|
 |`POST`   |data: `loggedin`, `offer`|`200` `201`|`400`|
