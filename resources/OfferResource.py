@@ -126,7 +126,8 @@ class OfferResource(Resource):
                                (Level.name).label("level"), UserMeta).\
             join(Offer.user).join(User.meta).join(Offer.level).join(Offer.subject).\
             filter(Offer.active, Offer.level_id.like(offer_args['level_id']),
-                   Offer.subject_id == offer_args['subject_id']).subquery()
+                   Offer.subject_id == offer_args['subject_id']).\
+            group_by(Offer.user_id).subquery()
 
         # Calculate distance for each offer from given postal code, and filter on given range
         offers = session.query(offers, func.round((111.045 * func.degrees(func.acos(func.cos(func.radians(postal_code.lat)) *
