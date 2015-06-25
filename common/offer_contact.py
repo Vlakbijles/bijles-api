@@ -10,8 +10,7 @@ TEXT = "This message was sent with Python's smtplib."
 
 def offer_contact(subject, text, recipient, sender):
     # Message template, insert actual data
-    message = """\
-    From: %s
+    message = """From: %s
     To: %s
     Reply-To: %s
     Content-type= text/html
