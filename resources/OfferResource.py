@@ -18,7 +18,6 @@ from models import User, UserMeta, Offer, PostalCode, Review, Subject, Level
 from sqlalchemy import between
 from sqlalchemy import and_
 from sqlalchemy import case
-from sqlalchemy import distinct
 
 offer_fields = {
     'id': fields.Integer,
@@ -136,39 +135,39 @@ class OfferResource(Resource):
                            func.sin(func.radians(postal_code.lat)) *
                            func.sin(func.radians(offers.c.latitude))))), 2).label("distance")).\
             filter(and_(between(offers.c.latitude,
-                                postal_code.lat - (offer_args['range'] / 111.045),
-                                postal_code.lat + (offer_args['range'] / 111.045)),
+                                postal_code.lat - (50 / 111.045),
+                                postal_code.lat + (50 / 111.045)),
                         between(offers.c.longitude,
-                                postal_code.lon - (offer_args['range'] /
+                                postal_code.lon - (50 /
                                                      (111.045 * func.cos(func.radians(postal_code.lat)))),
-                                postal_code.lat + (offer_args['range'] /
+                                postal_code.lat + (50 /
                                                      (111.045 * func.cos(func.radians(postal_code.lat))))))).subquery()
-
-        total_offers = session.query(func.count(offers.c.id)).scalar()
 
         # Calculate number of (endorsed) reviews for each user corresponding with a result offers
         offers = session.query(offers, func.count(Review.endorsed).label("no_reviews"),
                                func.count(case([(Review.endorsed, 1)])).label("no_endorsed")).\
             join(Offer, Offer.user_id == offers.c.user_id).\
             outerjoin(Review, Review.offer_id == Offer.id).\
+            filter(offers.c.distance < offer_args['range']).\
             group_by(offers.c.user_id).subquery()
+
+        total_offers = session.query(func.count(offers.c.id)).scalar()
 
         # Order result offers based on given argument, and add paging (8 results per page)
         if (offer_args['order_by'] == ORDER_BY_DISTANCE):
             offers = session.query(offers).order_by(offers.c.distance).\
-                limit(8).offset(8*(offer_args['page']-1)).all()
+                limit(OFFER_PAGE_SIZE).offset(8*(offer_args['page']-1)).all()
         elif (offer_args['order_by'] == ORDER_BY_NO_ENDORSED):
             offers = session.query(offers).order_by(offers.c.no_endorsed.desc()).\
-                limit(8).offset(8*(offer_args['page']-1)).all()
+                limit(OFFER_PAGE_SIZE).offset(8*(offer_args['page']-1)).all()
         elif (offer_args['order_by'] == ORDER_BY_NO_REVIEWS):
             offers = session.query(offers).order_by(offers.c.no_reviews.desc()).\
-                limit(8).offset(8*(offer_args['page']-1)).all()
+                limit(OFFER_PAGE_SIZE).offset(8*(offer_args['page']-1)).all()
         # If not specified or specified invalid, order by distance
         else:
             offers = session.query(offers).order_by(offers.c.distance).\
                 limit(OFFER_PAGE_SIZE).offset(OFFER_PAGE_SIZE*(offer_args['page']-1)).all()
 
-        print offers
         result = {'total_offers': total_offers,
                   'offers': [offer._asdict() for offer in offers]}
 
