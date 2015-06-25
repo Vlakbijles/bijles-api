@@ -18,7 +18,7 @@ def offer_contact(subject, text, recipient, sender):
     Subject: %s
 
     %s
-    """ % (FROM, ", ".join(recipient), sender, subject, text)
+    """ % (FROM, recipient, sender, subject, text)
 
     try:
         server = smtplib.SMTP(SERVER)
@@ -26,7 +26,3 @@ def offer_contact(subject, text, recipient, sender):
         print("Successfully sent email")
     except:
         print("Error: unable to send email")
-
-
-if __name__ == '__main__':
-    email(SUBJECT, TEXT, "gmverkes@gmail.com", FROM)
