@@ -12,27 +12,26 @@ TEXT = "This message was sent with Python's smtplib."
 
 
 def offer_contact(subject, text, recipient, sender):
-    # Create message container - the correct MIME type is multipart/alternative.
+    # Create message container
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
     msg['From'] = FROM
     msg['Reply-To'] = sender
     msg['To'] = recipient
 
-    text = "Beste %s, \n%s heeft je het volgende bericht gestuurd. \n\n%s" %\
-           (recipient, sender, text)
+    text = "%s" % (text)
     html = """\
     <html>
       <head></head>
       <body>
         <p>
-            Beste %s,</br>%s heeft je het volgende bericht gestuurd.</br></br>%s
+            %s
         </p>
       </body>
     </html>
-    """ % (recipient, sender, text)
+    """ % (text)
 
-    # Record the MIME types of both parts - text/plain and text/html.
+    # Record the MIME types of both parts
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
