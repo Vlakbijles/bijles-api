@@ -135,12 +135,12 @@ class OfferResource(Resource):
                            func.sin(func.radians(postal_code.lat)) *
                            func.sin(func.radians(offers.c.latitude))))), 2).label("distance")).\
             filter(and_(between(offers.c.latitude,
-                                postal_code.lat - (50 / 111.045),
-                                postal_code.lat + (50 / 111.045)),
+                                postal_code.lat - (200 / 111.045),
+                                postal_code.lat + (200 / 111.045)),
                         between(offers.c.longitude,
-                                postal_code.lon - (50 /
+                                postal_code.lon - (200 /
                                                      (111.045 * func.cos(func.radians(postal_code.lat)))),
-                                postal_code.lat + (50 /
+                                postal_code.lat + (200 /
                                                      (111.045 * func.cos(func.radians(postal_code.lat))))))).subquery()
 
         # Calculate number of (endorsed) reviews for each user corresponding with a result offers
