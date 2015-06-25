@@ -19,17 +19,18 @@ def offer_contact(subject, text, recipient, sender):
     msg['Reply-To'] = sender
     msg['To'] = recipient
 
-    text = "%s" % (text)
+    text = "Beste %s, \n%s heeft je het volgende bericht gestuurd. \n\n%s" %\
+           (recipient, sender, text)
     html = """\
     <html>
       <head></head>
       <body>
         <p>
-            %s
+            Beste %s,</br>%s heeft je het volgende bericht gestuurd.</br></br>%s
         </p>
       </body>
     </html>
-    """ % (text)
+    """ % (recipient, sender, text)
 
     # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
