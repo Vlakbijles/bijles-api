@@ -26,8 +26,6 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String(255), nullable=False, unique=True)
-    password = Column(String(64))
-    verified = Column(Boolean)
     join_date = Column(DateTime)
     last_login = Column(DateTime)
 

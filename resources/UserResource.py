@@ -64,39 +64,6 @@ class UserByIdResource(Resource):
 
         return user, 200
 
-    # TODO: ONLY FOR ADMIN
-    # @api_validation
-    # @marshal_with(user_fields)
-    # def put(self, id):
-    #     # Parse from the "user" field and "user_meta" field
-    #     user_data_args = user_data_parser.parse_args(self.args)
-    #     user_data = user_parser.parse_args(user_data_args)
-    #     user_meta_data = user_meta_parser.parse_args(user_data_args)
-    #
-    #     # Check if user with id exists
-    #     user = session.query(User).filter(User.id == id).first()
-    #     if not user:
-    #         abort(404, message="User with id={} doesn't exist".format(id))
-    #
-    #     if user_data['email']:
-    #         user.email = user_data['email']
-    #     if user_data['password']:
-    #         user.password = user_data['password']
-    #     session.add(user)
-    #     session.commit()
-    #
-    #     return user_meta_data, 201
-    #
-    # @api_validation
-    # def delete(self, id):
-    #     user = session.query(User).filter(User.id == id).first()
-    #     if not user:
-    #         abort(404, message="User with id={} doesn't exist".format(id))
-    #
-    #     session.delete(user)
-    #     session.commit()
-    #     return {}, 204
-
 
 class UserResource(Resource):
     """
